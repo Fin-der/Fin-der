@@ -1,4 +1,4 @@
-package com.example.fin_der;
+package com.example.finder;
 
 import org.junit.Test;
 
