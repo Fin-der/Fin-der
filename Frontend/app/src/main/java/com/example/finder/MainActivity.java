@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.example.finder.Views.HomeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +38,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 signIn();
+            }
+        });
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent home = new Intent(MainActivity.this, HomeView.class);
+                startActivity(home);
             }
         });
     }
