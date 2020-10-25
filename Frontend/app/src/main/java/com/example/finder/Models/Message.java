@@ -3,26 +3,34 @@ package com.example.finder.Models;
 public class Message {
     private String id;
     private String text;
-    private String name;
+    private String sender;
+    private String receiver;
+    private int msgType;
     // Picture profilePic
     // Picture[] sentPics
     // Date date
 
-    Message(String id, String text, String name) {
+    public Message(String id, String text, String sender, String receiver, int msgType) {
         this.id = id;
         this.text = text;
-        this.name = name;
+        this.receiver = receiver;
+        this.sender = sender;
+        this.msgType = msgType;
     }
 
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getSender() {
+        return sender;
     }
 
-    public String getText() {
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public String getMessage() {
         return text;
     }
 }
