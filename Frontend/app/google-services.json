@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "332862603819",
+    "firebase_url": "https://fin-der.firebaseio.com",
+    "project_id": "fin-der",
+    "storage_bucket": "fin-der.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:332862603819:android:62360c6141b5809480606e",
+        "android_client_info": {
+          "package_name": "com.example.finder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "332862603819-d7h3kus4qrn9htnoffrb0trjvsl2246p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCQv1ngi7B09G-yPSbf_SgakkJn_Itpdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "332862603819-d7h3kus4qrn9htnoffrb0trjvsl2246p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
