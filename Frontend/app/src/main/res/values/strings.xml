@@ -5,4 +5,5 @@
     <string name="home_ProfileBtnDesc">Changes to Profile</string>
     <string name="home_FindMatchBtn">Find Match</string>
     <string name="home_MessagesTitle">Messages</string>
+    <string name="msg_token_fmt" translatable="false">FCM Registration Token: %s</string>
 </resources>
