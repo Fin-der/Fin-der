@@ -55,6 +55,7 @@ app.put('/users', (req, res) => {
 
 app.get('/users', (req, res) => {
     user_db.collection("users").find().toArray((err, result) => {
+        if (err) return console.log(err);
         res.send(result);
     })
 })

@@ -13,13 +13,15 @@ import java.util.ArrayList;
 
 import com.example.finder.Chat.MessageAdapter;
 import com.example.finder.Chat.MessageBoardAdapter;
+import com.example.finder.Controller.ChatController;
 import com.example.finder.Models.UserAccount;
 import com.example.finder.R;
 import com.example.finder.Models.Message;
 
 public class ChatView extends AppCompatActivity {
-    private RecyclerView msgRecycler;
-    private MessageAdapter msgAdapter;
+    private ChatController controller;
+    private UserAccount user;
+    private String receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +29,12 @@ public class ChatView extends AppCompatActivity {
         setContentView(R.layout.activity_chat_view);
 
         Intent intent = getIntent();
-        setTitle(intent.getStringExtra("chatterName"));
+        this.receiver = intent.getStringExtra("chatterName");
+        setTitle(this.receiver);
+        this.user = (UserAccount) intent.getSerializableExtra("user");
 
-        this.msgRecycler = findViewById(R.id.reyclerview_message_list);
-        ArrayList<Message> temp = new ArrayList<>();
-        UserAccount user = new UserAccount("Jacky", "15", "Male");
-        this.msgAdapter = new MessageAdapter(this, temp, user);
-        this.msgRecycler.setLayoutManager(new LinearLayoutManager(this));
-        this.msgRecycler.setAdapter(msgAdapter);
+        controller = new ChatController(this, user);
+
         init();
     }
 
@@ -44,7 +44,9 @@ public class ChatView extends AppCompatActivity {
             public void onClick(View v) {
                 EditText input = findViewById(R.id.edittext_chatbox);
                 String value = input.getText().toString();
-
+                input.getText().clear();
+                Message msg = new Message("0", value, user.getUserName(), receiver, MessageAdapter.MSG_TYPE_SENT);
+                controller.sendMessage(msg);
             }
         });
     }
