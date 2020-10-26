@@ -11,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Views.ChatView" />
+        <activity
+            android:name=".Views.ChatView"
+            android:label="Chat"
+        />
         <activity android:name=".Views.HomeView" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -22,7 +25,7 @@
         </activity>
 
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".Chat.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
