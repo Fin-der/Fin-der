@@ -6,4 +6,17 @@
     <string name="home_FindMatchBtn">Find Match</string>
     <string name="home_MessagesTitle">Messages</string>
     <string name="msg_token_fmt" translatable="false">FCM Registration Token: %s</string>
+
+    <!-- Login View Strings -->
+    <string name="create_acc_btn_caption">Create Account</string>
+
+    <!-- Create Account View Strings -->
+    <string name="username_caption">Username</string>
+    <string name="first_name_caption">First Name</string>
+    <string name="last_name_caption">Last Name</string>
+    <string name="email_caption">Email</string>
+    <string name="phone_number_caption">Phone Number (Optional)</string>
+    <string name="password_caption">Password</string>
+    <string name="age_caption">Age</string>
+    <string name="create_acc_caption">Create Account</string>
 </resources>
