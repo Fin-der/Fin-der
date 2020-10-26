@@ -3,7 +3,7 @@ import express from 'express';
 import { encode } from '../middlewares/jwt.js';
 
 const router = express.Router();
-
+// route: ip:port/
 router
     .post('/login/:userId', encode, (req, res, next) => {
         return res

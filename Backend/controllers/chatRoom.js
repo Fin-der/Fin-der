@@ -1,6 +1,7 @@
 import ChatRoomModel from '../models/ChatRoom.js';
 import ChatMessageModel from '../models/ChatMessage.js';
 import UserModel from '../models/User.js';
+import admin from '../config/firebase-config.js';
 
 export default {
     initiate: async (req, res) => {
@@ -35,7 +36,12 @@ export default {
                 "tokens": registrationTokens
             }
             admin.messaging().sendMulticast(notif_message)
-            const userIds = await ChatRoomModel.getUserByIds
+            .then( response => {
+                console.log('Successfully sent message:', response);
+            })
+            .catch( error => {
+                console.log('Error sending message:', error);
+            });
             return res.status(200).json({ success: true, post });
         } catch (error) {
             return res.status(500).json({ success: false, error: error })

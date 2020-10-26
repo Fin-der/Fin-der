@@ -15,6 +15,7 @@ import deleteRouter from "./routes/delete.js"
 
 import { decode } from './middlewares/jwt.js'
 
+// run server with node --experimental-json-modules server.js
 const app = express();
 app.use(bodyparser.json());
 
@@ -27,27 +28,6 @@ app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
-
-app.post('/firebase/notification', (req, res)=>{
-    const registrationToken = req.body.registrationToken
-    const message = req.body.message
-    const options = notification_options
-
-    //TODO: get token of other user from database
-    var notif_message = {
-        "notification": {
-            "title": "Message From ",
-            "body": message
-        }
-    }
-    admin.messaging().sendToDevice(registrationToken, notif_message, options)
-    .then( response => {
-        console.log('Successfully sent message:', response);
-    })
-    .catch( error => {
-        console.log('Error sending message:', error);
-    });
-})
 
 app.use('*', (req, res) => {
     return res.status(404).json({
