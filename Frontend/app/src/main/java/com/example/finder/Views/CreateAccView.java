@@ -36,7 +36,7 @@ public class CreateAccView extends AppCompatActivity {
     private EditText age;
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://192.168.1.87:3000/users/";
+    private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
     private boolean passed;
 
     @Override
