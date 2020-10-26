@@ -1,6 +1,5 @@
 package com.example.finder.Controller;
 
-import android.content.Context;
 import android.util.Log;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,10 +32,12 @@ public class ChatController {
         try {
             this.userAccount = user;
             this.context = context;
+            this.messages = new ArrayList<>();
             socket = IO.socket(HOST_URL);
             socket.connect();
             socket.emit("join", userAccount.getUserName());
 
+            initChatAdapters();
             waitOnMessages();
         } catch (URISyntaxException e) {
             Log.e("SOCKET", "Failed to connect to Host");
@@ -46,9 +47,7 @@ public class ChatController {
 
     private void initChatAdapters() {
         this.msgRecycler = context.findViewById(R.id.reyclerview_message_list);
-        ArrayList<Message> temp = new ArrayList<>();
-        UserAccount user = new UserAccount("Jacky", "15", "Male");
-        this.msgAdapter = new MessageAdapter(context, temp, user);
+        this.msgAdapter = new MessageAdapter(context, this.messages, this.userAccount);
         this.msgRecycler.setLayoutManager(new LinearLayoutManager(context));
         this.msgRecycler.setAdapter(msgAdapter);
     }
@@ -67,7 +66,8 @@ public class ChatController {
         }).start();
     }
 
-    public boolean sendMessage(Message message) {
-        return false;
+    public void sendMessage(Message message) {
+        this.messages.add(message);
+        this.msgAdapter.notifyDataSetChanged();
     }
 }
