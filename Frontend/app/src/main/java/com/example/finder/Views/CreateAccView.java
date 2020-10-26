@@ -15,13 +15,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.finder.MainActivity;
 import com.example.finder.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CreateAccView extends AppCompatActivity {
-    final static String TAG = "CreatAccView";
+    final static String TAG = "CreateAccView";
     private EditText username;
     private EditText firstName;
     private EditText lastName;
@@ -31,7 +34,7 @@ public class CreateAccView extends AppCompatActivity {
     private EditText age;
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://localhost:3000/users";
+    private String url = "http://192.168.1.84:3000/users";
     private boolean passed;
 
     @Override
@@ -52,17 +55,19 @@ public class CreateAccView extends AppCompatActivity {
             public void onClick(View view) {
                 JSONObject user = new JSONObject();
                 try {
-                    user.put("user_name", username);
-                    user.put("first_name", firstName);
-                    user.put("last_name", lastName);
+                    user.put("user_name", username.getText());
+                    user.put("first_name", firstName.getText().toString());
+                    user.put("last_name", lastName.getText().toString());
                     //user.put("age", age);
-                    user.put("email", email);
+                    user.put("email", email.getText().toString());
                     //user.put("phone", phoneNumber);
-                    user.put("password", password);
+                    user.put("password", password.getText().toString());
+                    Log.d(TAG, user.toString());
                 } catch (JSONException e) {
                     Log.d(TAG, "failed to create json");
                     e.printStackTrace();
                 }
+                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(MainActivity);
                 reqQueue = Volley.newRequestQueue(CreateAccView.this);
                 jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, new Response.Listener<JSONObject>() {
                     @Override
