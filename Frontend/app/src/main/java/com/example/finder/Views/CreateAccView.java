@@ -23,6 +23,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 public class CreateAccView extends AppCompatActivity {
     final static String TAG = "CreateAccView";
     private EditText username;
@@ -34,7 +36,7 @@ public class CreateAccView extends AppCompatActivity {
     private EditText age;
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://192.168.1.84:3000/users";
+    private String url = "http://192.168.1.87:3000/users/";
     private boolean passed;
 
     @Override
@@ -55,13 +57,14 @@ public class CreateAccView extends AppCompatActivity {
             public void onClick(View view) {
                 JSONObject user = new JSONObject();
                 try {
-                    user.put("user_name", username.getText());
+                    //user.put("user_name", username.getText());
                     user.put("first_name", firstName.getText().toString());
                     user.put("last_name", lastName.getText().toString());
                     //user.put("age", age);
-                    user.put("email", email.getText().toString());
+                    //user.put("email", email.getText().toString());
                     //user.put("phone", phoneNumber);
-                    user.put("password", password.getText().toString());
+                    //user.put("password", password.getText().toString());
+                    user.put("type", "type?");
                     Log.d(TAG, user.toString());
                 } catch (JSONException e) {
                     Log.d(TAG, "failed to create json");
@@ -83,7 +86,13 @@ public class CreateAccView extends AppCompatActivity {
                     }
                 });
                 reqQueue.add(jsonReq);
-                passed = true;
+//                passed = true;
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "Error2: " + e.getMessage());
+                }
                 if (passed) {
                     Intent main = new Intent(CreateAccView.this, HomeView.class);
                     startActivity(main);
