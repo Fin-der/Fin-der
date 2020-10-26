@@ -20,7 +20,7 @@ export default {
     onCreateUser: async (req, res) => {
         try {
             // TODO: validate input
-        
+            console.log("im here");
             const { firstName, lastName, type } = req.body;
             const user = await UserModel.createUser(firstName, lastName, type);
             return res.status(200).json({ success: true, user });
