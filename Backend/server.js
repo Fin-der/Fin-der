@@ -4,7 +4,7 @@ import admin from './config/firebase-config.js'
 import cors from 'cors'
 import socketio from 'socket.io'
 import http from 'http'
-import mongoClient from 'mongodb'
+import "./config/mongo.js"
 // socket configuration
 import WebSockets from "./utils/WebSockets.js"
 // routes
