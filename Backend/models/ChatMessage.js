@@ -1,4 +1,3 @@
-import admin from "../config/firebase-config.js";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
@@ -108,22 +107,6 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
                 updatedAt: { $last: '$updatedAt' },
             }
         }]);
-        const room = await this.getConversationByRoomId(roomId)
-        room.userIds.forEach(element => {
-            if (element == postedbyuser) {
-
-            }
-        });
-        const other_user_token = this.
-        // get token of other users
-        var notif_message = {
-            "notification": {
-                "title": "Message From ",
-                "body": "message"
-            },
-            "tokens": registrationTokens
-        }
-        admin.messaging().sendMulticast(notif_message)
         return aggregate[0];
     } catch (error) {
         throw error;
