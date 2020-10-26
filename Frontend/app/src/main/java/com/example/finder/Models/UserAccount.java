@@ -1,8 +1,9 @@
 package com.example.finder.Models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UserAccount {
+public class UserAccount implements Serializable {
     private String userName;
     private String id;
     private int age;

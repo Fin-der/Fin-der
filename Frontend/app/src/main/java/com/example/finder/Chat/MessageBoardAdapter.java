@@ -20,10 +20,12 @@ import java.util.List;
 public class MessageBoardAdapter extends RecyclerView.Adapter {
     private List<UserAccount> contacts;
     private Context context;
+    private UserAccount user;
 
-    public MessageBoardAdapter(Context context, List<UserAccount> contacts) {
+    public MessageBoardAdapter(Context context, List<UserAccount> contacts, UserAccount user) {
         this.context = context;
         this.contacts = contacts;
+        this.user = user;
     }
 
     @NonNull
@@ -37,6 +39,7 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
                 Intent toMsgs = new Intent(context,ChatView.class);
                 String chatterName = ((TextView) view.findViewById(R.id.msgboard_profilename)).getText().toString();
                 toMsgs.putExtra("chatterName", chatterName);
+                toMsgs.putExtra("user", user);
                 context.startActivity(toMsgs);
             }
         });

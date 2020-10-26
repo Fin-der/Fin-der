@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class HomeView extends AppCompatActivity {
     private RecyclerView msgBoard;
     private MessageBoardAdapter msgBoardAdapter;
+    private UserAccount user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,7 @@ public class HomeView extends AppCompatActivity {
         temp.add(new UserAccount("Jacky", "0", "Male"));
         temp.add(new UserAccount("Nick", "1", "Female"));
         temp.add(new UserAccount("Cody", "2", "Female"));
-        this.msgBoardAdapter = new MessageBoardAdapter(this, temp);
+        this.msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
         this.msgBoard.setAdapter(this.msgBoardAdapter);
     }
 }
