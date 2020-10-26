@@ -10,14 +10,18 @@ import com.example.finder.Models.UserAccount;
 import com.example.finder.Models.Message;
 
 import java.net.URISyntaxException;
+import java.util.List;
 
 public class ChatController {
     private Socket socket;
     private final String HOST_URL = "";
     private UserAccount userAccount;
+    private List<Message> messages;
 
-    public ChatController() {
+    public ChatController(List<Message> messages, UserAccount user) {
         try {
+            this.messages = messages;
+            this.userAccount = user;
             socket = IO.socket(HOST_URL);
             socket.connect();
             socket.emit("join", userAccount.getUserName());
@@ -41,5 +45,9 @@ public class ChatController {
                 });
             }
         }).start();
+    }
+
+    public boolean sendMessage(Message message) {
+        return false;
     }
 }
