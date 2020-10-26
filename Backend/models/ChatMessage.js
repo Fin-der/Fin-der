@@ -108,16 +108,22 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
                 updatedAt: { $last: '$updatedAt' },
             }
         }]);
-        const recipients = this.getUserby
-        const other_user_token = this.$lookup
+        const room = await this.getConversationByRoomId(roomId)
+        room.userIds.forEach(element => {
+            if (element == postedbyuser) {
+
+            }
+        });
+        const other_user_token = this.
         // get token of other users
         var notif_message = {
             "notification": {
                 "title": "Message From ",
                 "body": "message"
-            }
+            },
+            "tokens": registrationTokens
         }
-        admin.messaging().sendToDevice(registrationToken, notif_message, options)
+        admin.messaging().sendMulticast(notif_message)
         return aggregate[0];
     } catch (error) {
         throw error;
