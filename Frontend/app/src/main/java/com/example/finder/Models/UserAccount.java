@@ -6,14 +6,14 @@ public class UserAccount {
     private String userName;
     private String id;
     private int age;
-    private Gender gender;
+    private String gender;
     private ArrayList<UserAccount> matches;
 
     //Picture profilePic
     //Location Range
     //Some google token stuff?
 
-    public UserAccount(String userName, String id, Gender gender) {
+    public UserAccount(String userName, String id, String gender) {
         this.userName = userName;
         this.id = id;
         this.gender = gender;
@@ -31,5 +31,4 @@ public class UserAccount {
         return age;
     }
 
-    public static enum Gender{MALE, FEMALE, OTHER};
 }

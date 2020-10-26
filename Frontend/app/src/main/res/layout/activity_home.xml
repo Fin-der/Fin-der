@@ -9,6 +9,7 @@
     android:layout_centerHorizontal="false"
     tools:context=".Views.HomeView">
 
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
@@ -68,8 +69,18 @@
         android:text="Button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.354" />
+        app:layout_constraintVertical_bias="0.213" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_MsgBoard"
+        android:layout_width="409dp"
+        android:layout_height="521dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

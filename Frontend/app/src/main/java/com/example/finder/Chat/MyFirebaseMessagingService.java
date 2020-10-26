@@ -1,13 +1,12 @@
-package com.example.finder;
+package com.example.finder.Chat;
 
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import static com.example.finder.MainActivity.TAG;
-
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    private final String TAG = "FireBaseMessaging";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
