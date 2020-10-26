@@ -60,6 +60,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param token
      */
     private void sendRegistrationToServer(String token) {
-
+        // Make HTTP request to server to register token
     }
 }
