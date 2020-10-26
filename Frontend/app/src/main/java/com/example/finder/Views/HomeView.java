@@ -33,6 +33,7 @@ public class HomeView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        this.user = new UserAccount("Nick", "0", "Male");
         initButtons();
         initMessageBoard();
     }
