@@ -1,18 +1,23 @@
 import express from 'express'
 import bodyparser from 'body-parser'
-import { admin } from './config/firebase-config'
+import admin from './config/firebase-config.js'
+import cors from 'cors'
+import socketio from 'socket.io'
+import http from 'http'
+// mongodb connection
+import './config/mongo.js'
+// socket configuration
+import WebSockets from "./utils/WebSockets.js"
 
-
-const express = require('express');
 const app = express();
 app.use(bodyparser.json());
 
-
-const mongoClient = require('mongodb').MongoClient;
+//const mongoClient = require('mongodb').MongoClient;
+import mongoClient from 'mongodb'
 const mongoURL = 'mongodb://localhost:27017';
 
-var db;
-var dbTokens;
+var user_db;
+var chat_db;
 
 const port = 3000
 const notification_options = {
@@ -23,16 +28,12 @@ const notification_options = {
 mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
     if (err) return console.log(err);
 
-    db = client.db('users');
-    app.listen(3000, function() {
-        console.log('Database server exists');
-    })
-
+    user_db = client.db('user');
+    chat_db = client.db('chat');
 })
 
-
 app.post('/users', (req, res) => {
-    db.collection("users").insertOne({"username":req.body.username, "realName":req.body.realName}, (err, result) => {
+    user_db.collection("users").insertOne({"username":req.body.username, "realName":req.body.realName}, (err, result) => {
         if (req.body.username == null || req.body.realName == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
@@ -43,7 +44,7 @@ app.post('/users', (req, res) => {
 })
 
 app.put('/users', (req, res) => {
-    db.collection("users").updateOne({"username":req.body.username}, {$set:{"info":req.body.realName}}, (err, result) => {
+    user_db.collection("users").updateOne({"username":req.body.username}, {$set:{"info":req.body.realName}}, (err, result) => {
         if (req.body.username == null || req.body.realName == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
@@ -56,13 +57,13 @@ app.put('/users', (req, res) => {
 
 
 app.get('/users', (req, res) => {
-    db.collection("users").find().toArray((err, result) => {
+    user_db.collection("users").find().toArray((err, result) => {
         res.send(result);
     })
 })
 
 app.delete('/users', (req, res) => {
-    db.collection("users").deleteOne({"realName": req.body.realName}, (err, result) =>{
+    user_db.collection("users").deleteOne({"realName": req.body.realName}, (err, result) =>{
         if (req.body.username == null || req.body.realName == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
@@ -74,21 +75,19 @@ app.delete('/users', (req, res) => {
 
 
 
-
-
 app.post('/registerToken',(req, res)=>{
     // TODO: send to database
-    mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
-        if (err) return console.log(err);
+    // mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
+    //     if (err) return console.log(err);
 
-        dbTokens = client.db('tokens');
-        dbTokens.collection('tokens').insertOne(req.body, (err, result) => {
-            if (err) throw console.log(err);
-            res.sendStatus(200);
-        })
+    //     dbTokens = client.db('tokens');
+    //     dbTokens.collection('tokens').insertOne(req.body, (err, result) => {
+    //         if (err) throw console.log(err);
+    //         res.sendStatus(200);
+    //     })
         
-        dbTokens.close();
-    })
+    //     dbTokens.close();
+    // })
 });
 
 app.post('/firebase/notification', (req, res)=>{
@@ -111,6 +110,21 @@ app.post('/firebase/notification', (req, res)=>{
         console.log('Error sending message:', error);
     });
 })
-app.listen(port, () =>{
-    console.log("listening to port"+port)
-})
+
+app.use('*', (req, res) => {
+    return res.status(404).json({
+        success: false,
+        message: 'API endpoint doesnt exist'
+    })
+});
+
+const server = http.createServer(app)
+
+global.io = socketio.listen(server)
+global.io.on('connection', WebSockets.connection)
+
+server.listen(port)
+
+server.on("listening", () => {
+    console.log(`Listening on port:: http://localhost:${port}/`)
+});
