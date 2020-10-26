@@ -8,72 +8,31 @@ import http from 'http'
 import './config/mongo.js'
 // socket configuration
 import WebSockets from "./utils/WebSockets.js"
+// routes
+import indexRouter from "./routes/index.js"
+import userRouter from "./routes/user.js"
+import chatRoomRouter from "./routes/chatRoom.js"
+import deleteRouter from "./routes/delete.js"
+
+import { decode } from './middlewares/jwt.js'
 
 const app = express();
 app.use(bodyparser.json());
 
-//const mongoClient = require('mongodb').MongoClient;
-import mongoClient from 'mongodb'
-const mongoURL = 'mongodb://localhost:27017';
-
-var user_db;
-var chat_db;
-
 const port = 3000
+app.set("port", port)
+
+app.use(express.json());
+
+app.use("/", indexRouter);
+app.use("/users", userRouter);
+app.use("/room", decode, chatRoomRouter);
+app.use("/delete", deleteRouter);
+
 const notification_options = {
     priority: "high",
     timeToLive: 60 * 60 * 24 // a days worth of seconds
-  };
-
-mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
-    if (err) return console.log(err);
-
-    user_db = client.db('user');
-    chat_db = client.db('chat');
-})
-
-app.post('/users', (req, res) => {
-    user_db.collection("users").insertOne({"username":req.body.username, "first_name":req.body.first_name, "last_name": req.body.last_name, "email": req.body.email, "password": req.body.password}, (err, result) => {
-        if (req.body.username == null || req.body.first_name == null || req.body.password == null || req.body.email == null){
-            res.status(400).send("error, username not passed or real name not passed");
-            return;
-        }
-        if (err) return console.log(err);
-        res.send("saved\n");
-    })
-})
-
-app.put('/users', (req, res) => {
-    user_db.collection("users").updateOne({"username":req.body.username}, {$set:{"first_name":req.body.first_name, "last_name": req.body.last_name, "email": req.body.email, "password": req.body.password}}, (err, result) => {
-        if (req.body.username == null || req.body.first_name == null || req.body.password == null || req.body.email == null){
-            res.status(400).send("error, username not passed or real name not passed");
-            return;
-        }
-        if (err) return console.log(err);
-        res.send("updated\n");
-    })
-
-})
-
-
-app.get('/users', (req, res) => {
-    user_db.collection("users").find().toArray((err, result) => {
-        res.send(result);
-    })
-})
-
-app.delete('/users', (req, res) => {
-    user_db.collection("users").deleteOne({"username": req.body.username}, (err, result) =>{
-        if (req.body.username == null){
-            res.status(400).send("error, username not passed or real name not passed");
-            return;
-        }
-        if(err) return console.log(err);
-        res.send("removed\n");
-    })
-})
-
-
+};
 
 app.post('/registerToken',(req, res)=>{
     // TODO: send to database
