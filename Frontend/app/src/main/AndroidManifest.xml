@@ -16,6 +16,7 @@
             android:label="Chat"
         />
         <activity android:name=".Views.HomeView" />
+        <activity android:name=".Views.CreateAccView" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

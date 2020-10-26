@@ -1,22 +1,32 @@
 package com.example.finder.Views;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.finder.Chat.MessageBoardAdapter;
+import com.example.finder.MainActivity;
 import com.example.finder.Models.UserAccount;
 import com.example.finder.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 
 public class HomeView extends AppCompatActivity {
     private RecyclerView msgBoard;
     private MessageBoardAdapter msgBoardAdapter;
+    //private GoogleSignInClient mGoogleSignInClient;
+    private Button signOutButton;
+    final static String TAG = "HomeView";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +45,31 @@ public class HomeView extends AppCompatActivity {
                 startActivity(toMsgs);
             }
         });
+
+        findViewById(R.id.home_profileBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent profile = new Intent(HomeView.this, );
+                //startActivity(profile);
+            }
+        });
+
+        findViewById(R.id.home_FindMatchBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Intent match = new Intent(HomeView.this, );
+                //startActivity(match);
+            }
+        });
+
+//        findViewById(R.id.sign_out_button).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                signOut();
+//                Intent main = new Intent(HomeView.this, MainActivity.class);
+//                startActivity(main);
+//            }
+//        });
     }
 
     private void initMessageBoard() {
@@ -47,4 +82,16 @@ public class HomeView extends AppCompatActivity {
         this.msgBoardAdapter = new MessageBoardAdapter(this, temp);
         this.msgBoard.setAdapter(this.msgBoardAdapter);
     }
+
+//    private void signOut() {
+//        mGoogleSignInClient.signOut()
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        // ...
+//                        Log.d(TAG, "Log out successful");
+//
+//                    }
+//                });
+//    }
 }
