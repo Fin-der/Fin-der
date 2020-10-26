@@ -32,8 +32,8 @@ mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true},
 
 
 app.post('/users', (req, res) => {
-    db.collection("users").insertOne({"username":req.body.username, "realName":req.body.realName}, (err, result) => {
-        if (req.body.username == null || req.body.realName == null){
+    db.collection("users").insertOne({"username":req.body.username, "first_name":req.body.first_name, "last_name": req.body.last_name, "email": req.body.email, "password": req.body.password}, (err, result) => {
+        if (req.body.username == null || req.body.first_name == null || req.body.password == null || req.body.email == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
         }
@@ -43,8 +43,8 @@ app.post('/users', (req, res) => {
 })
 
 app.put('/users', (req, res) => {
-    db.collection("users").updateOne({"username":req.body.username}, {$set:{"info":req.body.realName}}, (err, result) => {
-        if (req.body.username == null || req.body.realName == null){
+    db.collection("users").updateOne({"username":req.body.username}, {$set:{"first_name":req.body.first_name, "last_name": req.body.last_name, "email": req.body.email, "password": req.body.password}}, (err, result) => {
+        if (req.body.username == null || req.body.first_name == null || req.body.password == null || req.body.email == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
         }
@@ -62,8 +62,8 @@ app.get('/users', (req, res) => {
 })
 
 app.delete('/users', (req, res) => {
-    db.collection("users").deleteOne({"realName": req.body.realName}, (err, result) =>{
-        if (req.body.username == null || req.body.realName == null){
+    db.collection("users").deleteOne({"username": req.body.username}, (err, result) =>{
+        if (req.body.username == null){
             res.status(400).send("error, username not passed or real name not passed");
             return;
         }
