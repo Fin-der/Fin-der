@@ -1,3 +1,4 @@
+import admin from "../config/firebase-config.js";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
@@ -107,6 +108,16 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
                 updatedAt: { $last: '$updatedAt' },
             }
         }]);
+        const recipients = this.getUserby
+        const other_user_token = this.$lookup
+        // get token of other users
+        var notif_message = {
+            "notification": {
+                "title": "Message From ",
+                "body": "message"
+            }
+        }
+        admin.messaging().sendToDevice(registrationToken, notif_message, options)
         return aggregate[0];
     } catch (error) {
         throw error;
