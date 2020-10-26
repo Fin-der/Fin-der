@@ -87,12 +87,12 @@ public class CreateAccView extends AppCompatActivity {
                 });
                 reqQueue.add(jsonReq);
 //                passed = true;
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "Error2: " + e.getMessage());
-                }
+//                try {
+//                    TimeUnit.SECONDS.sleep(1);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                    Log.d(TAG, "Error2: " + e.getMessage());
+//                }
                 if (passed) {
                     Intent main = new Intent(CreateAccView.this, HomeView.class);
                     startActivity(main);
