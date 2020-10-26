@@ -4,16 +4,13 @@ import admin from './config/firebase-config.js'
 import cors from 'cors'
 import socketio from 'socket.io'
 import http from 'http'
-// mongodb connection
-import './config/mongo.js'
+import mongoClient from 'mongodb'
 // socket configuration
 import WebSockets from "./utils/WebSockets.js"
 
 const app = express();
 app.use(bodyparser.json());
 
-//const mongoClient = require('mongodb').MongoClient;
-import mongoClient from 'mongodb'
 const mongoURL = 'mongodb://localhost:27017';
 
 var user_db;
