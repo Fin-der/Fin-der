@@ -8,7 +8,7 @@ export const USER_TYPES = {
 
 const userSchema = new mongoose.Schema(
     {
-        // TODO: MODIFY THIS TO MATCH OUR SCHEMA
+        // TODO: MODIFY THIS 
         _id: {
             type: String,
             default: () => uuidv4().replace(/\-/g, ""),
@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema(
         firstName: String,
         lastName: String,
         type: String,
+        FCM_token: String,
     },
     {
         timestamps: true,
@@ -84,6 +85,16 @@ userSchema.statics.deleteByUserById = async function (id) {
     try {
         const result = await this.remove({ _id: id });
         return result;
+    } catch (error) {
+        throw error;
+    }
+}
+
+userSchema.statics.registerFCMToken = async function (id, token) {
+    try {
+        const user = await this.findOne({ _id: id })
+        if (!user) throw ({ error: 'No user with this id found' });
+        user.FCM_token = token
     } catch (error) {
         throw error;
     }

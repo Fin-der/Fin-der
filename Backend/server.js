@@ -26,28 +26,8 @@ app.use(express.json());
 
 app.use("/", indexRouter);
 app.use("/users", userRouter);
-app.use("/room", decode, chatRoomRouter);
+app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
-
-const notification_options = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24 // a days worth of seconds
-};
-
-app.post('/registerToken',(req, res)=>{
-    // TODO: send to database
-    // mongoClient.connect(mongoURL, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
-    //     if (err) return console.log(err);
-
-    //     dbTokens = client.db('tokens');
-    //     dbTokens.collection('tokens').insertOne(req.body, (err, result) => {
-    //         if (err) throw console.log(err);
-    //         res.sendStatus(200);
-    //     })
-        
-    //     dbTokens.close();
-    // })
-});
 
 app.post('/firebase/notification', (req, res)=>{
     const registrationToken = req.body.registrationToken

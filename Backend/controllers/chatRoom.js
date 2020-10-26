@@ -21,6 +21,7 @@ export default {
                 messageText: req.body.messageText,
             };
             const currentLoggedUser = req.userId;
+            const roomId = req.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             global.io.sockets.in(roomId).emit('new message', { message: post });
             return res.status(200).json({ success: true, post });
@@ -55,6 +56,7 @@ export default {
                 message: 'No room exists for this id',
                 })
             }
+            console.log(roomId)
             const users = await UserModel.getUserByIds(room.userIds);
             const options = {
                 page: parseInt(req.query.page) || 0,

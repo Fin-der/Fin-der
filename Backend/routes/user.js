@@ -9,5 +9,6 @@ router
   .post('/', user.onCreateUser)
   .get('/:id', user.onGetUserById)
   .delete('/:id', user.onDeleteUserById)
+  .put('/', user.onRegisterFCMToken)
 
 export default router;

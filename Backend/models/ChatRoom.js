@@ -22,6 +22,32 @@ const chatRoomSchema = new mongoose.Schema(
     }
 );
 
+/**
+ * @param {String} userId - id of user
+ * @return {Array} array of all chatroom that the user belongs to
+ */
+chatRoomSchema.statics.getChatRoomsByUserId = async function (userId) {
+    try {
+        const rooms = await this.find({ userIds: { $all: [userId] } });
+        return rooms;
+    } catch (error) {
+        throw error;
+    }
+}
+  
+/**
+ * @param {String} roomId - id of chatroom
+ * @return {Object} chatroom
+ */
+chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
+    try {
+        const room = await this.findOne({ _id: roomId });
+        return room;
+    } catch (error) {
+        throw error;
+    }
+}
+
 chatRoomSchema.statics.initiateChat = async function (
 	userIds, type, chatInitiator
 ) {
