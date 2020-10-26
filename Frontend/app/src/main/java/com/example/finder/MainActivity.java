@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.finder.Views.CreateAccView;
 import com.example.finder.Views.HomeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -45,11 +46,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.create_acc_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent home = new Intent(MainActivity.this, HomeView.class);
-                startActivity(home);
+                Intent createAcc = new Intent(MainActivity.this, CreateAccView.class);
+                startActivity(createAcc);
             }
         });
 
@@ -126,8 +127,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Display URI: " + account.getPhotoUrl());
 
             // Send token to your backend
-            // account.getIdToken();
+            // acco
+            // unt.getIdToken();
             // Move to another activity
+            Intent home = new Intent(MainActivity.this, HomeView.class);
+            startActivity(home);
         }
     }
 }
