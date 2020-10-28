@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.MainActivity;
@@ -70,8 +71,9 @@ public class CreateAccView extends AppCompatActivity {
                     Log.d(TAG, "failed to create json");
                     e.printStackTrace();
                 }
-                //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(MainActivity);
+
                 reqQueue = Volley.newRequestQueue(CreateAccView.this);
+//                RequestFuture<JSONObject> future = RequestFuture.newFuture();
                 jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -85,14 +87,18 @@ public class CreateAccView extends AppCompatActivity {
                         passed = false;
                     }
                 });
+//                jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, future, future);
                 reqQueue.add(jsonReq);
-//                passed = true;
 //                try {
-//                    TimeUnit.SECONDS.sleep(1);
-//                } catch (InterruptedException e) {
+//                    JSONObject response = future.get(10, TimeUnit.SECONDS);
+//                    if(response == null) {
+//                        passed = true;
+//                    }
+//                } catch (Exception e) {
 //                    e.printStackTrace();
-//                    Log.d(TAG, "Error2: " + e.getMessage());
+//                    Log.d(TAG, "Error: " + e.getMessage());
 //                }
+
                 if (passed) {
                     Intent main = new Intent(CreateAccView.this, HomeView.class);
                     startActivity(main);
