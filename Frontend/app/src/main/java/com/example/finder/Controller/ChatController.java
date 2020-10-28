@@ -21,6 +21,7 @@ import com.example.finder.Models.Message;
 import com.example.finder.R;
 import com.example.finder.Views.ChatView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +31,7 @@ import java.util.List;
 
 public class ChatController {
     private Socket socket;
-    private final String HOST_URL = "http://192.168.1.72:3000";
+    private final String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/";
     private ChatView context;
     private UserAccount userAccount;
     private List<Message> messages;
@@ -68,15 +69,19 @@ public class ChatController {
 
     private void initChatRoom() throws JSONException {
         JSONObject obj = new JSONObject();
-        String[] arr = new String[]{userAccount.getId(), rId};
+        JSONArray arr = new JSONArray();
+        arr.put(userAccount.id);
+        arr.put(rId);
         obj.put("userIds", arr);
         obj.put("type", "consumer-to-consumer");
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_URL + "/room/initiate", obj, new Response.Listener<JSONObject>() {
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "room/initiate", obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Log.d("REs", response.toString());
                     JSONObject room = (JSONObject) response.get("chatRoom");
-                    roomId = (String) room.get("_id");
+                    roomId = (String) room.get("chatRoomId");
+                    Log.d("ChatController", "Room Id: " + roomId);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -115,18 +120,24 @@ public class ChatController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "/room/postMessage", data, new Response.Listener<JSONObject>() {
+        Log.d("ChatController", "JSONobject to postMessage " + data.toString());
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
+                HOST_URL + "room/" + roomId + "/" + userAccount.id + "/message",
+                data,
+                new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                Log.d("ChatController", "Response: " + response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.d("ChatController", "Could not post message, " + error.toString());
             }
         });
+
+        this.que.add(req);
+
         this.messages.add(message);
         this.msgAdapter.notifyDataSetChanged();
     }
