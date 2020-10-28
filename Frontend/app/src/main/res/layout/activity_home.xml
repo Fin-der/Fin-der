@@ -52,7 +52,7 @@
         android:id="@+id/home_FindMatchBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="16dp"
         android:text="@string/home_FindMatchBtn"
         app:layout_constraintBottom_toTopOf="@+id/home_MsgBoard"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +92,19 @@
         android:layout_height="480dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toMsgs"
+        app:layout_constraintVertical_bias="0.982" />
+
+    <Button
+        android:id="@+id/sign_out_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sign out"
+        app:layout_constraintBottom_toTopOf="@+id/home_MsgBoard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.092"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toMsgs"
         app:layout_constraintVertical_bias="1.0" />

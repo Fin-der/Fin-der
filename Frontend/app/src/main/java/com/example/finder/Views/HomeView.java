@@ -10,12 +10,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.finder.Chat.MessageBoardAdapter;
 import com.example.finder.MainActivity;
 import com.example.finder.Models.UserAccount;
 import com.example.finder.R;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -25,7 +28,7 @@ public class HomeView extends AppCompatActivity {
     private RecyclerView msgBoard;
     private MessageBoardAdapter msgBoardAdapter;
     private UserAccount user;
-    //private GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
     private Button signOutButton;
     final static String TAG = "HomeView";
 
@@ -33,6 +36,16 @@ public class HomeView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         this.user = new UserAccount("Nick", "0", "Male");
         initButtons();
         initMessageBoard();
@@ -64,14 +77,14 @@ public class HomeView extends AppCompatActivity {
             }
         });
 
-//        findViewById(R.id.sign_out_button).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                signOut();
-//                Intent main = new Intent(HomeView.this, MainActivity.class);
-//                startActivity(main);
-//            }
-//        });
+        findViewById(R.id.sign_out_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                signOut();
+                Intent main = new Intent(HomeView.this, MainActivity.class);
+                startActivity(main);
+            }
+        });
     }
 
     private void initMessageBoard() {
@@ -85,15 +98,18 @@ public class HomeView extends AppCompatActivity {
         this.msgBoard.setAdapter(this.msgBoardAdapter);
     }
 
-//    private void signOut() {
-//        mGoogleSignInClient.signOut()
-//                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<Void> task) {
-//                        // ...
-//                        Log.d(TAG, "Log out successful");
-//
-//                    }
-//                });
-//    }
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        // ...
+                        Log.d(TAG, "Log out successful");
+                        Toast.makeText(HomeView.this, "Log out successful", Toast.LENGTH_SHORT).show();
+                        Intent main = new Intent(HomeView.this, MainActivity.class);
+                        startActivity(main);
+                        finish();
+                    }
+                });
+    }
 }
