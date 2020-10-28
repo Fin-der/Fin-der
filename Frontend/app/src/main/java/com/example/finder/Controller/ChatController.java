@@ -122,8 +122,8 @@ public class ChatController {
         }
         Log.d("ChatController", "JSONobject to postMessage " + data.toString());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                HOST_URL + "room/" + roomId + "/" + userAccount.id + "/message",
-                data,
+                    HOST_URL + "room/" + roomId + "/" + userAccount.id + "/message",
+                        data,
                 new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -132,7 +132,8 @@ public class ChatController {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("ChatController", "Could not post message, " + error.toString());
+                Log.d("ChatController", "postMessage: " + error.toString());
+                error.printStackTrace();
             }
         });
 
