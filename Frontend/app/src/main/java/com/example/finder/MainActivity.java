@@ -135,8 +135,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Display URI: " + account.getPhotoUrl());
 
             // Send token to your backend
-            // acco
-            // unt.getIdToken();
+            // account.getIdToken();
             // Move to another activity
             Intent home = new Intent(MainActivity.this, HomeView.class);
             startActivity(home);
