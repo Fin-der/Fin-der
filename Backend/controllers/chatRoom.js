@@ -35,13 +35,16 @@ export default {
                 },
                 "tokens": registrationTokens
             }
-            admin.messaging().sendMulticast(notif_message)
-            .then( response => {
-                console.log('Successfully sent message:', response);
-            })
-            .catch( error => {
-                console.log('Error sending message:', error);
-            });
+            if (registrationTokens.length != 0) {
+                admin.messaging().sendMulticast(notif_message)
+                .then( response => {
+                    console.log('Successfully sent message:', response);
+                })
+                .catch( error => {
+                    console.log('Error sending message:', error);
+                });
+            }
+            
             return res.status(200).json({ success: true, post });
         } catch (error) {
             return res.status(500).json({ success: false, error: error })
