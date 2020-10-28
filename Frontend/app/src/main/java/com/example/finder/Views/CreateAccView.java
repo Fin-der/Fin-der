@@ -15,14 +15,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-<<<<<<< HEAD
 import com.example.finder.MainActivity;
 import com.example.finder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-=======
-import com.example.finder.R;
->>>>>>> 722b6a0... Front end connection skeleton (for chat)
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +57,6 @@ public class CreateAccView extends AppCompatActivity {
             public void onClick(View view) {
                 JSONObject user = new JSONObject();
                 try {
-<<<<<<< HEAD
                     //user.put("user_name", username.getText());
                     user.put("first_name", firstName.getText().toString());
                     user.put("last_name", lastName.getText().toString());
