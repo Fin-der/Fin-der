@@ -34,7 +34,7 @@ public class ChatView extends AppCompatActivity {
     private UserAccount user;
     private String receiver;
     private String rId;
-    private final String GET_USERIDS = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
+    private final String GET_USERIDS = "http://192.168.1.72:3000/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +51,10 @@ public class ChatView extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray arr = response.getJSONArray("users");
-                    JSONObject user1 = (JSONObject) arr.get(1);
+                    JSONObject user1 = (JSONObject) arr.get(0);
                     user.id = (String) user1.get("_id");
                     Log.d("hi", user.id);
-                    JSONObject user2 = (JSONObject) arr.get(0);
+                    JSONObject user2 = (JSONObject) arr.get(1);
                     rId = (String) user2.get("_id");
                 } catch (JSONException e) {
                     e.printStackTrace();
