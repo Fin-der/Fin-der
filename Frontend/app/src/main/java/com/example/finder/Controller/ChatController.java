@@ -31,7 +31,7 @@ import java.util.List;
 
 public class ChatController {
     private Socket socket;
-    private final String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/";
+    private final String HOST_URL = "http:192.168.1.72:3000/";
     private ChatView context;
     private UserAccount userAccount;
     private List<Message> messages;
