@@ -11,12 +11,16 @@ import android.view.View;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.Chat.MessageAdapter;
 import com.example.finder.Chat.MessageBoardAdapter;
@@ -45,8 +49,12 @@ public class ChatView extends AppCompatActivity {
         this.receiver = intent.getStringExtra("chatterName");
         setTitle(this.receiver);
         this.user = (UserAccount) intent.getSerializableExtra("user");
-        final RequestQueue que = Volley.newRequestQueue(this);
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, GET_USERIDS, null, new Response.Listener<JSONObject>() {
+        this.user.setId("c7b89d6c36b0486889e40e6a53ef9924");
+        rId = "ea4784c08e604c11ba3f5810992b6e6f";
+/*        final RequestQueue que = Volley.newRequestQueue(this);
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
+                GET_USERIDS,
+                null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -56,21 +64,19 @@ public class ChatView extends AppCompatActivity {
                     Log.d("hi", user.id);
                     JSONObject user2 = (JSONObject) arr.get(1);
                     rId = (String) user2.get("_id");
+                    Log.d("Chatview", "rId: " + rId);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
-
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("Chatview", "Could not get user ids, " + error.toString());
+
             }
         });
-
-        que.add(req);
-
+        que.add(req);*/
         controller = new ChatController(this, user, rId);
 
         init();
@@ -88,4 +94,6 @@ public class ChatView extends AppCompatActivity {
             }
         });
     }
+
+
 }

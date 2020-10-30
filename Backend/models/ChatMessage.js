@@ -25,7 +25,7 @@ const chatMessageSchema = new mongoose.Schema(
             type: String,
             default: () => uuidv4().replace(/\-/g, ""),
         },
-        chatRoomId: String,
+        chatRoomId: {type: String, default: "why"},
         message: mongoose.Schema.Types.Mixed,
         type: {
             type: String,
@@ -43,18 +43,21 @@ const chatMessageSchema = new mongoose.Schema(
 /**
  * This method will create a post in chat
  * 
- * @param {String} roomId - id of chat room
+ * @param {String} chatRoomId - id of chat room
  * @param {Object} message - message you want to post in the chat room
  * @param {String} postedByUser - user who is posting the message
  */
 chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
     try {
+        console.log(chatRoomId)
         const post = await this.create({
-            chatRoomId,
+            chatRoomId: chatRoomId,
             message,
             postedByUser,
             readByRecipients: { readByUserId: postedByUser }
         });
+        let x = post.toObject();
+        console.log(x);
         const aggregate = await this.aggregate([
         // get post where _id = post._id
         {   $match: { _id: post._id } },
