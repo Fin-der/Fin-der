@@ -56,8 +56,6 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
             postedByUser,
             readByRecipients: { readByUserId: postedByUser }
         });
-        let x = post.toObject();
-        console.log(x);
         const aggregate = await this.aggregate([
         // get post where _id = post._id
         {   $match: { _id: post._id } },

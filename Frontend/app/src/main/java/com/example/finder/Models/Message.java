@@ -4,16 +4,16 @@ public class Message {
     private String id;
     private String text;
     private String sender;
-    private String receiver;
+    private String senderName;
     private int msgType;
     // Picture profilePic
     // Picture[] sentPics
     // Date date
 
-    public Message(String id, String text, String sender, String receiver, int msgType) {
+    public Message(String id, String text, String sender, String senderName, int msgType) {
         this.id = id;
         this.text = text;
-        this.receiver = receiver;
+        this.senderName = senderName;
         this.sender = sender;
         this.msgType = msgType;
     }
@@ -26,11 +26,15 @@ public class Message {
         return sender;
     }
 
-    public String getReceiver() {
-        return receiver;
+    public String getSenderName() {
+        return senderName;
     }
 
     public String getMessage() {
         return text;
+    }
+
+    public int getMsgType() {
+        return msgType;
     }
 }
