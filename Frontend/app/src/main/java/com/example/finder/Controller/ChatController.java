@@ -1,6 +1,7 @@
 package com.example.finder.Controller;
 
 import android.util.Log;
+import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +32,7 @@ import java.util.List;
 
 public class ChatController {
     private Socket socket;
-    private final String HOST_URL = "http:192.168.1.72:3000/";
+    private String HOST_URL = "http://192.168.1.72:3000/";
     private ChatView context;
     private UserAccount userAccount;
     private List<Message> messages;
@@ -52,11 +53,6 @@ public class ChatController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        try {
-            this.socket = IO.socket(HOST_URL);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
         initChatAdapters();
     }
 
@@ -65,6 +61,28 @@ public class ChatController {
         this.msgAdapter = new MessageAdapter(context, this.messages, this.userAccount);
         this.msgRecycler.setLayoutManager(new LinearLayoutManager(context));
         this.msgRecycler.setAdapter(msgAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (roomId == null)
+                    Thread.yield();
+                JsonObjectRequest request = grabConversation();
+                que.add(request);
+            }
+        }).start();
+        msgRecycler.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, final int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if ( bottom < oldBottom) {
+                    msgRecycler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            msgRecycler.smoothScrollToPosition(bottom);
+                        }
+                    }, 100);
+                }
+            }
+        });
     }
 
     private void initChatRoom() throws JSONException {
@@ -75,7 +93,7 @@ public class ChatController {
         obj.put("userIds", arr);
         obj.put("type", "consumer-to-consumer");
         Log.d("ChatController", "Initiate: " + obj.toString());
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "room/initiate", obj, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "room/initiate", obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -83,39 +101,96 @@ public class ChatController {
                     JSONObject room = (JSONObject) response.get("chatRoom");
                     roomId = (String) room.get("chatRoomId");
                     Log.d("ChatController", "Room Id: " + roomId);
+                    waitOnMessages();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
+            public void onErrorResponse(VolleyError error) {}
+        });
+        que.add(req);
+    }
+
+    private JsonObjectRequest grabConversation() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+                HOST_URL + "room/" + roomId.toString(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray convo = response.getJSONArray("conversation");
+                            for (int i = 0; i < convo.length(); i++) {
+                                Message msg = parseMessage((JSONObject) convo.get(i));
+                                messages.add(msg);
+                            }
+                            Log.d("ChatController", "Messages Size: " + messages.size());
+                            msgAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
             public void onErrorResponse(VolleyError error) {
 
             }
         });
-        this.que.add(req);
-
+        return request;
     }
 
     private void waitOnMessages() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                socket.on("new message", new Emitter.Listener() {
-                    @Override
-                    public void call(Object... args) {
-                        JSONObject obj = (JSONObject) args[0];
+        try {
+            this.socket = IO.socket(HOST_URL);
+            socket.on("new message", new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    final JSONObject response = (JSONObject) args[0];
+                    Log.d("ChatController", "From socket: " + response.toString());
+                    context.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Message msg = parseMessage(response.getJSONObject("message"));
+                                messages.add(msg);
+                                msgAdapter.notifyDataSetChanged();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
 
-                    }
-                });
-            }
-        }).start();
+                }
+            });
+            socket.connect();
+            socket.emit("identity", userAccount.getId());
+            socket.emit("subscribe", roomId);
+        } catch (URISyntaxException e) {
+            Log.e("ChatController", "Fail to Create Socket");
+            this.socket.close();
+            e.printStackTrace();
+        }
     }
 
-    public void sendMessage(Message message) {
+    private Message parseMessage(JSONObject message) throws JSONException {
+        String messageText = ((JSONObject) message.get("message")).getString("messageText");
+        String userId = ((JSONObject) message.get("postedByUser")).getString("_id");
+        Message msg;
+        if (userId.equals(rId)) {
+            msg = new Message(message.getString("_id"),
+                    messageText, rId, ((ChatView) context).getReceiver(), MessageAdapter.MSG_TYPE_RECEIVED);
+        } else {
+            msg = new Message(message.getString("_id"),
+                    messageText, userAccount.getId(), userAccount.getUserName(), MessageAdapter.MSG_TYPE_SENT);
+        }
+        return msg;
+    }
+
+    public void sendMessage(String message) {
         JSONObject data = new JSONObject();
         try {
-            data.put("messageText", message.getMessage());
+            data.put("messageText", message);
             data.put("userId", userAccount.getId());
             data.put("roomId", roomId);
         } catch (JSONException e) {
@@ -137,10 +212,10 @@ public class ChatController {
                 error.printStackTrace();
             }
         });
-
         this.que.add(req);
+    }
 
-        this.messages.add(message);
-        this.msgAdapter.notifyDataSetChanged();
+    public void cleanUp() {
+        this.socket.disconnect();
     }
 }

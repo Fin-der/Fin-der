@@ -68,15 +68,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messages.get(position);
-
-        if (message.getSender().equals(user.getUserName())) {
-            // If the current user is the sender of the message
-            return MSG_TYPE_SENT;
-        } else {
-            // If some other user sent the message
-            return MSG_TYPE_RECEIVED;
-        }
+        return messages.get(position).getMsgType();
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
@@ -93,13 +85,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getMessage());
-
-            // Format the stored timestamp into a readable String using method.
             timeText.setText("Oct-00-2020");
-            nameText.setText(message.getSender());
+            nameText.setText(message.getSenderName());
 
-            // Insert the profile image from the URL into the ImageView.
-            //Utils.displayRoundImageFromUrl(mContext, message.getSender().getProfileUrl(), profileImage);
         }
     }
 
@@ -115,8 +103,6 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getMessage());
-
-            // Format the stored timestamp into a readable String using method.
             timeText.setText("OCT-32-2020");
         }
     }

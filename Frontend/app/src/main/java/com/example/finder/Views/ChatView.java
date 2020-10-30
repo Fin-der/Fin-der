@@ -4,10 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -44,39 +47,18 @@ public class ChatView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_view);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         Intent intent = getIntent();
         this.receiver = intent.getStringExtra("chatterName");
         setTitle(this.receiver);
         this.user = (UserAccount) intent.getSerializableExtra("user");
+
         this.user.setId("c7b89d6c36b0486889e40e6a53ef9924");
         rId = "ea4784c08e604c11ba3f5810992b6e6f";
-/*        final RequestQueue que = Volley.newRequestQueue(this);
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET,
-                GET_USERIDS,
-                null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    JSONArray arr = response.getJSONArray("users");
-                    JSONObject user1 = (JSONObject) arr.get(0);
-                    user.id = (String) user1.get("_id");
-                    Log.d("hi", user.id);
-                    JSONObject user2 = (JSONObject) arr.get(1);
-                    rId = (String) user2.get("_id");
-                    Log.d("Chatview", "rId: " + rId);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        //this.user.setId("ea4784c08e604c11ba3f5810992b6e6f");
+        //rId = "c7b89d6c36b0486889e40e6a53ef9924" ;
 
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        que.add(req);*/
         controller = new ChatController(this, user, rId);
 
         init();
@@ -89,11 +71,20 @@ public class ChatView extends AppCompatActivity {
                 EditText input = findViewById(R.id.edittext_chatbox);
                 String value = input.getText().toString();
                 input.getText().clear();
-                Message msg = new Message("0", value, user.getUserName(), receiver, MessageAdapter.MSG_TYPE_SENT);
-                controller.sendMessage(msg);
+                controller.sendMessage(value);
             }
         });
     }
 
+    public String getReceiver() {
+        return receiver;
+    }
+
+    @Override
+    public void onBackPressed() {
+        controller.cleanUp();
+        Log.d("ChatView", "Closed Socket");
+        finish();
+    }
 
 }
