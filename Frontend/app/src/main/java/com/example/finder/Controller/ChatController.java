@@ -70,10 +70,11 @@ public class ChatController {
     private void initChatRoom() throws JSONException {
         JSONObject obj = new JSONObject();
         JSONArray arr = new JSONArray();
-        arr.put(userAccount.id);
+        arr.put(userAccount.getId());
         arr.put(rId);
         obj.put("userIds", arr);
         obj.put("type", "consumer-to-consumer");
+        Log.d("ChatController", "Initiate: " + obj.toString());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "room/initiate", obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -115,14 +116,14 @@ public class ChatController {
         JSONObject data = new JSONObject();
         try {
             data.put("messageText", message.getMessage());
-            data.put("userId", userAccount.id);
+            data.put("userId", userAccount.getId());
             data.put("roomId", roomId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         Log.d("ChatController", "JSONobject to postMessage " + data.toString());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                    HOST_URL + "room/" + roomId + "/" + userAccount.id + "/message",
+                    HOST_URL + "room/" + roomId + "/" + userAccount.getId() + "/message",
                         data,
                 new Response.Listener<JSONObject>() {
             @Override

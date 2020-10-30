@@ -21,8 +21,8 @@ export default {
             const messagePayload = {
                 messageText: req.body.messageText,
             };
-            const currentLoggedUser = req.userId;
-            const roomId = req.roomId;
+            const currentLoggedUser = req.body.userId;
+            const roomId = req.body.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             global.io.sockets.in(roomId).emit('new message', { message: post });
             // get token of other users

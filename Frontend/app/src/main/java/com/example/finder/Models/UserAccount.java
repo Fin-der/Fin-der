@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class UserAccount implements Serializable {
     private String userName;
-    public String id;
+    private String id;
     private int age;
     private String gender;
     private ArrayList<UserAccount> matches;
@@ -23,6 +23,8 @@ public class UserAccount implements Serializable {
     public String getId() {
         return id;
     }
+
+    public void setId(String id) {this.id = id;}
 
     public String getUserName() {
         return userName;
