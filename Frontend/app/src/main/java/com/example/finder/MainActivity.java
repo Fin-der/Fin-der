@@ -9,6 +9,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.finder.Views.CreateAccView;
 import com.example.finder.Views.HomeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -20,10 +26,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
     final static String TAG = "MainActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
+    private RequestQueue reqQueue;
+    private JsonObjectRequest jsonReq;
+    private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +150,39 @@ public class MainActivity extends AppCompatActivity {
             // Send token to your backend
             // account.getIdToken();
             // Move to another activity
-            Intent home = new Intent(MainActivity.this, HomeView.class);
-            startActivity(home);
+            JSONObject loginInfo = new JSONObject();
+            try {
+                loginInfo.put("_id", account.getIdToken());
+                Log.d(TAG, loginInfo.toString());
+            } catch (JSONException e) {
+                Log.d(TAG, "failed to create json");
+                e.printStackTrace();
+            }
+            reqQueue = Volley.newRequestQueue(MainActivity.this);
+            jsonReq = new JsonObjectRequest(Request.Method.GET, url, loginInfo, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d(TAG, response.toString());
+                    try {
+                        if (response.getBoolean("success")) {
+                            Intent home = new Intent(MainActivity.this, HomeView.class);
+                            startActivity(home);
+                        } else {
+                            Intent create = new Intent(MainActivity.this, CreateAccView.class);
+                            startActivity(create);
+                        }
+                    } catch (JSONException e) {
+                        Log.d(TAG, "failed to read json");
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "Error: " + error.getMessage());
+                }
+            });
+            reqQueue.add(jsonReq);
         }
     }
 }
