@@ -38,7 +38,6 @@ public class CreateAccView extends AppCompatActivity {
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
     private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
-    private boolean passed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,38 +72,20 @@ public class CreateAccView extends AppCompatActivity {
                 }
 
                 reqQueue = Volley.newRequestQueue(CreateAccView.this);
-//                RequestFuture<JSONObject> future = RequestFuture.newFuture();
                 jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, response.toString());
-                        passed = true;
+                        Intent main = new Intent(CreateAccView.this, HomeView.class);
+                        startActivity(main);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d(TAG, "Error: " + error.getMessage());
-                        passed = false;
                     }
                 });
-//                jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, future, future);
                 reqQueue.add(jsonReq);
-//                try {
-//                    JSONObject response = future.get(10, TimeUnit.SECONDS);
-//                    if(response == null) {
-//                        passed = true;
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Log.d(TAG, "Error: " + e.getMessage());
-//                }
-
-                if (passed) {
-                    Intent main = new Intent(CreateAccView.this, HomeView.class);
-                    startActivity(main);
-                } else {
-                    Log.d(TAG, "failed");
-                }
             }
         });
     }
