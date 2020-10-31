@@ -30,6 +30,9 @@ import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChatController {
     private Socket socket;
@@ -43,6 +46,7 @@ public class ChatController {
     private String rId;
     private String roomId;
     private int chatPos;
+    private Semaphore queLock = new Semaphore(0);
 
     public ChatController(ChatView context, UserAccount user, String rId) {
         this.userAccount = user;
@@ -91,8 +95,18 @@ public class ChatController {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (!recyclerView.canScrollVertically(-1)) {
-                    Log.d("ChatController", "At top, must get more messages!");
-                    que.add(grabConversation());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                queLock.acquire();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            Log.d("ChatController", "At top, must get more messages!");
+                            que.add(grabConversation());
+                        }
+                    }).start();
                 }
             }
         });
@@ -146,14 +160,17 @@ public class ChatController {
                             msgAdapter.notifyItemRangeInserted(0, list.size());
                             if (oldSize == 0 && !messages.isEmpty())
                                 msgRecycler.getLayoutManager().scrollToPosition(messages.size() - 1);
+                            queLock.release();
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            queLock.release();
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.d("ChatController", "Cant get messages");
+                queLock.release();
             }
         });
         return request;
