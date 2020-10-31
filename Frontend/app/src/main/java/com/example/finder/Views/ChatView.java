@@ -54,10 +54,10 @@ public class ChatView extends AppCompatActivity {
         setTitle(this.receiver);
         this.user = (UserAccount) intent.getSerializableExtra("user");
 
-        this.user.setId("c7b89d6c36b0486889e40e6a53ef9924");
-        rId = "ea4784c08e604c11ba3f5810992b6e6f";
-        //this.user.setId("ea4784c08e604c11ba3f5810992b6e6f");
-        //rId = "c7b89d6c36b0486889e40e6a53ef9924" ;
+        this.user.setId("9edf9faead43481190d75338144259c4");
+        rId = "a388f144d6eb4573905d4829dee0bfde";
+        //this.user.setId("a388f144d6eb4573905d4829dee0bfde");
+        //rId = "9edf9faead43481190d75338144259c4" ;
 
         controller = new ChatController(this, user, rId);
 

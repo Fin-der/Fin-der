@@ -69,7 +69,7 @@ export default {
     },
     getConversationByRoomId: async (req, res) => {
         try {
-            const { roomId } = req.params;
+            const { roomId, skip } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
             if (!room) {
                 return res.status(400).json({
@@ -77,11 +77,11 @@ export default {
                 message: 'No room exists for this id',
                 })
             }
-            console.log(roomId)
             const users = await UserModel.getUserByIds(room.userIds);
             const options = {
                 page: parseInt(req.query.page) || 0,
-                limit: parseInt(req.query.limit) || 10,
+                limit: parseInt(req.query.limit) || 25,
+                skip: parseInt(skip) || 0,
             };
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({
