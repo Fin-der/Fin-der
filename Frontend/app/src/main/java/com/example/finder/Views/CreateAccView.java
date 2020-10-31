@@ -199,13 +199,17 @@ public class CreateAccView extends AppCompatActivity {
         if (emailInput.isEmpty()) {
             email.setError("Field can't be empty");
             return false;
-        } else if (!TextUtils.isEmpty(emailInput) && Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
+        } else if (!isEmailValid(emailInput)) {
             email.setError("Invalid email");
             return false;
         } else {
             email.setError(null);
             return true;
         }
+    }
+
+    private boolean isEmailValid(String email) {
+        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean checkPassword() {
