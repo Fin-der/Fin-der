@@ -3,6 +3,7 @@ package com.example.finder.Controller;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -41,6 +42,7 @@ public class ChatController {
     private RequestQueue que;
     private String rId;
     private String roomId;
+    private int chatPos;
 
     public ChatController(ChatView context, UserAccount user, String rId) {
         this.userAccount = user;
@@ -48,6 +50,7 @@ public class ChatController {
         this.messages = new ArrayList<>();
         this.rId = rId;
         this.que = Volley.newRequestQueue(context);
+        this.chatPos = 0;
         try {
             initChatRoom();
         } catch (JSONException e) {
@@ -83,6 +86,16 @@ public class ChatController {
                 }
             }
         });
+        msgRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(-1)) {
+                    Log.d("ChatController", "At top, must get more messages!");
+                    que.add(grabConversation());
+                }
+            }
+        });
     }
 
     private void initChatRoom() throws JSONException {
@@ -115,18 +128,24 @@ public class ChatController {
 
     private JsonObjectRequest grabConversation() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                HOST_URL + "room/" + roomId.toString(), null,
+                HOST_URL + "room/" + roomId + "/" + chatPos, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray convo = response.getJSONArray("conversation");
+                            ArrayList<Message> list = new ArrayList<>();
                             for (int i = 0; i < convo.length(); i++) {
                                 Message msg = parseMessage((JSONObject) convo.get(i));
-                                messages.add(msg);
+                                list.add(msg);
                             }
+                            chatPos += list.size();
                             Log.d("ChatController", "Messages Size: " + messages.size());
-                            msgAdapter.notifyDataSetChanged();
+                            int oldSize = messages.size();
+                            messages.addAll(0, list);
+                            msgAdapter.notifyItemRangeInserted(0, list.size());
+                            if (oldSize == 0 && !messages.isEmpty())
+                                msgRecycler.getLayoutManager().scrollToPosition(messages.size() - 1);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -155,6 +174,7 @@ public class ChatController {
                                 Message msg = parseMessage(response.getJSONObject("message"));
                                 messages.add(msg);
                                 msgAdapter.notifyDataSetChanged();
+                                msgRecycler.getLayoutManager().scrollToPosition(messages.size() - 1);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

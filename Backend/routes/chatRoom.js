@@ -8,9 +8,9 @@ router
     // params: user id
     // returns: chatroom info defined in schema(models/ChatRoom.js)
     .get('/', chatRoom.getRecentConversation)
-    // params: room id
+    // params: room id, skip (documents to skip)
     // returns: chatroom info defined in schema(models/ChatRoom.js)
-    .get('/:roomId', chatRoom.getConversationByRoomId)
+    .get('/:roomId/:skip', chatRoom.getConversationByRoomId)
     // params: list of userids, type(for now)
     // returns: room id of new room created
     .post('/initiate', chatRoom.initiate)

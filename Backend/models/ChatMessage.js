@@ -134,7 +134,7 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
             },
             { $unwind: "$postedByUser" },
             // apply pagination
-            { $skip: options.page * options.limit },
+            { $skip: options.skip },
             { $limit: options.limit },
             { $sort: { createdAt: 1 } },
         ]);

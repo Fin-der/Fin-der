@@ -11,17 +11,6 @@
 
     <!-- A horizontal line between the chatbox and RecyclerView -->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reyclerview_message_list"
-        android:layout_width="match_parent"
-        android:layout_height="736dp"
-        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"></androidx.recyclerview.widget.RecyclerView>
-
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
@@ -30,21 +19,6 @@
         app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
-
-<!--    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:background="@drawable/round_chat_msg"
-        android:padding="8dp"
-        android:text="hi man, how are you?"
-        android:textColor="#ffffff"
-        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.939"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.047" />-->
 
     <LinearLayout
         android:id="@+id/layout_chatbox"
@@ -81,5 +55,19 @@
             android:layout_gravity="bottom" />
 
     </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reyclerview_message_list"
+        android:paddingBottom="4dp"
+        android:paddingTop="4dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_chatbox"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
