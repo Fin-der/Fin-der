@@ -52,7 +52,7 @@ export default {
     },
     getRecentConversation: async (req, res) => {
         try {
-            const currentLoggedUser = req.userId;
+            const currentLoggedUser = req.body.userId;
             const options = {
                 page: parseInt(req.query.page) || 0,
                 limit: parseInt(req.query.limit) || 10,

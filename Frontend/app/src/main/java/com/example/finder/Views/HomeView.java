@@ -53,13 +53,6 @@ public class HomeView extends AppCompatActivity {
 
     private void initButtons() {
         // adds more buttons & some way to get previous chats
-        findViewById(R.id.toMsgs).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent toMsgs = new Intent(HomeView.this, ChatView.class);
-                startActivity(toMsgs);
-            }
-        });
 
         findViewById(R.id.home_profileBtn).setOnClickListener(new View.OnClickListener() {
             @Override
