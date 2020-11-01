@@ -8,4 +8,5 @@ node_js:
 
 before_script:
   - npm install --save-dev jest
+  - cd backend
 script: npm run test
