@@ -57,8 +57,8 @@ public class HomeView extends AppCompatActivity {
         findViewById(R.id.home_profileBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent profile = new Intent(HomeView.this, );
-                //startActivity(profile);
+                Intent profile = new Intent(HomeView.this, ProfileView.class);
+                startActivity(profile);
             }
         });
 
