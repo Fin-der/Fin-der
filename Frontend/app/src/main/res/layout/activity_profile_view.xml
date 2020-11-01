@@ -34,6 +34,14 @@
             android:textColor="#000"
             android:textSize="20sp"/>
 
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="DELETE ACCOUNT"
+            android:layout_alignParentTop="true"/>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -173,6 +181,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
+                android:id="@+id/update_button"
                 android:background="#2a9df4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
