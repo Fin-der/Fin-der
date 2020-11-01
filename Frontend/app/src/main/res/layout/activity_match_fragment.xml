@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Views.MatchView">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/match_profilePic"
-        android:layout_width="match_parent"
-        android:layout_height="384dp"
+        android:layout_width="335dp"
+        android:layout_height="335dp"
+        android:layout_marginEnd="28dp"
         android:background="@drawable/big_circle"
         android:contentDescription="Profile Pic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.035" />
 
     <Button
         android:id="@+id/c1"
@@ -40,10 +40,11 @@
         android:contentDescription="Profile Pic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.539"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toEndOf="@+id/c1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.804" />
+        app:layout_constraintVertical_bias="0.875" />
 
     <Button
         android:id="@+id/c3"
@@ -51,14 +52,14 @@
         android:layout_height="80dp"
         android:layout_marginLeft="156dp"
         android:layout_marginTop="144dp"
-        android:layout_marginEnd="272dp"
+        android:layout_marginEnd="44dp"
         android:background="@drawable/cross"
         android:contentDescription="Profile Pic"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/c1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/match_profilePic"
-        app:layout_constraintVertical_bias="0.22" />
+        app:layout_constraintVertical_bias="0.533" />
 
     <TextView
         android:id="@+id/textView2"
@@ -70,7 +71,8 @@
         app:layout_constraintBottom_toTopOf="@+id/c3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/match_profilePic" />
 
     <View
         android:id="@+id/view"
@@ -95,6 +97,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:layout_constraintVertical_bias="0.106" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

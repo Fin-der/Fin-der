@@ -65,8 +65,8 @@ public class HomeView extends AppCompatActivity {
         findViewById(R.id.home_FindMatchBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Intent match = new Intent(HomeView.this, );
-                //startActivity(match);
+                Intent match = new Intent(HomeView.this, MatchView.class);
+                startActivity(match);
             }
         });
 
