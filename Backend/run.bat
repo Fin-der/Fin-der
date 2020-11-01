@@ -1,1 +1,1 @@
-node --experimental-json-modules server.js & mongod &
+mongod & node --experimental-json-modules server.js
