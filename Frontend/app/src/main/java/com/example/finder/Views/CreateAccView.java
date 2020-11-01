@@ -211,7 +211,9 @@ public class CreateAccView extends AppCompatActivity {
     private boolean checkPhone() {
         String phoneInput = phoneNumber.getEditText().getText().toString().trim();
 
-        if (!(!TextUtils.isEmpty(phoneInput) && Patterns.PHONE.matcher(phoneInput).matches())) {
+        if (phoneInput.isEmpty()) {
+            return true;
+        } else if (!(!TextUtils.isEmpty(phoneInput) && Patterns.PHONE.matcher(phoneInput).matches())) {
             phoneNumber.setError("Invalid phone number");
             return false;
         } else {
