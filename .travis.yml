@@ -7,7 +7,7 @@ node_js:
   - node
 
 before_script:
-  - cd backend
+  - cd ${TRAVIS_BUILD_DIR}/backend
   - npm install --save-dev jest
   
 script:
