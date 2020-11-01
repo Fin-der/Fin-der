@@ -12,6 +12,7 @@ import indexRouter from "./routes/index.js"
 import userRouter from "./routes/user.js"
 import chatRoomRouter from "./routes/chatRoom.js"
 import deleteRouter from "./routes/delete.js"
+import matchRouter from "./routes/match.js"
 
 import { decode } from './middlewares/jwt.js'
 
@@ -28,6 +29,7 @@ app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
+app.use("/match", matchRouter);
 
 app.use('*', (req, res) => {
     return res.status(404).json({
