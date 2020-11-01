@@ -1,4 +1,4 @@
-import matchGraph from '../models/match.js'
+import {MatchVertexModel, MatchEdgeModel} from '../models/match.js'
 
 export default {
     getPotentialMatches: async (req, res) => {
