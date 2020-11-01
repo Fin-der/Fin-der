@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -30,6 +31,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+
 public class MainActivity extends AppCompatActivity {
     final static String TAG = "MainActivity";
     private GoogleSignInClient mGoogleSignInClient;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestId()
                 .requestEmail()
                 .build();
 
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI(account);
     }
 
-    private void updateUI(GoogleSignInAccount account) {
+    private void updateUI(final GoogleSignInAccount account) {
         if (account == null) {
             Log.d(TAG, "There is no user signed in!");
         } else {
@@ -152,34 +156,29 @@ public class MainActivity extends AppCompatActivity {
             // Move to another activity
             JSONObject loginInfo = new JSONObject();
             try {
-                loginInfo.put("_id", account.getIdToken());
+                loginInfo.put("_id", account.getId());
                 Log.d(TAG, loginInfo.toString());
             } catch (JSONException e) {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
             reqQueue = Volley.newRequestQueue(MainActivity.this);
-            jsonReq = new JsonObjectRequest(Request.Method.GET, url, loginInfo, new Response.Listener<JSONObject>() {
+            jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    try {
-                        if (response.getBoolean("success")) {
-                            Intent home = new Intent(MainActivity.this, HomeView.class);
-                            startActivity(home);
-                        } else {
-                            Intent create = new Intent(MainActivity.this, CreateAccView.class);
-                            startActivity(create);
-                        }
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to read json");
-                        e.printStackTrace();
-                    }
+                    Intent home = new Intent(MainActivity.this, HomeView.class);
+                    startActivity(home);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "Error: " + error.getMessage());
+                    error.printStackTrace();
+                    if (error instanceof ServerError) {
+                        Intent create = new Intent(MainActivity.this, CreateAccView.class);
+                        startActivity(create);
+                    }
                 }
             });
             reqQueue.add(jsonReq);

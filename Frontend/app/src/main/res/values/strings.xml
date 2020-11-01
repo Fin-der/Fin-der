@@ -17,6 +17,7 @@
     <string name="email_caption">Email</string>
     <string name="phone_number_caption">Phone Number (Optional)</string>
     <string name="password_caption">Password</string>
+    <string name="confirm_password_caption">Confirm Password</string>
     <string name="age_caption">Age</string>
     <string name="create_acc_caption">Create Account</string>
 </resources>
