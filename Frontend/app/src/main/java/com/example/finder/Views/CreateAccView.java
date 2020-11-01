@@ -199,7 +199,7 @@ public class CreateAccView extends AppCompatActivity {
         if (emailInput.isEmpty()) {
             email.setError("Field can't be empty");
             return false;
-        } else if (!isEmailValid(emailInput)) {
+        } else if (!(!TextUtils.isEmpty(emailInput) && Patterns.EMAIL_ADDRESS.matcher(emailInput).matches())) {
             email.setError("Invalid email");
             return false;
         } else {
@@ -208,8 +208,16 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private boolean checkPhone() {
+        String phoneInput = phoneNumber.getEditText().getText().toString().trim();
+
+        if (!(!TextUtils.isEmpty(phoneInput) && Patterns.PHONE.matcher(phoneInput).matches())) {
+            phoneNumber.setError("Invalid phone number");
+            return false;
+        } else {
+            phoneNumber.setError(null);
+            return true;
+        }
     }
 
     private boolean checkPassword() {
@@ -238,13 +246,10 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkUsername() | !checkPassword() | !checkConfirmPassword());
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkUsername() | !checkPassword() | !checkConfirmPassword() | !checkPhone());
     }
 
     private boolean confirmAccount() {
-        if (!checkEmail() | !checkUsername() | !checkPassword() | !checkConfirmPassword()) {
-            return false;
-        }
         String input = "Username: " + username.getEditText().getText().toString();
         input += "\n";
         input += "Email: " + email.getEditText().getText().toString();
@@ -290,6 +295,9 @@ public class CreateAccView extends AppCompatActivity {
                     break;
                 case R.id.emailInput:
                     checkEmail();
+                    break;
+                case R.id.phoneInput:
+                    checkPhone();
                     break;
                 case R.id.passwordInput:
                     checkPassword();

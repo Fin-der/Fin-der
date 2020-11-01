@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Views.ProfileView"></activity>
         <activity
             android:name=".Views.ChatView"
-            android:label="Chat"
-        />
+            android:label="Chat" />
         <activity android:name=".Views.HomeView" />
         <activity android:name=".Views.CreateAccView" />
         <activity android:name=".MainActivity">
