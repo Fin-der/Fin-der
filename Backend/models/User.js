@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
         lastName: String,
         type: String,
         FCM_token: String,
+        interests: [String],
     },
     {
         timestamps: true,
