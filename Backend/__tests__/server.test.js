@@ -1,8 +1,10 @@
-
+/**
+ * @jest-environment node
+ */
 const app = require('../server') // Link to your server file
 const supertest = require('supertest')
+const { MongoClient } = require('mongodb')
 const request = supertest(app)
-
 
 
 it('gets the test endpoint', async done => {
