@@ -12,6 +12,7 @@ import indexRouter from "./routes/index_routes.js"
 import userRouter from "./routes/user_routes.js"
 import chatRoomRouter from "./routes/chatRoom_routes.js"
 import deleteRouter from "./routes/delete_routes.js"
+import matchRouter from "./routes/match_routes.js"
 
 import { decode } from './middlewares/jwt.js'
 
@@ -28,6 +29,7 @@ app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
+app.use("/match", matchRouter);
 
 app.use('/test', async (req, res) => {
     res.status(200).json({message: 'pass!'})
