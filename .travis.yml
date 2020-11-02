@@ -9,14 +9,7 @@ services:
   
 before_script:
   - cd ${TRAVIS_BUILD_DIR}/Backend
-  - travis_retry npm install
-  - npm install jest --save
-  - npm install supertest --save
-  - npm install @babel/core --save
-  - npm install babel-jest --save
-  - npm install @babel/preset-env --save
-  - npm install socket.io --save
-  - npm install mongoose --save
+  - npm install 
 
   
 script:

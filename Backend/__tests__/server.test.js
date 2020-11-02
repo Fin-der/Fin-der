@@ -1,11 +1,11 @@
-/**
- * @jest-environment node
- */
-const app = require('../server') // Link to your server file
-const supertest = require('supertest')
-const { MongoClient } = require('mongodb')
+import { app } from '../server.js' // Link to your server file
+import supertest from 'supertest'
+
 const request = supertest(app)
 
+// afterEach(() => {
+//     app.db
+// });
 
 it('gets the test endpoint', async done => {
     const response = await request.get('/test')
@@ -14,6 +14,7 @@ it('gets the test endpoint', async done => {
     expect(response.body.message).toBe('pass!')
     done()
 })
+
 /* 
 it ('tests onGetAllUsers', async done => {
     const response = await request.get('/users')
