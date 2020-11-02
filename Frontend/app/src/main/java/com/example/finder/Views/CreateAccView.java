@@ -49,9 +49,13 @@ public class CreateAccView extends AppCompatActivity {
     private TextInputLayout email;
     private TextInputLayout phoneNumber;
     private TextInputLayout age;
-    private TextInputLayout interest;
+    private TextInputLayout interest1;
+    private TextInputLayout interest2;
+    private TextInputLayout interest3;
 
     private Spinner genderSpinner;
+
+    private UserAccount user;
 
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
@@ -67,7 +71,9 @@ public class CreateAccView extends AppCompatActivity {
         email = findViewById(R.id.editTextEmailAddress);
         phoneNumber = findViewById(R.id.editTextPhone);
         age = findViewById(R.id.editTextAge);
-        interest = findViewById(R.id.editTextInterest1);
+        interest1 = findViewById(R.id.editTextInterest1);
+        interest2 = findViewById(R.id.editTextInterest2);
+        interest3 = findViewById(R.id.editTextInterest3);
 
         TextInputEditText firstNameEdit = findViewById(R.id.firstNameInput);
         TextInputEditText lastNameEdit = findViewById(R.id.lastNameInput);
@@ -89,10 +95,12 @@ public class CreateAccView extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner.setAdapter(adapter);
 
+        final String[] spinResult = new String[1];
+
         genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String spinResult = genderSpinner.getSelectedItem().toString();
+                spinResult[0] = genderSpinner.getSelectedItem().toString();
             }
 
             @Override
@@ -101,32 +109,37 @@ public class CreateAccView extends AppCompatActivity {
             }
         });
 
+        this.user = (UserAccount) getIntent().getSerializableExtra("profile");
+
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkTests()) {
-                    JSONObject user = new JSONObject();
+                    JSONObject userJson = new JSONObject();
                     try {
-                        user.put("first_name", firstName.getEditText().getText().toString());
-                        user.put("last_name", lastName.getEditText().getText().toString());
-                        //user.put("age", age);
-                        //user.put("email", email.getText().toString());
-                        //user.put("phone", phoneNumber);
-                        user.put("type", "type?");
-                        Log.d(TAG, user.toString());
+                        userJson.put("first_name", firstName.getEditText().getText().toString());
+                        userJson.put("last_name", lastName.getEditText().getText().toString());
+                        //userJson.put("age", age);
+                        //userJson.put("email", email.getText().toString());
+                        //userJson.put("phone", phoneNumber);
+                        //userJson.put("gender", spinResult[0]);
+                        //userJson.put("interest1", interest1.getEditText().getText().toString());
+                        //userJson.put("interest2", interest2.getEditText().getText().toString());
+                        //userJson.put("interest3", interest3.getEditText().getText().toString());
+                        userJson.put("type", "type?");
+                        Log.d(TAG, userJson.toString());
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to create json");
                         e.printStackTrace();
                     }
 
                     reqQueue = Volley.newRequestQueue(CreateAccView.this);
-                    jsonReq = new JsonObjectRequest(Request.Method.POST, url, user, new Response.Listener<JSONObject>() {
+                    jsonReq = new JsonObjectRequest(Request.Method.POST, url, userJson, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, response.toString());
-                            UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
-                            home.putExtra("profile", profile);
+                            home.putExtra("profile", user);
                             startActivity(home);
                         }
                     }, new Response.ErrorListener() {
@@ -222,13 +235,13 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkInterest() {
-        String interestInput = interest.getEditText().getText().toString().trim();
+        String interestInput = interest1.getEditText().getText().toString().trim();
 
         if (interestInput.isEmpty()) {
-            interest.setError("Must have at least 1 interest");
+            interest1.setError("Must have at least 1 interest");
             return false;
         } else {
-            interest.setError(null);
+            interest1.setError(null);
             return true;
         }
     }
