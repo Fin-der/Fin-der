@@ -20,4 +20,13 @@
     <string name="confirm_password_caption">Confirm Password</string>
     <string name="age_caption">Age</string>
     <string name="create_acc_caption">Create Account</string>
+    <string-array name="gender_choices">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <string name="interest1_caption">Interest 1</string>
+
+    <!-- Profile View Strings -->
 </resources>
