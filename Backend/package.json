@@ -5,8 +5,8 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "start": "node --experimental-vm-modules server.js"
+    "test": "jest --detectOpenHandles",
+    "start": "node --experimental-json-modules start.js"
   },
   "repository": {
     "type": "git",
