@@ -6,11 +6,10 @@ services:
   - mongodb
 
 
-before_install:
+  
+before_script:
   - cd ${TRAVIS_BUILD_DIR}/Backend
-
-install:
-  - npm install travis_retry 
+  - travis_retry npm install
   - npm install jest --save
   - npm install supertest --save
   - npm install @babel/core --save
@@ -18,8 +17,6 @@ install:
   - npm install @babel/preset-env --save
   - npm install socket.io --save
   - npm install mongoose --save
-
-
 
   
 script:
