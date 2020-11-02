@@ -1,22 +1,17 @@
 language: node_js
 node_js:
-  - 12
-  - 13
-  - 14
-  - 15
   - node
 
 before_script:
   - cd ${TRAVIS_BUILD_DIR}/Backend
-  - npm install --save-dev jest
-  - npm install supertest --save-dev
-  - npm install --save-dev @babel/core
-  - npm install --save-dev babel-jest
-  - npm install --save-dev @babel/preset-env
-  - npm install socket.io --save-dev
+  - npm install jest --save
+  - npm install supertest --save
+  - npm install @babel/core --save
+  - npm install babel-jest --save
+  - npm install @babel/preset-env --save
+  - npm install socket.io --save
   - npm install mongoose --save
 
   
 script:
-  
   - npm run test
