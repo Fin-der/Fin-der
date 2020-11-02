@@ -27,6 +27,8 @@
         <item>Other</item>
     </string-array>
     <string name="interest1_caption">Interest 1</string>
+    <string name="interest2_caption">Interest 2</string>
+    <string name="interest3_caption">Interest 3</string>
 
     <!-- Profile View Strings -->
 </resources>

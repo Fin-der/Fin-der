@@ -60,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.skipHome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
                 Intent intent = new Intent(MainActivity.this, HomeView.class);
+                intent.putExtra("profile", profile);
                 startActivity(intent);
             }
         });
@@ -170,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, response.toString());
                     // TODO: get user information
 //                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
-//                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
                     Intent home = new Intent(MainActivity.this, HomeView.class);
 //                    home.putExtra("profile", profile);
                     startActivity(home);
@@ -181,7 +182,11 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Error: " + error.getMessage());
                     error.printStackTrace();
                     if (error instanceof ServerError) {
+                        //TODO: create id on backend
+                        UserAccount profile = new UserAccount();
+                        profile.setId(account.getId());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
+                        create.putExtra("profile", profile);
                         startActivity(create);
                     }
                 }
