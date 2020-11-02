@@ -9,6 +9,13 @@ node_js:
 before_script:
   - cd ${TRAVIS_BUILD_DIR}/Backend
   - npm install --save-dev jest
+  - npm install supertest --save-dev
+  - npm install --save-dev @babel/core
+  - npm install --save-dev babel-jest
+  - npm install --save-dev @babel/preset-env
+  - npm install socket.io --save-dev
+  - npm install mongoose --save
+
   
 script:
   
