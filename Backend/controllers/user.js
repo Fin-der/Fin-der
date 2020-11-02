@@ -1,5 +1,5 @@
-import UserModel, { USER_TYPES } from '../models/User.js';
-import { MatchEdgeModel, MatchVertexModel } from '../models/Match.js';
+import UserModel, { USER_TYPES } from '../models/user.js';
+import { MatchEdgeModel, MatchVertexModel } from '../models/match.js';
 
 export default {
     onGetAllUsers: async (req, res) => {
