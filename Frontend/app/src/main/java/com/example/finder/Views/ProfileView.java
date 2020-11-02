@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
@@ -26,7 +27,6 @@ public class ProfileView extends AppCompatActivity {
     private TextInputLayout age;
     private TextInputLayout email;
     private TextInputLayout phoneNumber;
-    private TextInputLayout password;
 
     private UserAccount user;
 
@@ -38,18 +38,44 @@ public class ProfileView extends AppCompatActivity {
         fullName = findViewById(R.id.fullNameText);
         firstName = findViewById(R.id.first_name_profile);
         lastName = findViewById(R.id.last_name_profile);
+        age = findViewById(R.id.age_profile);
+        email = findViewById(R.id.email_profile);
+        phoneNumber = findViewById(R.id.phone_number_profile);
         numMatches = findViewById(R.id.number_matches);
 
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
 
         fullName.setText(user.getUserName());
-        firstName.getEditText().setText(user.getUserName());
-        lastName.getEditText().setText(user.getUserName());
+//        firstName.getEditText().setText();
+//        lastName.getEditText().setText();
+        age.getEditText().setText(user.getAge());
+//        email.getEditText().setText();
+//        phoneNumber.getEditText().setText();
+//        numMatches.setText(user.getNumMatches);
 
 
+
+        findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = createAlertDialog("CONFIRM ACCOUNT DELETION", "Are you sure you want to delete your account?");
+                alertDialog.show();
+            }
+        });
+
+        findViewById(R.id.update_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialog = createAlertDialog("CONFIRM ACCOUNT CHANGE", "Are you sure you want to update your account?");
+                alertDialog.show();
+            }
+        });
+    }
+
+    private AlertDialog createAlertDialog(String title, String message) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileView.this);
-        alertDialogBuilder.setTitle("CONFIRM ACCOUNT DELETION");
-        alertDialogBuilder.setMessage("Are you sure youwant to delete your account?");
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(message);
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -61,20 +87,6 @@ public class ProfileView extends AppCompatActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
             }
         });
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-
-        findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.show();
-            }
-        });
-
-        findViewById(R.id.update_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        return alertDialogBuilder.create();
     }
 }
