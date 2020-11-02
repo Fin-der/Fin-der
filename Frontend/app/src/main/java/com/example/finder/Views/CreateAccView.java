@@ -9,7 +9,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +26,7 @@ import com.android.volley.toolbox.RequestFuture;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.MainActivity;
+import com.example.finder.Models.UserAccount;
 import com.example.finder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,6 +35,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.concurrent.TimeUnit;
 
@@ -39,23 +44,14 @@ import okhttp3.internal.Util;
 public class CreateAccView extends AppCompatActivity {
     final static String TAG = "CreateAccView";
 
-    private TextInputLayout username;
     private TextInputLayout firstName;
     private TextInputLayout lastName;
     private TextInputLayout email;
     private TextInputLayout phoneNumber;
-    private TextInputLayout password;
-    private TextInputLayout confirmPassword;
     private TextInputLayout age;
+    private TextInputLayout interest;
 
-    private TextInputEditText userEdit;
-    private TextInputEditText firstNameEdit;
-    private TextInputEditText lastNameEdit;
-    private TextInputEditText ageEdit;
-    private TextInputEditText emailEdit;
-    private TextInputEditText phoneEdit;
-    private TextInputEditText passwordEdit;
-    private TextInputEditText confirmPasswordEdit;
+    private Spinner genderSpinner;
 
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
@@ -66,32 +62,44 @@ public class CreateAccView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_acc);
 
-        username = findViewById(R.id.editTextUsername);
         firstName = findViewById(R.id.editTextFirstName);
         lastName = findViewById(R.id.editTextLastName);
         email = findViewById(R.id.editTextEmailAddress);
         phoneNumber = findViewById(R.id.editTextPhone);
-        password = findViewById(R.id.editTextPassword);
         age = findViewById(R.id.editTextAge);
-        confirmPassword = findViewById(R.id.editTextConfirmPassword);
+        interest = findViewById(R.id.editTextInterest1);
 
-        userEdit = findViewById(R.id.usernameInput);
-        firstNameEdit = findViewById(R.id.firstNameInput);
-        lastNameEdit = findViewById(R.id.lastNameInput);
-        ageEdit = findViewById(R.id.ageInput);
-        emailEdit = findViewById(R.id.emailInput);
-        phoneEdit = findViewById(R.id.phoneInput);
-        passwordEdit = findViewById(R.id.passwordInput);
-        confirmPasswordEdit = findViewById(R.id.confirmPasswordInput);
+        TextInputEditText firstNameEdit = findViewById(R.id.firstNameInput);
+        TextInputEditText lastNameEdit = findViewById(R.id.lastNameInput);
+        TextInputEditText ageEdit = findViewById(R.id.ageInput);
+        TextInputEditText emailEdit = findViewById(R.id.emailInput);
+        TextInputEditText phoneEdit = findViewById(R.id.phoneInput);
+        TextInputEditText interestEdit = findViewById(R.id.interest1Input);
 
-        userEdit.addTextChangedListener(new MyTextWatcher(userEdit));
         firstNameEdit.addTextChangedListener(new MyTextWatcher(firstNameEdit));
         lastNameEdit.addTextChangedListener(new MyTextWatcher(lastNameEdit));
         ageEdit.addTextChangedListener(new MyTextWatcher(ageEdit));
         emailEdit.addTextChangedListener(new MyTextWatcher(emailEdit));
-//        phoneEdit.addTextChangedListener(new MyTextWatcher(phoneEdit));
-        passwordEdit.addTextChangedListener(new MyTextWatcher(passwordEdit));
-        confirmPasswordEdit.addTextChangedListener(new MyTextWatcher(confirmPasswordEdit));
+        phoneEdit.addTextChangedListener(new MyTextWatcher(phoneEdit));
+        interestEdit.addTextChangedListener(new MyTextWatcher(interestEdit));
+
+        genderSpinner = findViewById(R.id.spinner);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender_choices));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner.setAdapter(adapter);
+
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String spinResult = genderSpinner.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,13 +107,11 @@ public class CreateAccView extends AppCompatActivity {
                 if (checkTests()) {
                     JSONObject user = new JSONObject();
                     try {
-                        //user.put("user_name", username.getText());
                         user.put("first_name", firstName.getEditText().getText().toString());
                         user.put("last_name", lastName.getEditText().getText().toString());
                         //user.put("age", age);
                         //user.put("email", email.getText().toString());
                         //user.put("phone", phoneNumber);
-                        //user.put("password", password.getText().toString());
                         user.put("type", "type?");
                         Log.d(TAG, user.toString());
                     } catch (JSONException e) {
@@ -118,8 +124,10 @@ public class CreateAccView extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, response.toString());
-                            Intent main = new Intent(CreateAccView.this, HomeView.class);
-                            startActivity(main);
+                            UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
+                            Intent home = new Intent(CreateAccView.this, HomeView.class);
+                            home.putExtra("profile", profile);
+                            startActivity(home);
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -133,20 +141,7 @@ public class CreateAccView extends AppCompatActivity {
         });
     }
 
-    private boolean checkUsername() {
-        String usernameInput = username.getEditText().getText().toString().trim();
 
-        if (usernameInput.isEmpty()) {
-            username.setError("Field can't be empty");
-            return false;
-        } else if (usernameInput.length() > 20) {
-            username.setError("Username too long");
-            return false;
-        } else {
-            username.setError(null);
-            return true;
-        }
-    }
 
     private boolean checkFirstName() {
         String firstNameInput = firstName.getEditText().getText().toString().trim();
@@ -199,7 +194,7 @@ public class CreateAccView extends AppCompatActivity {
         if (emailInput.isEmpty()) {
             email.setError("Field can't be empty");
             return false;
-        } else if (!isEmailValid(emailInput)) {
+        } else if (!(!TextUtils.isEmpty(emailInput) && Patterns.EMAIL_ADDRESS.matcher(emailInput).matches())) {
             email.setError("Invalid email");
             return false;
         } else {
@@ -208,48 +203,43 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
-    private boolean isEmailValid(String email) {
-        return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
+    private boolean checkPhone() {
+        String phoneInput = phoneNumber.getEditText().getText().toString().trim();
 
-    private boolean checkPassword() {
-        String passwordInput = password.getEditText().getText().toString().trim();
-
-        if (passwordInput.isEmpty()) {
-            password.setError("Field can't be empty");
+        if (phoneInput.isEmpty()) {
+            phoneNumber.setError(null);
+            return true;
+        } else if (phoneInput.length() > 20) {
+            phoneNumber.setError("Phone number too long");
+            return false;
+        } else if (!(!TextUtils.isEmpty(phoneInput) && Patterns.PHONE.matcher(phoneInput).matches())) {
+            phoneNumber.setError("Invalid phone number");
             return false;
         } else {
-            password.setError(null);
+            phoneNumber.setError(null);
             return true;
         }
     }
 
-    private boolean checkConfirmPassword() {
-        String passwordInput = password.getEditText().getText().toString().trim();
-        String confirmPasswordInput = confirmPassword.getEditText().getText().toString().trim();
+    private boolean checkInterest() {
+        String interestInput = interest.getEditText().getText().toString().trim();
 
-        if (!confirmPasswordInput.equals(passwordInput)) {
-            confirmPassword.setError("Must match password");
+        if (interestInput.isEmpty()) {
+            interest.setError("Must have at least 1 interest");
             return false;
         } else {
-            confirmPassword.setError(null);
+            interest.setError(null);
             return true;
         }
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkUsername() | !checkPassword() | !checkConfirmPassword());
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkPhone() | !checkInterest());
     }
 
     private boolean confirmAccount() {
-        if (!checkEmail() | !checkUsername() | !checkPassword() | !checkConfirmPassword()) {
-            return false;
-        }
-        String input = "Username: " + username.getEditText().getText().toString();
+        String input = "Email: " + email.getEditText().getText().toString();
         input += "\n";
-        input += "Email: " + email.getEditText().getText().toString();
-        input += "\n";
-        input += "Password: " + password.getEditText().getText().toString();
 
         Toast.makeText(CreateAccView.this, input, Toast.LENGTH_SHORT).show();
         return true;
@@ -276,9 +266,6 @@ public class CreateAccView extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
-                case R.id.usernameInput:
-                    checkUsername();
-                    break;
                 case R.id.firstNameInput:
                     checkFirstName();
                     break;
@@ -291,11 +278,11 @@ public class CreateAccView extends AppCompatActivity {
                 case R.id.emailInput:
                     checkEmail();
                     break;
-                case R.id.passwordInput:
-                    checkPassword();
+                case R.id.phoneInput:
+                    checkPhone();
                     break;
-                case R.id.confirmPasswordInput:
-                    checkConfirmPassword();
+                case R.id.interest1Input:
+                    checkInterest();
                     break;
             }
         }

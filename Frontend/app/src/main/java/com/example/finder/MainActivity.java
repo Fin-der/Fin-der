@@ -16,6 +16,7 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.finder.Models.UserAccount;
 import com.example.finder.Views.CreateAccView;
 import com.example.finder.Views.HomeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -167,7 +168,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
+                    // TODO: get user information
+//                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
+//                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
                     Intent home = new Intent(MainActivity.this, HomeView.class);
+//                    home.putExtra("profile", profile);
                     startActivity(home);
                 }
             }, new Response.ErrorListener() {
