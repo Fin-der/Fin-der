@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
-export const USER_TYPES = {
+/* export const USER_TYPES = {
     CONSUMER: "consumer",
     SUPPORT: "support",
-};
+}; */
 
 const userSchema = new mongoose.Schema(
     {
@@ -110,4 +110,7 @@ userSchema.statics.getTokensbyIds = async function (ids) {
     }
 }
 
-export default mongoose.model("UserModel", userSchema);
+const User = mongoose.model("User", userSchema);
+
+
+export default User;
