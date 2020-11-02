@@ -15,6 +15,8 @@ import androidx.test.filters.LargeTest;
 
 import com.example.finder.Views.CreateAccView;
 
+import static android.app.PendingIntent.getActivity;
+import static androidx.core.content.ContextCompat.startActivity;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -23,7 +25,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -34,10 +35,7 @@ public class MainActivityBehaviour {
             new IntentsTestRule<>(MainActivity.class);
     @Test
     public void pushCreateAccount() {
-        //Intents.init();
         onView(withId(R.id.create_acc_button)).perform(click());
         intended(hasComponent(CreateAccView.class.getName()));
     }
-
-
 }
