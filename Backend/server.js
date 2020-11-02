@@ -17,7 +17,7 @@ import matchRouter from "./routes/match_routes.js"
 import { decode } from './middlewares/jwt.js'
 
 // run server with node --experimental-json-modules server.js
-const app = express();
+export const app = express();
 app.use(express.json());
 
 const port = 3000
@@ -56,5 +56,3 @@ server.listen(port)
 server.on("listening", () => {
     console.log(`Listening on port:: http://localhost:${port}/`)
 });
-
-module.exports = app

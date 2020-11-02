@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import UserModel from "../models/user.js"
+import UserModel from "../models/User.js"
 import { v4 as uuidv4 } from "uuid";
 
 // TODO: add error checking (cant find)

@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "start": "node server.js"
+    "start": "node --experimental-vm-modules server.js"
   },
   "repository": {
     "type": "git",
@@ -16,6 +16,11 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/LiCody/Fin-der/issues"
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "version": "4.4.1"
+    }
   },
   "homepage": "https://github.com/LiCody/Fin-der#readme",
   "dependencies": {
@@ -27,9 +32,8 @@
     "mongoose": "^5.10.11"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.3",
-    "@babel/preset-env": "^7.12.1",
-    "babel-jest": "^26.6.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@shelf/jest-mongodb": "^1.2.3",
     "jest": "^26.6.1",
     "socket.io": "^2.3.0",
     "supertest": "^6.0.0"
