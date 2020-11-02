@@ -2,6 +2,12 @@ language: node_js
 node_js:
   - node
 
+services:
+  - mongodb
+
+install:
+  - travis_retry npm install
+
 before_script:
   - cd ${TRAVIS_BUILD_DIR}/Backend
   - npm install jest --save
