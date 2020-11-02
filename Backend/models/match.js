@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import UserModel from "./User.js"
 import { v4 as uuidv4 } from "uuid";
-import User from "./User.js";
 
 // TODO: add error checking (cant find)
 // Not actually necessary except for finding mutuals
@@ -51,37 +50,16 @@ const MatchEdgeSchema = new mongoose.Schema(
     }
 )
 
-MatchVertexSchema.createMatchVertex = async function (user, potentialMatches) {
+MatchVertexSchema.statics.createMatchVertex = async function (newUser, potentialMatches) {
     try {
-        // THIS will all go in add user
-        var potentialMatches;
-        // go through each vertex and find if interests are same
-        // on success create bidirectional edge
-        const curInterests = new Set(curUser.interests);
-        const users = await UserModel.getUsers(); 
-        users.forEach((user) => {
-            if (user._id != curUser._id) {
-                sameInterests = 0;
-                user.interests.forEach((interest) => {
-                    if (curInterests.has(interest)) {
-                        sameInterests++;
-                    }
-                })
-                if (sameInterests > 0) {
-                    potentialMatches.push(user);
-                    MatchEdgeModel.createBidirectionalEdge(sameInterests, cur_user, user);
-                }
-            }
-        });
-
-        const vertex = await this.create({user: user, matches: matches});
+        const vertex = await this.create({user: newUser, matches: potentialMatches});
         return vertex;
     } catch (error) {
         throw error;
     }
-}
+};
 
-MatchVertexSchema.potentialMatches = async function (userId) {
+MatchVertexSchema.statics.getPotentialMatches = async function (userId) {
     try {
         const user = await UserModel.getUserById(userId);
         const edges = await MatchEdgeModel.find({from: user, status: "potential"});
@@ -89,9 +67,9 @@ MatchVertexSchema.potentialMatches = async function (userId) {
     } catch (error) {
         throw error;
     }
-}
+};
 
-MatchVertexSchema.findFriends = async function (userId) {
+MatchVertexSchema.statics.getFriendMatches = async function (userId) {
     try {
         const user = await UserModel.getUserById(userId);
         const edges = await MatchEdgeModel.find({from: user, status: "approved"});
@@ -99,22 +77,20 @@ MatchVertexSchema.findFriends = async function (userId) {
     } catch (error) {
         throw error;
     }
-}
+};
 
-MatchVertexSchema.addPotentialMatch = async function (userId, otherUserId) {
+MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
     try {
         const user = await UserModel.getUserById(userId);
         const otherUser = await UserModel.getUserById(otherUserId);
-        const userVertex = await this.find({user: user});
-        userVertex.matches.push(otherUser);
-        userVertex.save(done);
+        const userVertex = await UserVertexModel.update({user: user},{$push: {matches: otherUser}})
         return userVertex;
     } catch (error) {
         throw error;
     }
-}
+};
 
-MatchEdgeSchema.createBidirectionalEdge = async function (score, userId1, userId2) {
+MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1, userId2) {
     try {
         const user1 = await UserModel.getUserById(userId1);
         const user2 = await UserModel.getUserById(userId2);
@@ -124,9 +100,9 @@ MatchEdgeSchema.createBidirectionalEdge = async function (score, userId1, userId
     } catch (error) {
         throw error;
     }
-}
+};
 
-MatchEdgeSchema.changeMatchStatus = async function (matchId, userId, status) {
+MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
     try {
         const match = await this.find({_id: matchId});
         const otherMatch = await this.find({from: match.to});
@@ -140,6 +116,8 @@ MatchEdgeSchema.changeMatchStatus = async function (matchId, userId, status) {
         } else {
             throw ({ error: 'User is not a part of this match'})
         }
+        match.save()
+        otherMatch.save()
 
         if (match.to_status == "approved" && match.from_status == "approved") {
             match.status == "approved";
@@ -148,15 +126,17 @@ MatchEdgeSchema.changeMatchStatus = async function (matchId, userId, status) {
             match.status == "declined";
             otherMatch.status == "declined";
         }
+        match.save()
+        otherMatch.save()
         return match;
     } catch (error) {
         throw error;
     }
-}
+};
 
 const MatchVertexModel = mongoose.model("matchVertex", MatchVertexSchema);
 const MatchEdgeModel = mongoose.model("matchEdge", MatchEdgeSchema);
 export {
-    MatchEdgeModel,
     MatchVertexModel,
+    MatchEdgeModel,
 }
