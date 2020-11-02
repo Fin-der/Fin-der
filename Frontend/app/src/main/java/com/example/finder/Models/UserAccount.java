@@ -27,6 +27,14 @@ public class UserAccount implements Serializable {
         this.email = email;
     }
 
+    public UserAccount() {
+        this.userName = "";
+        this.id = "";
+        this.gender = "";
+        this.age = 0;
+        this.email = "";
+    }
+
     public String getId() {
         return id;
     }
@@ -37,8 +45,8 @@ public class UserAccount implements Serializable {
         return userName;
     }
 
-    public int getAge() {
-        return age;
+    public String getAge() {
+        return Integer.toString(age);
     }
 
     public String getEmail() {
