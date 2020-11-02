@@ -122,7 +122,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:hint="Last Name"
-                android:id="@+id/Last_name_profile"
+                android:id="@+id/last_name_profile"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent">
 
@@ -172,11 +172,13 @@
                 android:hint="Password"
                 android:id="@+id/password_profile"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:layout_width="match_parent"
+                app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:inputType="textPassword"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
