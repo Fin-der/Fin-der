@@ -1,144 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextFirstName"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:counterEnabled="true"
-        app:counterMaxLength="20"
-        app:errorEnabled="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/firstNameInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/first_name_caption"
-            android:inputType="textPersonName"/>
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/firstNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/first_name_caption"
+                android:inputType="textPersonName"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:counterEnabled="true"
-        app:counterMaxLength="20"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/lastNameInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/last_name_caption"
-            android:inputType="textPersonName"/>
+            app:counterEnabled="true"
+            app:counterMaxLength="20"
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lastNameInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/last_name_caption"
+                android:inputType="textPersonName"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextAge"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/ageInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextAge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/age_caption"
-            android:inputType="number"/>
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ageInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/age_caption"
+                android:inputType="number"/>
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextEmailAddress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/emailInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/email_caption"
-            android:inputType="text"/>
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email_caption"
+                android:inputType="text"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextPhone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:counterEnabled="true"
-        app:counterMaxLength="12"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/phoneInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/phone_number_caption"
-            android:inputType="phone"/>
+            app:counterEnabled="true"
+            app:counterMaxLength="12"
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/phoneInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/phone_number_caption"
+                android:inputType="phone"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextInterest1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/interest1Input"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextInterest1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/interest1_caption"/>
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/interest1Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/interest1_caption"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextInterest2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/interest2Input"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextInterest2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/interest2_caption"/>
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/interest2Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/interest2_caption"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextInterest3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/interest3Input"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/editTextInterest3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/interest3_caption"/>
+            app:errorEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/interest3Input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/interest3_caption"/>
 
-    <Button
-        android:id="@+id/create_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/create_acc_caption"/>
-</LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/create_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_acc_caption"/>
+    </LinearLayout>
+
+</ScrollView>
