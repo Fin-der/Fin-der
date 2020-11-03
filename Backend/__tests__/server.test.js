@@ -23,23 +23,23 @@ describe('test', () => {
         server.close()
     });
       
-    it('gets the test endpoint', async done => {
-        const response = await request.get('/test')
+    // it('gets the test endpoint', async done => {
+    //     const response = await request.get('/test')
     
-        expect(response.status).toBe(200)
-        expect(response.body.message).toBe('pass!')
-        done()
-    })
+    //     expect(response.status).toBe(200)
+    //     expect(response.body.message).toBe('pass!')
+    //     done()
+    // })
 
     it('mock test', async done => {
         const users = [{_id: 'eb176894d456475e9f2be1868bab8fd6',
-                        firstName: 'Mike',
-                        lastName: 'Hawk'}]
+                        firstName: 'Foo',
+                        lastName: 'Bar'}]
         const mockGetUser = jest.fn(() => {return users})
         UserModel.getUsers = mockGetUser;
         
         const resp = {success:true, users: users};
-    
+        
         const response = await request.get('/users')
 
         expect(response.status).toBe(200)
