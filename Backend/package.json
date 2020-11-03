@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "start": "node --experimental-json-modules start.js"
+    "start": "node --experimental-json-modules server.js"
   },
   "repository": {
     "type": "git",
