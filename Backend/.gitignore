@@ -115,4 +115,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# file created by jest config
 globalConfig.json
+# API keys
+config/fin-der-firebase-adminsdk-xpplc-a1b59b7301.json
