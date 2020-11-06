@@ -85,7 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getMessage());
-            timeText.setText("Oct-00-2020");
+            timeText.setText(message.getPostAt());
             nameText.setText(message.getSenderName());
 
         }
@@ -103,7 +103,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
 
         void bind(Message message) {
             messageText.setText(message.getMessage());
-            timeText.setText("OCT-32-2020");
+            timeText.setText(message.getPostAt());
         }
     }
 }

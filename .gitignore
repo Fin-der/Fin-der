@@ -210,3 +210,7 @@ dist
 # Vim
 *.swo
 *.swp
+
+keys.tar
+
+*.pem
