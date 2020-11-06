@@ -1,13 +1,16 @@
 language: node_js
 node_js:
-  - node
-
+- node
 services:
-  - mongodb
-  
+- mongodb
 before_script:
-  - cd ${TRAVIS_BUILD_DIR}/Backend
-  - npm install 
-  
+- cd ${TRAVIS_BUILD_DIR}/Backend
+- npm install
 script:
-  - npm run test
+- npm run test
+before_install:
+- openssl aes-256-cbc -K $encrypted_ba6eaf0ab8be_key -iv $encrypted_ba6eaf0ab8be_iv
+  -in fin-der-firebase-adminsdk-xpplc-a1b59b7301.json.enc -out Backend/config/fin-der-firebase-adminsdk-xpplc-a1b59b7301.json
+  -d
+- openssl aes-256-cbc -K $encrypted_0b0d3c85d8df_key -iv $encrypted_0b0d3c85d8df_iv
+  -in google-services.json.enc -out Frontend/app/google-services.json -d
