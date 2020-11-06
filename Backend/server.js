@@ -1,37 +1,17 @@
-import express from 'express'
-//import bodyparser from 'body-parser'
-import admin from './config/firebase-config.js'
-//import cors from 'cors'
-// routes
-import indexRouter from "./routes/index_routes.js"
-import userRouter from "./routes/user_routes.js"
-import chatRoomRouter from "./routes/chatRoom_routes.js"
-import deleteRouter from "./routes/delete_routes.js"
-import matchRouter from "./routes/match_routes.js"
+import { app, port } from './app.js'
+import socketio from 'socket.io'
+import http from 'http'
+import WebSockets from "./utils/WebSockets.js"
+import "./config/mongo.js"
 
-import { decode } from './middlewares/jwt.js'
+const server = http.createServer(app)
 
-// run server with node --experimental-json-modules server.js
-export const app = express();
+global.io = socketio.listen(server)
+global.io.on('connection', (socket) => WebSockets.connection(socket));
+//global.io.on('join-room', (socket) => WebSockets.subscribeOtherUser(socket));
 
-export const port = 3000
-app.set("port", port)
+server.listen(port)
 
-app.use(express.json());
-
-app.use("/", indexRouter);
-app.use("/users", userRouter);
-app.use("/room", chatRoomRouter); // add decryption here
-app.use("/delete", deleteRouter);
-app.use("/match", matchRouter);
-
-app.use('/test', async (req, res) => {
-    res.status(200).json({message: 'pass!'})
-  })
-
-app.use('*', (req, res) => {
-    return res.status(404).json({
-        success: false,
-        message: 'API endpoint doesnt exist'
-    })
+server.on("listening", () => {
+    console.log(`Listening on port:: http://localhost:${port}/`)
 });

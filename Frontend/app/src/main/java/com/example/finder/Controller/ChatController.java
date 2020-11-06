@@ -213,13 +213,14 @@ public class ChatController {
     private Message parseMessage(JSONObject message) throws JSONException {
         String messageText = ((JSONObject) message.get("message")).getString("messageText");
         String userId = ((JSONObject) message.get("postedByUser")).getString("_id");
+        String postAt = message.getString("createdAt");
         Message msg;
         if (userId.equals(rId)) {
             msg = new Message(message.getString("_id"),
-                    messageText, rId, ((ChatView) context).getReceiver(), MessageAdapter.MSG_TYPE_RECEIVED);
+                    messageText, rId, ((ChatView) context).getReceiver(), MessageAdapter.MSG_TYPE_RECEIVED, postAt);
         } else {
             msg = new Message(message.getString("_id"),
-                    messageText, userAccount.getId(), userAccount.getUserName(), MessageAdapter.MSG_TYPE_SENT);
+                    messageText, userAccount.getId(), userAccount.getUserName(), MessageAdapter.MSG_TYPE_SENT, postAt);
         }
         return msg;
     }
@@ -249,6 +250,7 @@ public class ChatController {
                 error.printStackTrace();
             }
         });
+        this.chatPos++;
         this.que.add(req);
     }
 
