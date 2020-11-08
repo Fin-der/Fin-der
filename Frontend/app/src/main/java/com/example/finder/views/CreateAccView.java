@@ -37,8 +37,8 @@ public class CreateAccView extends AppCompatActivity {
     private TextInputLayout phoneNumber;
     private TextInputLayout age;
     private TextInputLayout interest1;
-    private TextInputLayout interest2;
-    private TextInputLayout interest3;
+//    private TextInputLayout interest2;
+//    private TextInputLayout interest3;
 
     private Spinner genderSpinner;
 
@@ -59,8 +59,8 @@ public class CreateAccView extends AppCompatActivity {
         phoneNumber = findViewById(R.id.editTextPhone);
         age = findViewById(R.id.editTextAge);
         interest1 = findViewById(R.id.editTextInterest1);
-        interest2 = findViewById(R.id.editTextInterest2);
-        interest3 = findViewById(R.id.editTextInterest3);
+//        interest2 = findViewById(R.id.editTextInterest2);
+//        interest3 = findViewById(R.id.editTextInterest3);
 
         TextInputEditText firstNameEdit = findViewById(R.id.firstNameInput);
         TextInputEditText lastNameEdit = findViewById(R.id.lastNameInput);
@@ -92,7 +92,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                spinResult[0] = "not specified";
             }
         });
 
@@ -255,12 +255,12 @@ public class CreateAccView extends AppCompatActivity {
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//            this is meant to be empty since not checking before text is changed
         }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//            this is meant to be empty since not checking when text is changed
         }
 
         @Override
