@@ -43,7 +43,7 @@ export default {
                     }) 
                     if (sameInterests > 0) { 
                         potentialMatches.push(user); 
-                        const edge = await MatchEdgeModel.createBidirectionalEdge(sameInterests, curUser._id, user._id); 
+                        const edge = MatchEdgeModel.createBidirectionalEdge(sameInterests, curUser._id, user._id); 
                     } 
                 } 
             });
