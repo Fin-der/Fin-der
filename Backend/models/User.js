@@ -116,9 +116,10 @@ userSchema.statics.deleteByUserById = async function (id) {
 
 userSchema.statics.registerFCMToken = async function (id, token) {
     try {
-        const user = await this.findOne({ _id: id })
+        let user = await this.findOne({ _id: id })
         if (!user) throw ({ error: 'No user with this id found' });
         user.FCM_token = token
+        user.save();
     } catch (error) {
         throw error;
     }
