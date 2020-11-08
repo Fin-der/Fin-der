@@ -136,17 +136,34 @@ MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMa
 
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
     try {
+        await this.checkApprovedStatus;
+        await this.checkDeclinedStatus;
+        match.save();
+        otherMatch.save();
+        return;
+    } catch (error) {
+        throw error;
+    }
+}
+
+MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch) {
+    try {
         if (match.toStatus == 'approved' && match.fromStatus == 'approved') {
             match.status = 'approved';
             otherMatch.status = 'approved';
-            match.save();
-            otherMatch.save();
-        } else if (match.toStatus == 'declined' || match.fromStatus == 'declined') {
+        }
+        return;
+    } catch (error) {
+        throw error;
+    }
+}
+
+MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch) {
+    try {
+        if (match.toStatus == 'declined' || match.fromStatus == 'declined') {
             match.status = 'declined';
             otherMatch.status = 'declined';
-            match.save();
-            otherMatch.save();
-        }
+        } 
         return;
     } catch (error) {
         throw error;
