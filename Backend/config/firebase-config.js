@@ -2,7 +2,7 @@ import admin from 'firebase-admin'
 
 import serviceAccount from './fin-der-firebase-adminsdk-xpplc-a1b59b7301.json'
 
-// const notification_options = {
+// const notificationOptions = {
 //     priority: "high",
 //     timeToLive: 60 * 60 * 24 // a days worth of seconds
 // };

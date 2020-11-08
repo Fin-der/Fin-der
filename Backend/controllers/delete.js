@@ -14,7 +14,7 @@ export default {
         deletedMessagesCount: messages.deletedCount,
       });
     } catch (error) {
-      return res.status(500).json({ success: false, error: error })
+      return res.status(500).json({ success: false, error })
     }
   },
   deleteMessageById: async (req, res) => {
@@ -26,7 +26,7 @@ export default {
         deletedMessagesCount: message.deletedCount,
       });
     } catch (error) {
-      return res.status(500).json({ success: false, error: error })
+      return res.status(500).json({ success: false, error })
     }
   },
 }

@@ -15,7 +15,7 @@ export default {
             const user = await UserModel.getUserById(req.params.id);
             return res.status(200).json({ success: true, user });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     onCreateUser: async (req, res) => {
@@ -49,10 +49,9 @@ export default {
             });
             const vertex = await MatchVertexModel.createMatchVertex(curUser, potentialMatches);
             
-            return res.status(200).json({ success: true, curUser });
+            return res.status(200).json({ success: true, user: curUser });
         } catch (error) {
-            console.log(error)
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     onDeleteUserById: async (req, res) => {
@@ -63,7 +62,7 @@ export default {
                 message: `Deleted a count of ${user.deletedCount} user.` 
             });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     onRegisterFCMToken: async (req, res) => {
@@ -71,10 +70,10 @@ export default {
             const user = await UserModel.registerFCMToken(req.params.id, req.params.token);
             return res.status(200).json({
                 success: true, 
-                message: `Token: ${user.FCM_token} successfully registed with User(ID): ${user.id}` 
+                message: `Token: ${user.FCMToken} successfully registed with User(ID): ${user.id}` 
             });
         } catch(error) {
-            return res.status(500).json({ success:false, error: error })
+            return res.status(500).json({ success:false, error })
         }
     }
 }

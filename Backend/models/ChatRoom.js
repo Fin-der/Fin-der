@@ -76,7 +76,6 @@ chatRoomSchema.statics.initiateChat = async function (
             type: newRoom._doc.type,
         };
     } catch (error) {
-        console.log('error on start chat method', error);
         throw error;
     }
 }

@@ -9,7 +9,7 @@ class WebSockets {
         client.on("identity", (userId) => {
             this.users.push({
                 socketId: client.id,
-                userId: userId,
+                userId,
             });
         });
         // subscribe person to chat & other user as well

@@ -38,7 +38,7 @@ describe('test', () => {
         const mockGetUser = jest.fn(() => {return users});
         UserModel.getUsers = mockGetUser;
         
-        const resp = {success:true, users: users};
+        const resp = {success:true, users};
         
         const response = await request.get('/users');
 

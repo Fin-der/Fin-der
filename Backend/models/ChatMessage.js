@@ -49,9 +49,8 @@ const chatMessageSchema = new mongoose.Schema(
  */
 chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
     try {
-        console.log(chatRoomId)
         const post = await this.create({
-            chatRoomId: chatRoomId,
+            chatRoomId,
             message,
             postedByUser,
             readByRecipients: { readByUserId: postedByUser }
@@ -156,7 +155,9 @@ chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentU
             },
             {
                 $addToSet: {
-                readByRecipients: { readByUserId: currentUserOnlineId }
+                    readByRecipients: { 
+                        readByUserId: currentUserOnlineId 
+                    }
                 }
             },
             {

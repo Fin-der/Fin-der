@@ -7,7 +7,7 @@ export default {
             const matches = await MatchVertexModel.getPotentialMatches(userId);
             return res.status(200).json({ success: true, matches });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     approveMatch: async (req, res) => {
@@ -17,7 +17,7 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "approved")
             return res.status(200).json({ success: true, match });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     declineMatch: async (req, res) => {
@@ -27,7 +27,7 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "declined")
             return res.status(200).json({ success: true, match });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     getFriendMatches: async (req, res) => {
@@ -36,7 +36,7 @@ export default {
             const friends = await MatchVertexModel.getFriendMatches(userId);
             return res.status(200).json({ success: true, friends });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     }
 }

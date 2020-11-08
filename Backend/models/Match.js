@@ -32,13 +32,13 @@ const MatchEdgeSchema = new mongoose.Schema(
         },
         score: Number,
         from: UserModel.schema,
-        from_approve: {
+        fromStatus: {
             type: String,
             enum: ["declined", "potential", "approved"],
             default: "potential",
         },
         to: UserModel.schema,
-        to_approve: {
+        toStatus: {
             type: String,
             enum: ["declined", "potential", "approved"],
             default: "potential",
@@ -83,7 +83,7 @@ MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserI
     try {
         const user = await UserModel.getUserById(userId);
         const otherUser = await UserModel.getUserById(otherUserId);
-        const userVertex = await UserVertexModel.update({user: user},{$push: {matches: otherUser}})
+        const userVertex = await UserVertexModel.update({user},{$push: {matches: otherUser}})
         return userVertex;
     } catch (error) {
         throw error;
@@ -94,8 +94,8 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
     try {
         const user1 = await UserModel.getUserById(userId1);
         const user2 = await UserModel.getUserById(userId2);
-        const edge1 = await this.create({score: score, from: user1, to: user2});
-        const edge2 = await this.create({score: score, from: user2, to: user1});
+        const edge1 = await this.create({score, from: user1, to: user2});
+        const edge2 = await this.create({score, from: user2, to: user1});
         return edge1, edge2;
     } catch (error) {
         throw error;
@@ -108,21 +108,21 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         const otherMatch = await this.find({from: match.to});
         const user = await UserModel.getUserById(userId);
         if (match.from == user) {
-            match.from_status = status;
-            otherMatch.to_status = status;
+            match.fromStatus = status;
+            otherMatch.toStatus = status;
         } else if (match.to == user) {
-            match.to_status = status;
-            otherMatch.from_status = status;
+            match.toStatus = status;
+            otherMatch.fromStatus = status;
         } else {
             throw ({ error: 'User is not a part of this match'})
         }
         match.save()
         otherMatch.save()
 
-        if (match.to_status == "approved" && match.from_status == "approved") {
+        if (match.toStatus == "approved" && match.fromStatus == "approved") {
             match.status == "approved";
             otherMatch.status == "approved";
-        } else if (match.to_status == "declined" || match.from_status == "declined") {
+        } else if (match.toStatus == "declined" || match.fromStatus == "declined") {
             match.status == "declined";
             otherMatch.status == "declined";
         }

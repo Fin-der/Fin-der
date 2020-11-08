@@ -13,7 +13,7 @@ export default {
             
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     postMessage: async (req, res) => {
@@ -28,7 +28,7 @@ export default {
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId)
             const registrationTokens = await UserModel.getTokensbyIds(userIds)
-            var notif_message = {
+            var notifMessage = {
                 "notification": {
                     "title": "Message From ",
                     "body": "message"
@@ -36,18 +36,12 @@ export default {
                 "tokens": registrationTokens
             }
             if (registrationTokens.length !== 0) {
-                admin.messaging().sendMulticast(notif_message)
-                .then( (response) => {
-                    console.log('Successfully sent message:', response);
-                })
-                .catch( (error) => {
-                    console.log('Error sending message:', error);
-                });
+                admin.messaging().sendMulticast(notifMessage)
             }
             
             return res.status(200).json({ success: true, post });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     getRecentConversation: async (req, res) => {
@@ -64,7 +58,7 @@ export default {
             );
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     getConversationByRoomId: async (req, res) => {
@@ -81,7 +75,7 @@ export default {
             const options = {
                 page: parseInt(req.query.page, 10) || 0,
                 limit: parseInt(req.query.limit, 10) || 25,
-                skip: parseInt(skip) || 0,
+                skip: parseInt(skip, 10) || 0,
             };
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({
@@ -108,7 +102,6 @@ export default {
             const result = await ChatMessageModel.markMessageRead(roomId, currentLoggedUser);
             return res.status(200).json({ success: true, data: result });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({ success: false, error });
         }
     },
