@@ -63,7 +63,7 @@ userSchema.statics.createUser = async function (_id, firstName, lastName,
 userSchema.statics.getUserById = async function (id) {
     try {
         const user = await this.findOne({ _id: id });
-        if (!user) { throw ({ error: 'No user with this id found' }); }
+        if (!user) { throw ({ error: "No user with this id found" }); }
         return user;
     } catch (error) {
         throw error;
@@ -111,7 +111,7 @@ userSchema.statics.deleteByUserById = async function (id) {
 userSchema.statics.registerFCMToken = async function (id, token) {
     try {
         let user = await this.findOne({ _id: id })
-        if (!user) { throw ({ error: 'No user with this id found' }); }
+        if (!user) { throw ({ error: "No user with this id found" }); }
         user.FCMToken = token
         user.save();
     } catch (error) {
@@ -121,7 +121,7 @@ userSchema.statics.registerFCMToken = async function (id, token) {
 
 userSchema.statics.getTokensbyIds = async function (ids) {
     try {
-        const tokens = await this.find({ _id: { $in: ids } }, 'FCMToken');
+        const tokens = await this.find({ _id: { $in: ids } }, "FCMToken");
         return tokens;
     } catch (error) {
         throw error;

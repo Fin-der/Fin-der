@@ -1,7 +1,7 @@
-import ChatRoomModel from '../models/ChatRoom.js';
-import ChatMessageModel from '../models/ChatMessage.js';
-import UserModel from '../models/User.js';
-import admin from '../config/firebase-config.js';
+import ChatRoomModel from "../models/ChatRoom.js";
+import ChatMessageModel from "../models/ChatMessage.js";
+import UserModel from "../models/User.js";
+import admin from "../config/firebase-config.js";
 
 export default {
     initiate: async (req, res) => {
@@ -24,7 +24,7 @@ export default {
             const currentLoggedUser = req.body.userId;
             const roomId = req.body.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
-            global.io.sockets.in(roomId).emit('new message', { message: post });
+            global.io.sockets.in(roomId).emit("new message", { message: post });
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId)
             const registrationTokens = await UserModel.getTokensbyIds(userIds)
@@ -84,7 +84,7 @@ export default {
             if (!room) {
                 return res.status(400).json({
                 success: false,
-                message: 'No room exists for this id',
+                message: "No room exists for this id",
                 })
             }
 

@@ -1,5 +1,5 @@
-import ChatRoomModel from '../models/ChatRoom.js';
-import ChatMessageModel from '../models/ChatMessage.js';
+import ChatRoomModel from "../models/ChatRoom.js";
+import ChatMessageModel from "../models/ChatMessage.js";
 
 export default {
   deleteRoomById: async (req, res) => {

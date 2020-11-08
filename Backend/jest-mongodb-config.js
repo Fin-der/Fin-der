@@ -1,11 +1,11 @@
 export default {
     mongodbMemoryServerOptions = {
         binary: {
-            version: '4.4.1',
+            version: "4.4.1",
             skipMD5: true
         },
         instance: {
-            dbName: 'jest'
+            dbName: "jest"
         },
         autoStart: false
     }

@@ -117,14 +117,14 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
 
 MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, user, status) {
     try {
-        if (match.from == user) {
+        if (match.from === user) {
             match.fromStatus = status;
             otherMatch.toStatus = status;
-        } else if (match.to == user) {
+        } else if (match.to === user) {
             match.toStatus = status;
             otherMatch.fromStatus = status;
         } else {
-            throw ({ error: 'User is not a part of this match'})
+            throw ({ error: "User is not a part of this match"})
         }
         match.save();
         otherMatch.save();
@@ -148,9 +148,9 @@ MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch
 
 MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch) {
     try {
-        if (match.toStatus == 'approved' && match.fromStatus == 'approved') {
-            match.status = 'approved';
-            otherMatch.status = 'approved';
+        if (match.toStatus === "approved" && match.fromStatus === "approved") {
+            match.status = "approved";
+            otherMatch.status = "approved";
         }
         return;
     } catch (error) {
@@ -160,9 +160,9 @@ MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch)
 
 MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch) {
     try {
-        if (match.toStatus == 'declined' || match.fromStatus == 'declined') {
-            match.status = 'declined';
-            otherMatch.status = 'declined';
+        if (match.toStatus === "declined" || match.fromStatus === "declined") {
+            match.status = "declined";
+            otherMatch.status = "declined";
         } 
         return;
     } catch (error) {

@@ -1,5 +1,5 @@
-import UserModel from '../models/User.js';
-import { MatchEdgeModel, MatchVertexModel } from '../models/Match.js';
+import UserModel from "../models/User.js";
+import { MatchEdgeModel, MatchVertexModel } from "../models/Match.js";
 
 export default {
     onGetAllUsers: async (req, res) => {
@@ -34,7 +34,7 @@ export default {
             const curInterests = new Set(curUser.interests); 
             const users = await UserModel.getUsers(); 
             users.forEach((user) => { 
-                if (user._id != curUser._id) { 
+                if (user._id !== curUser._id) { 
                     var sameInterests = 0; 
                     user.interests.forEach((interest) => { 
                         if (curInterests.has(interest)) { 
