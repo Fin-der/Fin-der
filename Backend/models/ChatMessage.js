@@ -171,9 +171,8 @@ chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentU
 /**
  * @param {Array} chatRoomIds - chat room ids
  * @param {{ page, limit }} options - pagination options
- * @param {String} currentUserOnlineId - user id
  */
-chatMessageSchema.statics.getRecentConversation = async function (chatRoomIds, options, currentUserOnlineId) {
+chatMessageSchema.statics.getRecentConversation = async function (chatRoomIds, options) {
     try {
         return this.aggregate([
             { $match: { chatRoomId: { $in: chatRoomIds } } },

@@ -1,10 +1,4 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
-
-/* export const USER_TYPES = {
-    CONSUMER: "consumer",
-    SUPPORT: "support",
-}; */
 
 const userSchema = new mongoose.Schema(
     {
@@ -69,7 +63,7 @@ userSchema.statics.createUser = async function (_id, firstName, lastName,
 userSchema.statics.getUserById = async function (id) {
     try {
         const user = await this.findOne({ _id: id });
-        if (!user) throw ({ error: 'No user with this id found' });
+        if (!user) {throw ({ error: 'No user with this id found' })};
         return user;
     } catch (error) {
         throw error;

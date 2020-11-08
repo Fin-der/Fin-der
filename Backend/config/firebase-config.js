@@ -2,10 +2,10 @@ import admin from 'firebase-admin'
 
 import serviceAccount from './fin-der-firebase-adminsdk-xpplc-a1b59b7301.json'
 
-const notification_options = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24 // a days worth of seconds
-};
+// const notification_options = {
+//     priority: "high",
+//     timeToLive: 60 * 60 * 24 // a days worth of seconds
+// };
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

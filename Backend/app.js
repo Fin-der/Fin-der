@@ -1,6 +1,6 @@
 import express from 'express'
 //import bodyparser from 'body-parser'
-import admin from './config/firebase-config.js'
+//import admin from './config/firebase-config.js'
 //import cors from 'cors'
 // routes
 import indexRouter from "./routes/index.js"
@@ -9,7 +9,7 @@ import chatRoomRouter from "./routes/chatRoom.js"
 import deleteRouter from "./routes/delete.js"
 import matchRouter from "./routes/match.js"
 
-import { decode } from './middlewares/jwt.js'
+//import { decode } from './middlewares/jwt.js'
 
 // run server with node --experimental-json-modules server.js
 export const app = express();

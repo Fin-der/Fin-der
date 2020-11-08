@@ -35,12 +35,12 @@ export default {
                 },
                 "tokens": registrationTokens
             }
-            if (registrationTokens.length != 0) {
+            if (registrationTokens.length !== 0) {
                 admin.messaging().sendMulticast(notif_message)
-                .then( response => {
+                .then( (response) => {
                     console.log('Successfully sent message:', response);
                 })
-                .catch( error => {
+                .catch( (error) => {
                     console.log('Error sending message:', error);
                 });
             }
@@ -54,11 +54,11 @@ export default {
         try {
             const currentLoggedUser = req.body.userId;
             const options = {
-                page: parseInt(req.query.page) || 0,
-                limit: parseInt(req.query.limit) || 10,
+                page: parseInt(req.query.page, 10) || 0,
+                limit: parseInt(req.query.limit, 10) || 10,
             };
             const rooms = await ChatRoomModel.getChatRoomsByUserId(currentLoggedUser);
-            const roomIds = rooms.map(room => room._id);
+            const roomIds = rooms.map((room) => room._id);
             const recentConversation = await ChatMessageModel.getRecentConversation(
                 roomIds, options, currentLoggedUser
             );
@@ -79,8 +79,8 @@ export default {
             }
             const users = await UserModel.getUserByIds(room.userIds);
             const options = {
-                page: parseInt(req.query.page) || 0,
-                limit: parseInt(req.query.limit) || 25,
+                page: parseInt(req.query.page, 10) || 0,
+                limit: parseInt(req.query.limit, 10) || 25,
                 skip: parseInt(skip) || 0,
             };
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
