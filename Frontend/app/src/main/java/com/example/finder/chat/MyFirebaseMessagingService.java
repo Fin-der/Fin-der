@@ -1,4 +1,4 @@
-package com.example.finder.Chat;
+package com.example.finder.chat;
 
 import android.util.Log;
 

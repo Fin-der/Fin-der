@@ -12,13 +12,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Views.MatchView"></activity>
-        <activity android:name=".Views.ProfileView"></activity>
+        <activity android:name=".views.MatchView"></activity>
+        <activity android:name=".views.ProfileView"></activity>
         <activity
-            android:name=".Views.ChatView"
+            android:name=".views.ChatView"
             android:label="Chat" />
-        <activity android:name=".Views.HomeView" />
-        <activity android:name=".Views.CreateAccView" />
+        <activity android:name=".views.HomeView" />
+        <activity android:name=".views.CreateAccView" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +28,7 @@
         </activity>
 
         <service
-            android:name=".Chat.MyFirebaseMessagingService"
+            android:name=".chat.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

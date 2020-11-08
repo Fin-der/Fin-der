@@ -1,4 +1,4 @@
-package com.example.finder.Views;
+package com.example.finder.views;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.finder.Chat.MessageBoardAdapter;
+import com.example.finder.chat.MessageBoardAdapter;
 import com.example.finder.MainActivity;
-import com.example.finder.Models.UserAccount;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;

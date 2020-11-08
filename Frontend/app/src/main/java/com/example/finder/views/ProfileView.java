@@ -1,4 +1,4 @@
-package com.example.finder.Views;
+package com.example.finder.views;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.finder.Models.UserAccount;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.material.textfield.TextInputLayout;
 

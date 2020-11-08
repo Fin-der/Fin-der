@@ -1,4 +1,4 @@
-package com.example.finder.Models;
+package com.example.finder.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;

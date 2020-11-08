@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Views.ChatView"
+    tools:context=".views.ChatView"
     android:windowSoftInputMode="adjustPan|adjustResize">
 
     <!-- A horizontal line between the chatbox and RecyclerView -->
