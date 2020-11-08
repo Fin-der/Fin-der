@@ -62,7 +62,7 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
 MatchVertexSchema.statics.getPotentialMatches = async function (userId) {
     try {
         const user = await UserModel.getUserById(userId);
-        const edges = await MatchEdgeModel.find({from: user, status: "potential"});
+        const edges = await this.find({from: user, status: "potential"});
         return edges;
     } catch (error) {
         throw error;
@@ -72,7 +72,7 @@ MatchVertexSchema.statics.getPotentialMatches = async function (userId) {
 MatchVertexSchema.statics.getFriendMatches = async function (userId) {
     try {
         const user = await UserModel.getUserById(userId);
-        const edges = await MatchEdgeModel.find({from: user, status: "approved"});
+        const edges = await this.find({from: user, status: "approved"});
         return edges;
     } catch (error) {
         throw error;
@@ -107,8 +107,8 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         const match = await this.find({_id: matchId});
         const otherMatch = await this.find({from: match.to});
         const user = await UserModel.getUserById(userId);
-        await MatchEdgeModel.updateMatchStatus(match, otherMatch, user, status);
-        await MatchEdgeModel.determineMatchStatus(match, otherMatch);
+        await this.updateMatchStatus(match, otherMatch, user, status);
+        await this.determineMatchStatus(match, otherMatch);
         return match;
     } catch (error) {
         throw error;
