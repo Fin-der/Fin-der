@@ -137,11 +137,11 @@ MatchEdgeSchema.statics.updateMatchStatus = async function (match, otherMatch, u
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
     try {
         if (match.toStatus == "approved" && match.fromStatus == "approved") {
-            match.status == "approved";
-            otherMatch.status == "approved";
+            match.status = "approved";
+            otherMatch.status = "approved";
         } else if (match.toStatus == "declined" || match.fromStatus == "declined") {
-            match.status == "declined";
-            otherMatch.status == "declined";
+            match.status = "declined";
+            otherMatch.status = "declined";
         }
         match.save();
         otherMatch.save();
