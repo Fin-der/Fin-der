@@ -42,6 +42,7 @@ chatRoomSchema.statics.getChatRoomsByUserId = async function (userId) {
 chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     try {
         const room = await this.findOne({ _id: roomId });
+        if (!room) { throw ({ error: 'No room with this id found' }); }
         return room;
     } catch (error) {
         throw error;

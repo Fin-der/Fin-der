@@ -7,7 +7,7 @@ export default {
             const users = await UserModel.getUsers();
             return res.status(200).json({ success: true, users });
         } catch (error) {
-            return res.status(500).json({ success: false, error: error })
+            return res.status(500).json({ success: false, error })
         }
     },
     onGetUserById: async (req, res) => {

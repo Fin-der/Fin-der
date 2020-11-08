@@ -119,6 +119,15 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         match.save()
         otherMatch.save()
 
+        await MatchEdgeModel.determineMatchStatus(match, otherMatch);
+        return match;
+    } catch (error) {
+        throw error;
+    }
+};
+
+MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
+    try {
         if (match.toStatus == "approved" && match.fromStatus == "approved") {
             match.status == "approved";
             otherMatch.status == "approved";
@@ -128,11 +137,11 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         }
         match.save()
         otherMatch.save()
-        return match;
+        return;
     } catch (error) {
         throw error;
     }
-};
+}
 
 const MatchVertexModel = mongoose.model("matchVertex", MatchVertexSchema);
 const MatchEdgeModel = mongoose.model("matchEdge", MatchEdgeSchema);

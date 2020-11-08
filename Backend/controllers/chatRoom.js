@@ -65,12 +65,6 @@ export default {
         try {
             const { roomId, skip } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
-            if (!room) {
-                return res.status(400).json({
-                success: false,
-                message: 'No room exists for this id',
-                })
-            }
             const users = await UserModel.getUserByIds(room.userIds);
             const options = {
                 page: parseInt(req.query.page, 10) || 0,
