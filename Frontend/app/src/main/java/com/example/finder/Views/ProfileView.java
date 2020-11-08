@@ -15,30 +15,26 @@ import com.google.android.material.textfield.TextInputLayout;
 public class ProfileView extends AppCompatActivity {
     final static String TAG = "ProfileView";
 
-    private TextView fullName;
-    private TextView numMatches;
-    private TextInputLayout firstName;
-    private TextInputLayout lastName;
-    private TextInputLayout age;
-    private TextInputLayout email;
-    private TextInputLayout phoneNumber;
-
-    private UserAccount user;
+    //private TextView numMatches;
+    //private TextInputLayout firstName;
+    //private TextInputLayout lastName;
+    //private TextInputLayout email;
+    //private TextInputLayout phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_view);
 
-        fullName = findViewById(R.id.fullNameText);
-        firstName = findViewById(R.id.first_name_profile);
-        lastName = findViewById(R.id.last_name_profile);
-        age = findViewById(R.id.age_profile);
-        email = findViewById(R.id.email_profile);
-        phoneNumber = findViewById(R.id.phone_number_profile);
-        numMatches = findViewById(R.id.number_matches);
+        TextView fullName = findViewById(R.id.fullNameText);
+        //firstName = findViewById(R.id.first_name_profile);
+        //lastName = findViewById(R.id.last_name_profile);
+        TextInputLayout age = findViewById(R.id.age_profile);
+        //email = findViewById(R.id.email_profile);
+        //phoneNumber = findViewById(R.id.phone_number_profile);
+        //numMatches = findViewById(R.id.number_matches);
 
-        this.user = (UserAccount) getIntent().getSerializableExtra("profile");
+        UserAccount user = (UserAccount) getIntent().getSerializableExtra("profile");
 
         fullName.setText(user.getUserName());
 //        firstName.getEditText().setText();

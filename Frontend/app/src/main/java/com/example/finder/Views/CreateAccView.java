@@ -30,7 +30,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CreateAccView extends AppCompatActivity {
-    final static String TAG = "CreateAccView";
+    private final static String TAG = "CreateAccView";
 
     private TextInputLayout firstName;
     private TextInputLayout lastName;
@@ -238,13 +238,13 @@ public class CreateAccView extends AppCompatActivity {
         return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkPhone() | !checkInterest());
     }
 
-    private boolean confirmAccount() {
-        String input = "Email: " + email.getEditText().getText().toString();
-        input += "\n";
-
-        Toast.makeText(CreateAccView.this, input, Toast.LENGTH_SHORT).show();
-        return true;
-    }
+//    private boolean confirmAccount() {
+//        String input = "Email: " + email.getEditText().getText().toString();
+//        input += "\n";
+//
+//        Toast.makeText(CreateAccView.this, input, Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
 
     private class MyTextWatcher implements TextWatcher {
 
@@ -284,6 +284,8 @@ public class CreateAccView extends AppCompatActivity {
                     break;
                 case R.id.interest1Input:
                     checkInterest();
+                    break;
+                default:
                     break;
             }
         }

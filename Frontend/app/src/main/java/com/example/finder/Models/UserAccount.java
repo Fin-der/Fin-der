@@ -53,4 +53,8 @@ public class UserAccount implements Serializable {
         return email;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
 }
