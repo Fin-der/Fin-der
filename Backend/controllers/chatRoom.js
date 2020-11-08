@@ -64,13 +64,9 @@ export default {
     getConversationByRoomId: async (req, res) => {
         try {
             const { roomId, skip } = req.params;
-            const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
+            const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
             const users = await UserModel.getUserByIds(room.userIds);
-            const options = {
-                page: parseInt(req.query.page, 10) || 0,
-                limit: parseInt(req.query.limit, 10) || 25,
-                skip: parseInt(skip, 10) || 0,
-            };
+            const options = await generateOptions(req, skip);
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({
                 success: true,
@@ -99,4 +95,17 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    generateOptions: async (req, skip) => {
+        try {
+            const options = {
+                page: parseInt(req.query.page, 10) || 0,
+                limit: parseInt(req.query.limit, 10) || 25,
+                skip: parseInt(skip, 10) || 0,
+            };
+            return options;
+        } catch (error) {
+            throw error;
+        }
+    },
 }
+

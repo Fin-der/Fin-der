@@ -107,6 +107,16 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         const match = await this.find({_id: matchId});
         const otherMatch = await this.find({from: match.to});
         const user = await UserModel.getUserById(userId);
+        await MatchEdgeModel.updateMatchStatus(match, otherMatch, user, status);
+        await MatchEdgeModel.determineMatchStatus(match, otherMatch);
+        return match;
+    } catch (error) {
+        throw error;
+    }
+};
+
+MatchEdgeSchema.statics.updateMatchStatus = async function (match, otherMatch, user, status) {
+    try {
         if (match.from == user) {
             match.fromStatus = status;
             otherMatch.toStatus = status;
@@ -116,15 +126,13 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         } else {
             throw ({ error: 'User is not a part of this match'})
         }
-        match.save()
-        otherMatch.save()
-
-        await MatchEdgeModel.determineMatchStatus(match, otherMatch);
-        return match;
+        match.save();
+        otherMatch.save();
+        return;
     } catch (error) {
         throw error;
     }
-};
+}
 
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
     try {
@@ -135,8 +143,8 @@ MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch
             match.status == "declined";
             otherMatch.status == "declined";
         }
-        match.save()
-        otherMatch.save()
+        match.save();
+        otherMatch.save();
         return;
     } catch (error) {
         throw error;
