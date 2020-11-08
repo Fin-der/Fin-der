@@ -21,8 +21,8 @@ export default {
     onCreateUser: async (req, res) => {
         try {
             // TODO: validate input
-            const { firstName, lastName, type } = req.body;
-            const user = await UserModel.createUser(firstName, lastName, type);
+            const { firstName, lastName, age, gender, email, type } = req.body;
+            const user = await UserModel.createUser(firstName, lastName, age, gender, email, type);
             
             // var potentialMatches; 
             // // go through each vertex and find if interests are same 

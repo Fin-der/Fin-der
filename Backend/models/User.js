@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema(
         },
         firstName: String,
         lastName: String,
+        age: String,
+        gender: String,
+        email: String,
         type: String,
         FCM_token: String,
         interests: [String],
@@ -28,11 +31,15 @@ const userSchema = new mongoose.Schema(
 /**
  * @param {String} firstName
  * @param {String} lastName
+ * @param {String} age
+ * @param {String} gender
+ * @param {String} email
+ * @param {String} type
  * @returns {Object} new user object created
  */
-userSchema.statics.createUser = async function (firstName, lastName, type) {
+userSchema.statics.createUser = async function (firstName, lastName, age, gender, email, type) {
     try {
-        const user = await this.create({ firstName, lastName, type });
+        const user = await this.create({ firstName, lastName, age, gender, email, type});
         return user;
     } catch (error) {
         throw error;
