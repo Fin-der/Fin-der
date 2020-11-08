@@ -1,5 +1,5 @@
 import UserModel from '../models/User.js';
-//import { MatchEdgeModel, MatchVertexModel } from '../models/Match.js';
+import { MatchEdgeModel, MatchVertexModel } from '../models/Match.js';
 
 export default {
     onGetAllUsers: async (req, res) => {
@@ -21,32 +21,35 @@ export default {
     onCreateUser: async (req, res) => {
         try {
             // TODO: validate input
-            const { firstName, lastName, age, gender, email, type } = req.body;
-            const user = await UserModel.createUser(firstName, lastName, age, gender, email, type);
+            const { _id, firstName, lastName, 
+                age, gender, email, location, preferences,
+                interests, description} = req.body;
+            const curUser = await UserModel.createUser(_id, firstName, lastName, 
+                age, gender, email, location, preferences,
+                interests, description);
             
-            // var potentialMatches; 
-            // // go through each vertex and find if interests are same 
-            // // on success create bidirectional edge 
-            // const curInterests = new Set(curUser.interests); 
-            // const users = await UserModel.getUsers(); 
-            // users.forEach((user) => { 
-            //     console.log("user!")
-            //     if (user._id != curUser._id) { 
-            //         var sameInterests = 0; 
-            //         user.interests.forEach((interest) => { 
-            //             if (curInterests.has(interest)) { 
-            //                 sameInterests++; 
-            //             } 
-            //         }) 
-            //         if (sameInterests > 0) { 
-            //             potentialMatches.push(user); 
-            //             const edge = MatchEdgeModel.createBidirectionalEdge(sameInterests, curUser._id, user._id); 
-            //         } 
-            //     } 
-            // });
-            // const vertex = await MatchVertexModel.createMatchVertex(curUser, potentialMatches);
+            var potentialMatches = []; 
+            // go through each vertex and find if interests are same 
+            // on success create bidirectional edge 
+            const curInterests = new Set(curUser.interests); 
+            const users = await UserModel.getUsers(); 
+            users.forEach((user) => { 
+                if (user._id != curUser._id) { 
+                    var sameInterests = 0; 
+                    user.interests.forEach((interest) => { 
+                        if (curInterests.has(interest)) { 
+                            sameInterests++; 
+                        } 
+                    }) 
+                    if (sameInterests > 0) { 
+                        potentialMatches.push(user); 
+                        const edge = await MatchEdgeModel.createBidirectionalEdge(sameInterests, curUser._id, user._id); 
+                    } 
+                } 
+            });
+            const vertex = await MatchVertexModel.createMatchVertex(curUser, potentialMatches);
             
-            return res.status(200).json({ success: true, user });
+            return res.status(200).json({ success: true, curUser });
         } catch (error) {
             console.log(error)
             return res.status(500).json({ success: false, error: error })

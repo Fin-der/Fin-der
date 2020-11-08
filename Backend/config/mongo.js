@@ -5,11 +5,12 @@ const CONNECTION_URL = `mongodb://${config.db.url}/${config.db.name}`
 
 mongoose.connect(CONNECTION_URL, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
+  useCreateIndex: true
 })
 
 mongoose.connection.on('connected', () => {
-  console.log('Mongo has connected succesfully')
+  console.log('Mongo has connected successfully')
 })
 mongoose.connection.on('reconnected', () => {
   console.log('Mongo has reconnected')

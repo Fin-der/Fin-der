@@ -8,19 +8,31 @@ import { v4 as uuidv4 } from "uuid";
 
 const userSchema = new mongoose.Schema(
     {
-        // TODO: MODIFY THIS 
+        // TODO: Fuzzy matching
         _id: {
+            // By default this is unique
             type: String,
-            default: () => uuidv4().replace(/\-/g, ""),
         },
-        firstName: String,
-        lastName: String,
-        age: String,
+        firstName: {
+            type: String,
+            required: true
+        },
+        lastName: {
+            type: String,
+            required: true
+        },
+        age: Number,
         gender: String,
         email: String,
-        type: String,
-        FCM_token: String,
+        location: (Number, Number),
+        preferences: {
+            gender: String,
+            age: (Number, Number), // min and max
+            proximity: Number
+        },
         interests: [String],
+        description: String,
+        FCM_token: String,
     },
     {
         timestamps: true,
@@ -37,9 +49,13 @@ const userSchema = new mongoose.Schema(
  * @param {String} type
  * @returns {Object} new user object created
  */
-userSchema.statics.createUser = async function (firstName, lastName, age, gender, email, type) {
+userSchema.statics.createUser = async function (_id, firstName, lastName, 
+                                age, gender, email, location, preferences,
+                                interests, description) {
     try {
-        const user = await this.create({ firstName, lastName, age, gender, email, type});
+        const user = await this.create({ _id, firstName, lastName, 
+            age, gender, email, location, preferences,
+            interests, description});
         return user;
     } catch (error) {
         throw error;
