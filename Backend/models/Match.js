@@ -83,7 +83,7 @@ MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserI
     try {
         const user = await UserModel.getUserById(userId);
         const otherUser = await UserModel.getUserById(otherUserId);
-        const userVertex = await UserVertexModel.update({user},{$push: {matches: otherUser}})
+        const userVertex = await this.update({user},{$push: {matches: otherUser}})
         return userVertex;
     } catch (error) {
         throw error;
@@ -107,7 +107,7 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
         const match = await this.find({_id: matchId});
         const otherMatch = await this.find({from: match.to});
         const user = await UserModel.getUserById(userId);
-        await this.updateMatchStatus(match, otherMatch, user, status);
+        await this.updateToFromMatchStatus(match, otherMatch, user, status);
         await this.determineMatchStatus(match, otherMatch);
         return match;
     } catch (error) {
@@ -115,7 +115,7 @@ MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, sta
     }
 };
 
-MatchEdgeSchema.statics.updateMatchStatus = async function (match, otherMatch, user, status) {
+MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, user, status) {
     try {
         if (match.from == user) {
             match.fromStatus = status;
@@ -136,15 +136,17 @@ MatchEdgeSchema.statics.updateMatchStatus = async function (match, otherMatch, u
 
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
     try {
-        if (match.toStatus == "approved" && match.fromStatus == "approved") {
-            match.status = "approved";
-            otherMatch.status = "approved";
-        } else if (match.toStatus == "declined" || match.fromStatus == "declined") {
-            match.status = "declined";
-            otherMatch.status = "declined";
+        if (match.toStatus == 'approved' && match.fromStatus == 'approved') {
+            match.status = 'approved';
+            otherMatch.status = 'approved';
+            match.save();
+            otherMatch.save();
+        } else if (match.toStatus == 'declined' || match.fromStatus == 'declined') {
+            match.status = 'declined';
+            otherMatch.status = 'declined';
+            match.save();
+            otherMatch.save();
         }
-        match.save();
-        otherMatch.save();
         return;
     } catch (error) {
         throw error;
