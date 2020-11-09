@@ -1,4 +1,4 @@
-package com.example.finder.Chat;
+package com.example.finder.chat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finder.Models.UserAccount;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
-import com.example.finder.Views.ChatView;
+import com.example.finder.views.ChatView;
 
 import java.util.List;
 
@@ -67,7 +67,7 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
             this.name = itemView.findViewById(R.id.msgboard_profilename);
         }
 
-        void bind(UserAccount user) {
+        private void bind(UserAccount user) {
             this.name.setText(user.getUserName());
         }
     }

@@ -16,9 +16,9 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.finder.Models.UserAccount;
-import com.example.finder.Views.CreateAccView;
-import com.example.finder.Views.HomeView;
+import com.example.finder.models.UserAccount;
+import com.example.finder.views.CreateAccView;
+import com.example.finder.views.HomeView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -28,14 +28,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
-
 public class MainActivity extends AppCompatActivity {
-    final static String TAG = "MainActivity";
+    private final static String TAG = "MainActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
     private RequestQueue reqQueue;

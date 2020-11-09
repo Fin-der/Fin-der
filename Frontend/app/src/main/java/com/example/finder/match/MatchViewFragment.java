@@ -1,4 +1,4 @@
-package com.example.finder.Match;
+package com.example.finder.match;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

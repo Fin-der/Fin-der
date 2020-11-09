@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_centerInParent="false"
     android:layout_centerHorizontal="false"
-    tools:context=".Views.HomeView">
+    tools:context=".views.HomeView">
 
 
     <Button
