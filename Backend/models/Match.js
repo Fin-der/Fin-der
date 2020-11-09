@@ -51,123 +51,83 @@ const MatchEdgeSchema = new mongoose.Schema(
 );
 
 MatchVertexSchema.statics.createMatchVertex = async function (newUser, potentialMatches) {
-    try {
-        const vertex = await this.create({user: newUser, matches: potentialMatches});
-        return vertex;
-    } catch (error) {
-        throw error;
-    }
+    const vertex = await this.create({user: newUser, matches: potentialMatches});
+    return vertex;
 };
 
 MatchVertexSchema.statics.getPotentialMatches = async function (userId) {
-    try {
-        const user = await UserModel.getUserById(userId);
-        const edges = await this.find({from: user, status: "potential"});
-        return edges;
-    } catch (error) {
-        throw error;
-    }
+    const user = await UserModel.getUserById(userId);
+    const edges = await this.find({from: user, status: "potential"});
+    return edges;
 };
 
 MatchVertexSchema.statics.getFriendMatches = async function (userId) {
-    try {
-        const user = await UserModel.getUserById(userId);
-        const edges = await this.find({from: user, status: "approved"});
-        return edges;
-    } catch (error) {
-        throw error;
-    }
+    const user = await UserModel.getUserById(userId);
+    const edges = await this.find({from: user, status: "approved"});
+    return edges;
 };
 
 MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
-    try {
-        const user = await UserModel.getUserById(userId);
-        const otherUser = await UserModel.getUserById(otherUserId);
-        const userVertex = await this.update({user},{$push: {matches: otherUser}});
-        return userVertex;
-    } catch (error) {
-        throw error;
-    }
+    const user = await UserModel.getUserById(userId);
+    const otherUser = await UserModel.getUserById(otherUserId);
+    const userVertex = await this.update({user},{$push: {matches: otherUser}});
+    return userVertex;
 };
 
 MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1, userId2) {
-    try {
-        const user1 = await UserModel.getUserById(userId1);
-        const user2 = await UserModel.getUserById(userId2);
-        const edge1 = await this.create({score, from: user1, to: user2});
-        const edge2 = await this.create({score, from: user2, to: user1});
-        return edge1, edge2;
-    } catch (error) {
-        throw error;
-    }
+    const user1 = await UserModel.getUserById(userId1);
+    const user2 = await UserModel.getUserById(userId2);
+    const edge1 = await this.create({score, from: user1, to: user2});
+    const edge2 = await this.create({score, from: user2, to: user1});
+    return edge1, edge2;
 };
 
 MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
-    try {
-        const match = await this.find({_id: matchId});
-        const otherMatch = await this.find({from: match.to});
-        const user = await UserModel.getUserById(userId);
-        await this.updateToFromMatchStatus(match, otherMatch, user, status);
-        await this.determineMatchStatus(match, otherMatch);
-        return match;
-    } catch (error) {
-        throw error;
-    }
+    const match = await this.find({_id: matchId});
+    const otherMatch = await this.find({from: match.to});
+    const user = await UserModel.getUserById(userId);
+    await this.updateToFromMatchStatus(match, otherMatch, user, status);
+    await this.determineMatchStatus(match, otherMatch);
+    return match;
 };
 
 MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, user, status) {
-    try {
-        if (match.from === user) {
-            match.fromStatus = status;
-            otherMatch.toStatus = status;
-        } else if (match.to === user) {
-            match.toStatus = status;
-            otherMatch.fromStatus = status;
-        } else {
-            throw ({ error: "User is not a part of this match"});
-        }
-        match.save();
-        otherMatch.save();
-        return;
-    } catch (error) {
-        throw error;
+    if (match.from === user) {
+        match.fromStatus = status;
+        otherMatch.toStatus = status;
+    } else if (match.to === user) {
+        match.toStatus = status;
+        otherMatch.fromStatus = status;
+    } else {
+        throw ({ error: "User is not a part of this match"});
     }
+    match.save();
+    otherMatch.save();
+    return;
 };
 
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
-    try {
-        await this.checkApprovedStatus;
-        await this.checkDeclinedStatus;
-        match.save();
-        otherMatch.save();
-        return;
-    } catch (error) {
-        throw error;
-    }
+    await this.checkApprovedStatus;
+    await this.checkDeclinedStatus;
+    match.save();
+    otherMatch.save();
+    return;
 };
 
 MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch) {
-    try {
-        if (match.toStatus === "approved" && match.fromStatus === "approved") {
-            match.status = "approved";
-            otherMatch.status = "approved";
-        }
-        return;
-    } catch (error) {
-        throw error;
+    if (match.toStatus === "approved" && match.fromStatus === "approved") {
+        match.status = "approved";
+        otherMatch.status = "approved";
     }
+    return;
 };
 
 MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch) {
-    try {
-        if (match.toStatus === "declined" || match.fromStatus === "declined") {
-            match.status = "declined";
-            otherMatch.status = "declined";
-        } 
-        return;
-    } catch (error) {
-        throw error;
-    }
+    if (match.toStatus === "declined" || match.fromStatus === "declined") {
+        match.status = "declined";
+        otherMatch.status = "declined";
+    } 
+    return;
 };
 
 const MatchVertexModel = mongoose.model("matchVertex", MatchVertexSchema);
