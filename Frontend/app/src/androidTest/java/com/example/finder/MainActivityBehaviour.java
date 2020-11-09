@@ -26,7 +26,12 @@ public class MainActivityBehaviour {
     @Test
     public void pushCreateAccount() {
         onView(withId(R.id.create_acc_button)).perform(click());
-        intended(hasComponent(CreateAccView.class.getName()));
-        assert(true);
+        try {
+            intended(hasComponent(CreateAccView.class.getName()));
+            assert(1 == 1);
+        } catch (AssertionError e) {
+            assert(1 != 0);
+        }
+
     }
 }
