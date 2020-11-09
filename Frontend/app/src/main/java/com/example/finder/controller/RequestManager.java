@@ -1,4 +1,4 @@
-package com.example.finder.Controller;
+package com.example.finder.controller;
 
 public class RequestManager {
 

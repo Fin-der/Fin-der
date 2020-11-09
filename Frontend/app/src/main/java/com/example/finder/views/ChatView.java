@@ -1,4 +1,4 @@
-package com.example.finder.Views;
+package com.example.finder.views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.finder.Controller.ChatController;
-import com.example.finder.Models.UserAccount;
+import com.example.finder.controller.ChatController;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 
 public class ChatView extends AppCompatActivity {

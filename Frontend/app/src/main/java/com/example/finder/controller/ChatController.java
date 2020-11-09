@@ -1,4 +1,4 @@
-package com.example.finder.Controller;
+package com.example.finder.controller;
 
 import android.util.Log;
 import android.view.View;
@@ -17,11 +17,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.finder.Chat.MessageAdapter;
-import com.example.finder.Models.UserAccount;
-import com.example.finder.Models.Message;
+import com.example.finder.chat.MessageAdapter;
+import com.example.finder.models.UserAccount;
+import com.example.finder.models.Message;
 import com.example.finder.R;
-import com.example.finder.Views.ChatView;
+import com.example.finder.views.ChatView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,8 +31,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChatController {
     private Socket socket;

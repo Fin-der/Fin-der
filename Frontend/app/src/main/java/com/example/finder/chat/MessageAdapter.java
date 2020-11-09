@@ -1,4 +1,4 @@
-package com.example.finder.Chat;
+package com.example.finder.chat;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finder.Models.Message;
-import com.example.finder.Models.UserAccount;
+import com.example.finder.models.Message;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 
 import java.util.List;

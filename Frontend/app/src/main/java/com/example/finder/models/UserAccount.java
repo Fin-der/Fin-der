@@ -1,4 +1,4 @@
-package com.example.finder.Models;
+package com.example.finder.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,6 +51,10 @@ public class UserAccount implements Serializable {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getGender() {
+        return gender;
     }
 
 }

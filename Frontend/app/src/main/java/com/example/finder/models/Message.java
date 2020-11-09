@@ -1,4 +1,4 @@
-package com.example.finder.Models;
+package com.example.finder.models;
 
 import android.annotation.SuppressLint;
 

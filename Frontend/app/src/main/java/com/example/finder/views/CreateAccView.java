@@ -1,8 +1,7 @@
-package com.example.finder.Views;
+package com.example.finder.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -11,9 +10,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,27 +19,17 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.RequestFuture;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.finder.MainActivity;
-import com.example.finder.Models.UserAccount;
+import com.example.finder.models.UserAccount;
 import com.example.finder.R;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.internal.Util;
 
 public class CreateAccView extends AppCompatActivity {
-    final static String TAG = "CreateAccView";
+    private final static String TAG = "CreateAccView";
 
     private TextInputLayout firstName;
     private TextInputLayout lastName;
@@ -50,8 +37,8 @@ public class CreateAccView extends AppCompatActivity {
     private TextInputLayout phoneNumber;
     private TextInputLayout age;
     private TextInputLayout interest1;
-    private TextInputLayout interest2;
-    private TextInputLayout interest3;
+//    private TextInputLayout interest2;
+//    private TextInputLayout interest3;
 
     private Spinner genderSpinner;
 
@@ -72,8 +59,8 @@ public class CreateAccView extends AppCompatActivity {
         phoneNumber = findViewById(R.id.editTextPhone);
         age = findViewById(R.id.editTextAge);
         interest1 = findViewById(R.id.editTextInterest1);
-        interest2 = findViewById(R.id.editTextInterest2);
-        interest3 = findViewById(R.id.editTextInterest3);
+//        interest2 = findViewById(R.id.editTextInterest2);
+//        interest3 = findViewById(R.id.editTextInterest3);
 
         TextInputEditText firstNameEdit = findViewById(R.id.firstNameInput);
         TextInputEditText lastNameEdit = findViewById(R.id.lastNameInput);
@@ -105,7 +92,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                spinResult[0] = "not specified";
             }
         });
 
@@ -250,13 +237,13 @@ public class CreateAccView extends AppCompatActivity {
         return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkPhone() | !checkInterest());
     }
 
-    private boolean confirmAccount() {
-        String input = "Email: " + email.getEditText().getText().toString();
-        input += "\n";
-
-        Toast.makeText(CreateAccView.this, input, Toast.LENGTH_SHORT).show();
-        return true;
-    }
+//    private boolean confirmAccount() {
+//        String input = "Email: " + email.getEditText().getText().toString();
+//        input += "\n";
+//
+//        Toast.makeText(CreateAccView.this, input, Toast.LENGTH_SHORT).show();
+//        return true;
+//    }
 
     private class MyTextWatcher implements TextWatcher {
 
@@ -268,12 +255,12 @@ public class CreateAccView extends AppCompatActivity {
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//            this is meant to be empty since not checking before text is changed
         }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+//            this is meant to be empty since not checking when text is changed
         }
 
         @Override
@@ -296,6 +283,8 @@ public class CreateAccView extends AppCompatActivity {
                     break;
                 case R.id.interest1Input:
                     checkInterest();
+                    break;
+                default:
                     break;
             }
         }

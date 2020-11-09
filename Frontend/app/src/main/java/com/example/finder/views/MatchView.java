@@ -1,4 +1,4 @@
-package com.example.finder.Views;
+package com.example.finder.views;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
 
-import com.example.finder.Match.MatchViewFragment;
+import com.example.finder.match.MatchViewFragment;
 import com.example.finder.R;
 
 public class MatchView extends FragmentActivity {
