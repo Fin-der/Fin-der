@@ -25,11 +25,6 @@ public class MatchView extends FragmentActivity {
      */
     private ViewPager mPager;
 
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private PagerAdapter pagerAdapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +32,10 @@ public class MatchView extends FragmentActivity {
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.match_pager);
-        pagerAdapter = new MatchViewFragmentAdapter(getSupportFragmentManager());
+        /**
+         * The pager adapter, which provides the pages to the view pager widget.
+         */
+        PagerAdapter pagerAdapter = new MatchViewFragmentAdapter(getSupportFragmentManager());
         mPager.setAdapter(pagerAdapter);
     }
 

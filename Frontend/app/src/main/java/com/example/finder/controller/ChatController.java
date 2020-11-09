@@ -133,7 +133,9 @@ public class ChatController {
             }
         }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {}
+            public void onErrorResponse(VolleyError error) {
+                // some sort of error handling code
+            }
         });
         que.add(req);
     }
