@@ -13,7 +13,7 @@ import com.example.finder.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ProfileView extends AppCompatActivity {
-    private final static String TAG = "ProfileView";
+//    private final static String TAG = "ProfileView";
 
     //private TextView numMatches;
     //private TextInputLayout firstName;
@@ -76,6 +76,7 @@ public class ProfileView extends AppCompatActivity {
         alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+//                empty since staying on the same page
             }
         });
         return alertDialogBuilder.create();

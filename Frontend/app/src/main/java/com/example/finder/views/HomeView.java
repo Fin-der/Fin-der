@@ -25,11 +25,8 @@ import com.google.android.gms.tasks.Task;
 import java.util.ArrayList;
 
 public class HomeView extends AppCompatActivity {
-    private RecyclerView msgBoard;
-    private MessageBoardAdapter msgBoardAdapter;
     private UserAccount user;
     private GoogleSignInClient mGoogleSignInClient;
-    private Button signOutButton;
     final static String TAG = "HomeView";
 
     @Override
@@ -83,14 +80,14 @@ public class HomeView extends AppCompatActivity {
     }
 
     private void initMessageBoard() {
-        this.msgBoard = findViewById(R.id.home_MsgBoard);
-        this.msgBoard.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView msgBoard = findViewById(R.id.home_MsgBoard);
+        msgBoard.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<UserAccount> temp = new ArrayList<UserAccount>();
         temp.add(new UserAccount("Jacky", "0", "Male"));
         temp.add(new UserAccount("Nick", "1", "Female"));
         temp.add(new UserAccount("Cody", "2", "Female"));
-        this.msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
-        this.msgBoard.setAdapter(this.msgBoardAdapter);
+        MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
+        msgBoard.setAdapter(msgBoardAdapter);
     }
 
     private void signOut() {
