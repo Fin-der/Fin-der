@@ -49,9 +49,7 @@ chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     }
 };
 
-chatRoomSchema.statics.initiateChat = async function (
-	userIds, type, chatInitiator
-) {
+chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiator) {
     try {
         const availableRoom = await this.findOne({
             userIds: {

@@ -5,7 +5,7 @@ import admin from "../config/firebase-config.js";
 
 export default {
     initiate: async (req, res) => {
-        try {
+        try {  // eslint-disable-line no-eval
             const { userIds, type } = req.body;
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
