@@ -3,7 +3,7 @@ import ChatMessageModel from "../models/ChatMessage.js";
 
 export default {
   deleteRoomById: async (req, res) => {
-    try { // eslint-disable-line no-eval
+    try {
       const { roomId } = req.params;
       const room = await ChatRoomModel.remove({ _id: roomId });
       const messages = await ChatMessageModel.remove({ chatRoomId: roomId });
