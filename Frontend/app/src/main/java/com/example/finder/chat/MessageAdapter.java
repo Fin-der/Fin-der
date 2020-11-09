@@ -92,7 +92,8 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        private TextView messageText, timeText;
+        private TextView messageText;
+        private TextView timeText;
 
         public SentMessageHolder(View itemView) {
             super(itemView);
