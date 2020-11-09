@@ -46,14 +46,10 @@ const userSchema = new mongoose.Schema(
 userSchema.statics.createUser = async function (_id, firstName, lastName, 
                                 age, gender, email, location, preferences,
                                 interests, description) {
-    try {
-        const user = await this.create({ _id, firstName, lastName, 
-            age, gender, email, location, preferences,
-            interests, description});
-        return user;
-    } catch (error) {
-        throw error;
-    }
+    const user = await this.create({ _id, firstName, lastName, 
+        age, gender, email, location, preferences,
+        interests, description});
+    return user;
 };
 
 /**
@@ -61,25 +57,17 @@ userSchema.statics.createUser = async function (_id, firstName, lastName,
  * @return {Object} User profile object
  */
 userSchema.statics.getUserById = async function (id) {
-    try {
-        const user = await this.findOne({ _id: id });
-        if (!user) { throw ({ error: "No user with this id found" }); }
-        return user;
-    } catch (error) {
-        throw error;
-    }
+    const user = await this.findOne({ _id: id });
+    if (!user) { throw ({ error: "No user with this id found" }); }
+    return user;
 };
 
 /**
  * @return {Array} List of all users
  */
 userSchema.statics.getUsers = async function () {
-    try {
-        const users = await this.find();
-        return users;
-    } catch (error) {
-        throw error;
-    }
+    const users = await this.find();
+    return users;
 };
 
 /**
@@ -87,12 +75,8 @@ userSchema.statics.getUsers = async function () {
  * @return {Array of Objects} users list
  */
 userSchema.statics.getUserByIds = async function (ids) {
-    try {
-        const users = await this.find({ _id: { $in: ids } });
-        return users;
-    } catch (error) {
-        throw error;
-    }
+    const users = await this.find({ _id: { $in: ids } });
+    return users;
 };
 
 /**
@@ -100,32 +84,20 @@ userSchema.statics.getUserByIds = async function (ids) {
  * @return {Object} - details of action performed
  */
 userSchema.statics.deleteByUserById = async function (id) {
-    try {
-        const result = await this.remove({ _id: id });
-        return result;
-    } catch (error) {
-        throw error;
-    }
+    const result = await this.remove({ _id: id });
+    return result;
 };
 
 userSchema.statics.registerFCMToken = async function (id, token) {
-    try {
-        let user = await this.findOne({ _id: id });
-        if (!user) { throw ({ error: "No user with this id found" }); }
-        user.FCMToken = token;
-        user.save();
-    } catch (error) {
-        throw error;
-    }
+    let user = await this.findOne({ _id: id });
+    if (!user) { throw ({ error: "No user with this id found" }); }
+    user.FCMToken = token;
+    user.save();
 };
 
 userSchema.statics.getTokensbyIds = async function (ids) {
-    try {
-        const tokens = await this.find({ _id: { $in: ids } }, "FCMToken");
-        return tokens;
-    } catch (error) {
-        throw error;
-    }
+    const tokens = await this.find({ _id: { $in: ids } }, "FCMToken");
+    return tokens;
 };
 
 export default mongoose.model("User", userSchema);
