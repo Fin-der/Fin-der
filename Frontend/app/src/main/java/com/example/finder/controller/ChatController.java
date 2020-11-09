@@ -63,7 +63,7 @@ public class ChatController {
 
     private void initChatAdapters() {
         this.msgRecycler = context.findViewById(R.id.reyclerview_message_list);
-        this.msgAdapter = new MessageAdapter(context, this.messages, this.userAccount);
+        this.msgAdapter = new MessageAdapter(this.messages);
         this.msgRecycler.setLayoutManager(new LinearLayoutManager(context));
         this.msgRecycler.setAdapter(msgAdapter);
         new Thread(new Runnable() {

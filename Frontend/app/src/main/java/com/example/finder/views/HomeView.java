@@ -1,21 +1,20 @@
 package com.example.finder.views;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import com.example.finder.chat.MessageBoardAdapter;
 import com.example.finder.MainActivity;
-import com.example.finder.models.UserAccount;
 import com.example.finder.R;
+import com.example.finder.chat.MessageBoardAdapter;
+import com.example.finder.models.UserAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 public class HomeView extends AppCompatActivity {
     private UserAccount user;
     private GoogleSignInClient mGoogleSignInClient;
-    final static String TAG = "HomeView";
+    private final static String TAG = "HomeView";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

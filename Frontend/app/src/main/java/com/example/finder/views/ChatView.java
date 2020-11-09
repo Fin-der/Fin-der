@@ -14,7 +14,6 @@ import com.example.finder.R;
 
 public class ChatView extends AppCompatActivity {
     private ChatController controller;
-    private UserAccount user;
     private String receiver;
     private final String GET_USERIDS = "http://192.168.1.72:3000/users/";
 
@@ -27,9 +26,9 @@ public class ChatView extends AppCompatActivity {
         Intent intent = getIntent();
         this.receiver = intent.getStringExtra("chatterName");
         setTitle(this.receiver);
-        this.user = (UserAccount) intent.getSerializableExtra("user");
+        UserAccount user = (UserAccount) intent.getSerializableExtra("user");
 
-        this.user.setId("2430507c1a7d41f09f003d8c4dc6d442");
+        user.setId("2430507c1a7d41f09f003d8c4dc6d442");
         String rId = "753b1955dcef440fa21197092f659b38";
         //this.user.setId("753b1955dcef440fa21197092f659b38");
         //rId = "2430507c1a7d41f09f003d8c4dc6d442" ;
