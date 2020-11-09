@@ -34,7 +34,7 @@ export default {
                     "body": "message"
                 },
                 "tokens": registrationTokens
-            }
+            };
             if (registrationTokens.length !== 0) {
                 admin.messaging().sendMulticast(notifMessage);
             }
@@ -107,5 +107,5 @@ export default {
             throw error;
         }
     },
-}
+};
 

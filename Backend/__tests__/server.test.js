@@ -35,7 +35,7 @@ describe("test", () => {
         const users = [{_id: "eb176894d456475e9f2be1868bab8fd6",
                         firstName: "Foo",
                         lastName: "Bar"}];
-        const mockGetUser = jest.fn(() => {return users});
+        const mockGetUser = jest.fn(() => {return users; });
         UserModel.getUsers = mockGetUser;
         
         const resp = {success:true, users};
@@ -45,8 +45,8 @@ describe("test", () => {
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(resp);
         done();
-    })
-})
+    }); 
+});
 
 
 /* 
