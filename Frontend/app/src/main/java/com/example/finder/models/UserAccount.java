@@ -10,7 +10,7 @@ public class UserAccount implements Serializable {
     private String gender;
     private String email;
 
-    private ArrayList<UserAccount> matches;
+    //private ArrayList<UserAccount> matches;
     // TODO
     // change to first name and last name
     // interest

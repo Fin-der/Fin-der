@@ -55,6 +55,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 break;
             default:
                 Log.d("MessageAdapter", "Failed to bind");
+                break;
         }
     }
 
@@ -69,9 +70,9 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText;
-        TextView timeText;
-        TextView nameText;
+        private TextView messageText;
+        private TextView timeText;
+        private TextView nameText;
         //private ImageView profileImage;
 
         public ReceivedMessageHolder(View itemView) {
@@ -91,7 +92,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, timeText;
+        private TextView messageText, timeText;
 
         public SentMessageHolder(View itemView) {
             super(itemView);

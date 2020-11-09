@@ -27,5 +27,6 @@ public class MainActivityBehaviour {
     public void pushCreateAccount() {
         onView(withId(R.id.create_acc_button)).perform(click());
         intended(hasComponent(CreateAccView.class.getName()));
+        assert(true);
     }
 }
