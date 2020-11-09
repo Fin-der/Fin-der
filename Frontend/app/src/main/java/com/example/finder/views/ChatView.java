@@ -15,7 +15,6 @@ import com.example.finder.R;
 public class ChatView extends AppCompatActivity {
     private ChatController controller;
     private String receiver;
-    private final String GET_USERIDS = "http://192.168.1.72:3000/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

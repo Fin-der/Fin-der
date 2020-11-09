@@ -1,7 +1,6 @@
 package com.example.finder.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class UserAccount implements Serializable {
     private String userName;
@@ -10,7 +9,7 @@ public class UserAccount implements Serializable {
     private String gender;
     private String email;
 
-    private ArrayList<UserAccount> matches;
+    //private ArrayList<UserAccount> matches;
     // TODO
     // change to first name and last name
     // interest

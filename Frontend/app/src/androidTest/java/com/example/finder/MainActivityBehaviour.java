@@ -15,6 +15,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.junit.Assert.fail;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -26,6 +27,11 @@ public class MainActivityBehaviour {
     @Test
     public void pushCreateAccount() {
         onView(withId(R.id.create_acc_button)).perform(click());
-        intended(hasComponent(CreateAccView.class.getName()));
+        try {
+            intended(hasComponent(CreateAccView.class.getName()));
+        } catch (AssertionError e) {
+            fail();
+        }
+
     }
 }
