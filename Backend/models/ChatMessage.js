@@ -111,7 +111,7 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {String} chatRoomId - chat room id
@@ -140,7 +140,7 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {String} chatRoomId - chat room id
@@ -167,7 +167,7 @@ chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentU
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {Array} chatRoomIds - chat room ids
@@ -253,6 +253,6 @@ chatMessageSchema.statics.getRecentConversation = async function (chatRoomIds, o
     } catch (error) {
         throw error;
     }
-}
+};
 
 export default mongoose.model("ChatMessage", chatMessageSchema);

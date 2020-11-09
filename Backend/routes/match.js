@@ -14,6 +14,6 @@ router
     .put("/decline/:matchId/:userId", match.declineMatch)
     // params: userId
     // returns: list of mutually "approved" matches
-    .get("/friend/:userId", match.getFriendMatches)
+    .get("/friend/:userId", match.getFriendMatches);
 
 export default router;

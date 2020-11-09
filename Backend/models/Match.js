@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import UserModel from "./User.js"
+import UserModel from "./User.js";
 import { v4 as uuidv4 } from "uuid";
 
 // TODO: add error checking (cant find)
@@ -17,7 +17,7 @@ const MatchVertexSchema = new mongoose.Schema(
         timestamps: false,
         collection: "matchVertices",
     }
-)
+);
 
 const MatchEdgeSchema = new mongoose.Schema(
     {
@@ -48,7 +48,7 @@ const MatchEdgeSchema = new mongoose.Schema(
         timestamps: false,
         collection: "matchEdges",
     }
-)
+);
 
 MatchVertexSchema.statics.createMatchVertex = async function (newUser, potentialMatches) {
     try {
@@ -83,7 +83,7 @@ MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserI
     try {
         const user = await UserModel.getUserById(userId);
         const otherUser = await UserModel.getUserById(otherUserId);
-        const userVertex = await this.update({user},{$push: {matches: otherUser}})
+        const userVertex = await this.update({user},{$push: {matches: otherUser}});
         return userVertex;
     } catch (error) {
         throw error;
@@ -124,7 +124,7 @@ MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMa
             match.toStatus = status;
             otherMatch.fromStatus = status;
         } else {
-            throw ({ error: "User is not a part of this match"})
+            throw ({ error: "User is not a part of this match"});
         }
         match.save();
         otherMatch.save();
@@ -132,7 +132,7 @@ MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMa
     } catch (error) {
         throw error;
     }
-}
+};
 
 MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
     try {
@@ -144,7 +144,7 @@ MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch
     } catch (error) {
         throw error;
     }
-}
+};
 
 MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch) {
     try {
@@ -156,7 +156,7 @@ MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch)
     } catch (error) {
         throw error;
     }
-}
+};
 
 MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch) {
     try {
@@ -168,11 +168,11 @@ MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch)
     } catch (error) {
         throw error;
     }
-}
+};
 
 const MatchVertexModel = mongoose.model("matchVertex", MatchVertexSchema);
 const MatchEdgeModel = mongoose.model("matchEdge", MatchEdgeSchema);
 export {
     MatchVertexModel,
     MatchEdgeModel,
-}
+};

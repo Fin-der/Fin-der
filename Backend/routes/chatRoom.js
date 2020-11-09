@@ -19,6 +19,6 @@ router
     .post("/:roomId/:id/message", chatRoom.postMessage)
     // params: roomId, userId
     // returns: data json list of results
-    .put("/:roomId/:id/mark-read", chatRoom.markConversationReadByRoomId)
+    .put("/:roomId/:id/mark-read", chatRoom.markConversationReadByRoomId);
 
 export default router;

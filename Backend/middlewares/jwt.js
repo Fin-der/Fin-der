@@ -9,8 +9,8 @@ export const encode = async (req, res, next) => {
         const { userId } = req.params;
         const user = await UserModel.getUserById(userId);
         const payload = {
-        userId: user._id,
-        userType: user.type,
+            userId: user._id,
+            userType: user.type,
         };
         const authToken = jwt.sign(payload, SECRET_KEY);
         req.authToken = authToken;
@@ -18,7 +18,7 @@ export const encode = async (req, res, next) => {
     } catch (error) {
         return res.status(400).json({ success: false, message: error.error });
     }
-}
+};
 
 export const decode = (req, res, next) => {
     if (!req.headers["authorization"]) {
@@ -33,4 +33,4 @@ export const decode = (req, res, next) => {
     } catch (error) {
         return res.status(401).json({ success: false, message: error.message });
     }
-}
+};

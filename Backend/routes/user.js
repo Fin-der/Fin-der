@@ -17,6 +17,6 @@ router
     .delete("/:id", user.onDeleteUserById)
     // params: FCM token, user id
     // returns: message containing token and user id
-    .put("/", user.onRegisterFCMToken)
+    .put("/", user.onRegisterFCMToken);
 
 export default router;

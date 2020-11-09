@@ -13,7 +13,7 @@ export default {
             
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
-            return res.status(500).json({ success: false, error })
+            return res.status(500).json({ success: false, error });
         }
     },
     postMessage: async (req, res) => {
@@ -26,8 +26,8 @@ export default {
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             global.io.sockets.in(roomId).emit("new message", { message: post });
             // get token of other users
-            const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId)
-            const registrationTokens = await UserModel.getTokensbyIds(userIds)
+            const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
+            const registrationTokens = await UserModel.getTokensbyIds(userIds);
             var notifMessage = {
                 "notification": {
                     "title": "Message From ",
@@ -36,12 +36,12 @@ export default {
                 "tokens": registrationTokens
             }
             if (registrationTokens.length !== 0) {
-                admin.messaging().sendMulticast(notifMessage)
+                admin.messaging().sendMulticast(notifMessage);
             }
             
             return res.status(200).json({ success: true, post });
         } catch (error) {
-            return res.status(500).json({ success: false, error })
+            return res.status(500).json({ success: false, error });
         }
     },
     getRecentConversation: async (req, res) => {
@@ -58,7 +58,7 @@ export default {
             );
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
-            return res.status(500).json({ success: false, error })
+            return res.status(500).json({ success: false, error });
         }
     },
     getConversationByRoomId: async (req, res) => {
@@ -80,12 +80,12 @@ export default {
     markConversationReadByRoomId: async (req, res) => {
         try {
             const { roomId } = req.params;
-            const room = await ChatRoomModel.getChatRoomByRoomId(roomId)
+            const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
             if (!room) {
                 return res.status(400).json({
-                success: false,
-                message: "No room exists for this id",
-                })
+                    success: false,
+                    message: "No room exists for this id",
+                });
             }
 
             const currentLoggedUser = req.userId;

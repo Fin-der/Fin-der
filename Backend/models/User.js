@@ -54,7 +54,7 @@ userSchema.statics.createUser = async function (_id, firstName, lastName,
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {String} id, user id
@@ -68,7 +68,7 @@ userSchema.statics.getUserById = async function (id) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @return {Array} List of all users
@@ -80,7 +80,7 @@ userSchema.statics.getUsers = async function () {
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {Array} ids, string of user ids
@@ -93,7 +93,7 @@ userSchema.statics.getUserByIds = async function (ids) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 /**
  * @param {String} id - id of user
@@ -106,18 +106,18 @@ userSchema.statics.deleteByUserById = async function (id) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 userSchema.statics.registerFCMToken = async function (id, token) {
     try {
-        let user = await this.findOne({ _id: id })
+        let user = await this.findOne({ _id: id });
         if (!user) { throw ({ error: "No user with this id found" }); }
-        user.FCMToken = token
+        user.FCMToken = token;
         user.save();
     } catch (error) {
         throw error;
     }
-}
+};
 
 userSchema.statics.getTokensbyIds = async function (ids) {
     try {
@@ -126,6 +126,6 @@ userSchema.statics.getTokensbyIds = async function (ids) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 export default mongoose.model("User", userSchema);

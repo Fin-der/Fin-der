@@ -3,6 +3,6 @@ const config = {
         url: "localhost:27017",
         name: "Fin-der"
     }
-}
+};
   
-export default config
+export default config;

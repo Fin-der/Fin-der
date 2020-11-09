@@ -33,7 +33,7 @@ chatRoomSchema.statics.getChatRoomsByUserId = async function (userId) {
     } catch (error) {
         throw error;
     }
-}
+};
   
 /**
  * @param {String} roomId - id of chatroom
@@ -47,7 +47,7 @@ chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 chatRoomSchema.statics.initiateChat = async function (
 	userIds, type, chatInitiator
@@ -79,7 +79,7 @@ chatRoomSchema.statics.initiateChat = async function (
     } catch (error) {
         throw error;
     }
-}
+};
 
 chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
     try {
@@ -88,7 +88,7 @@ chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
     } catch (error) {
         throw error;
     }
-}
+};
 
 
 export default mongoose.model("ChatRoom", chatRoomSchema);

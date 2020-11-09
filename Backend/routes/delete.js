@@ -6,6 +6,6 @@ const router = express.Router();
 // route: ip:port/delete
 router
   .delete("/room/:roomId", deleteController.deleteRoomById)
-  .delete("/message/:messageId", deleteController.deleteMessageById)
+  .delete("/message/:messageId", deleteController.deleteMessageById);
 
 export default router;
