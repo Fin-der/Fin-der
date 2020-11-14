@@ -11,6 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.finder.MainActivity;
 import com.example.finder.R;
 import com.example.finder.chat.MessageBoardAdapter;
@@ -20,6 +26,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -41,11 +51,11 @@ public class HomeView extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
-//        this.user = new UserAccount("Nick", "0", "Male");
+        this.user.setMatches(new ArrayList<UserAccount>());
         initButtons();
         initMessageBoard();
+        findMatches();
     }
 
     private void initButtons() {
@@ -64,6 +74,7 @@ public class HomeView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent match = new Intent(HomeView.this, MatchView.class);
+                match.putExtra("User", user);
                 startActivity(match);
             }
         });
@@ -102,5 +113,29 @@ public class HomeView extends AppCompatActivity {
                         finish();
                     }
                 });
+    }
+
+    private void findMatches() {
+        final String HOST_MATCH = "http://192.168.1.72:3000/match/";
+        RequestQueue que = Volley.newRequestQueue(this);
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH + 0, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray matches = (JSONArray) response.get("matches");
+                            Log.d("HomeView", "Matches" + matches.toString());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("HomeView", "Could not find matches");
+                user.setMatches(new ArrayList<UserAccount>());
+            }
+        });
+        que.add(req);
     }
 }
