@@ -18,12 +18,10 @@ const userSchema = new mongoose.Schema(
         age: Number,
         gender: String,
         email: String,
-        locationLng: Number,
-        locationLat: Number,
+        location: [Number], // lng, lat
         preferences: {
             gender: String,
-            ageMin: Number,
-            ageMax: Number, // min and max
+            ageRange: [Number], // min, max
             proximity: Number
         },
         interests: [String],
