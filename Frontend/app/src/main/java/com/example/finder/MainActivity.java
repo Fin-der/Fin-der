@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.skipHome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
+                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email");
                 Intent intent = new Intent(MainActivity.this, HomeView.class);
                 intent.putExtra("profile", profile);
                 startActivity(intent);
@@ -74,7 +74,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.create_acc_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email");
                 Intent createAcc = new Intent(MainActivity.this, CreateAccView.class);
+                createAcc.putExtra("profile", profile);
                 startActivity(createAcc);
             }
         });
@@ -151,9 +153,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Family Name: " + account.getFamilyName());
             Log.d(TAG, "Display URI: " + account.getPhotoUrl());
 
-            // Send token to your backend
-            // account.getIdToken();
-            // Move to another activity
             JSONObject loginInfo = new JSONObject();
             try {
                 loginInfo.put("_id", account.getId());
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    // TODO: get user information
+                    // TODO: parse json to get user information from the backend
 //                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
                     Intent home = new Intent(MainActivity.this, HomeView.class);
 //                    home.putExtra("profile", profile);
@@ -179,9 +178,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Error: " + error.getMessage());
                     error.printStackTrace();
                     if (error instanceof ServerError) {
-                        //TODO: create id on backend
-                        UserAccount profile = new UserAccount();
-                        profile.setId(account.getId());
+                        UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
                         startActivity(create);

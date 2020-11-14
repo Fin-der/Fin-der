@@ -93,9 +93,9 @@ public class HomeView extends AppCompatActivity {
         RecyclerView msgBoard = findViewById(R.id.home_MsgBoard);
         msgBoard.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<UserAccount> temp = new ArrayList<UserAccount>();
-        temp.add(new UserAccount("Jacky", "0", "Male"));
-        temp.add(new UserAccount("Nick", "1", "Female"));
-        temp.add(new UserAccount("Cody", "2", "Female"));
+        temp.add(new UserAccount("0","Jacky", "Le", "Female"));
+        temp.add(new UserAccount("1", "Nick", "Ng", "Male"));
+        temp.add(new UserAccount("2", "Cody", "Li", "Male"));
         MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
         msgBoard.setAdapter(msgBoardAdapter);
     }
