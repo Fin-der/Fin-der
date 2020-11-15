@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.skipHome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email");
+                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email@email.com");
                 Intent intent = new Intent(MainActivity.this, HomeView.class);
                 intent.putExtra("profile", profile);
                 startActivity(intent);
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.create_acc_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email");
+                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email@email.com");
                 Intent createAcc = new Intent(MainActivity.this, CreateAccView.class);
                 createAcc.putExtra("profile", profile);
                 startActivity(createAcc);

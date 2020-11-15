@@ -42,8 +42,6 @@ public class ProfileView extends AppCompatActivity {
         email.getEditText().setText(user.getEmail());
         numMatches.setText(user.getNumMatches());
 
-
-
         findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -138,8 +138,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // want error to show
-                genderResult[0] = "not specified";
+//                nothing action handled in the error spinner error checkers
             }
         });
 
@@ -153,8 +152,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // want error to show
-                genderResult[1] = "not specified";
+//                nothing action handled in the error spinner error checkers
             }
         });
 
@@ -172,8 +170,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // want error to show
-                interestResult[0] = "not specified";
+//                nothing action handled in the error spinner error checkers
             }
         });
 
@@ -189,8 +186,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // want error to show
-                interestResult[1] = "not specified";
+//                nothing action handled in the error spinner error checkers
             }
         });
 
@@ -206,8 +202,7 @@ public class CreateAccView extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // want error to show
-                interestResult[2] = "not specified";
+//                nothing action handled in the error spinner error checkers
             }
         });
 
@@ -232,8 +227,16 @@ public class CreateAccView extends AppCompatActivity {
                     }
                     JSONObject ageRangeJson = new JSONObject();
                     try {
-                        ageRangeJson.put("min", Integer.parseInt(minAge.getEditText().getText().toString()));
-                        ageRangeJson.put("max", Integer.parseInt(maxAge.getEditText().getText().toString()));
+                        if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+                            ageRangeJson.put("min", Integer.parseInt(age.getEditText().getText().toString()) - 2);
+                        } else {
+                            ageRangeJson.put("min", Integer.parseInt(minAge.getEditText().getText().toString()));
+                        }
+                        if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+                            ageRangeJson.put("max", Integer.parseInt(age.getEditText().getText().toString()) + 2);
+                        } else {
+                            ageRangeJson.put("max", Integer.parseInt(maxAge.getEditText().getText().toString()));
+                        }
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to create age range json");
                         e.printStackTrace();
@@ -242,7 +245,11 @@ public class CreateAccView extends AppCompatActivity {
                     try {
                         preferenceJson.put("gender", genderResult[1]);
                         preferenceJson.put("ageRange", ageRangeJson);
-                        preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
+                        if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+                            preferenceJson.put("proximity", 15);
+                        } else {
+                            preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
+                        }
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to create preference json");
                         e.printStackTrace();
@@ -270,7 +277,31 @@ public class CreateAccView extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, response.toString());
-                            // update the user account
+                            //TODO: update the user account information when creating account
+                            user.setFirstName(firstName.getEditText().getText().toString());
+                            user.setLastName(lastName.getEditText().getText().toString());
+                            user.setAge(Integer.parseInt(age.getEditText().getText().toString()));
+                            user.setGender(genderResult[0]);
+                            user.setEmail(email.getEditText().getText().toString());
+                            user.setLocation(location.getEditText().getText().toString());
+                            user.setPrefGender(genderResult[1]);
+                            if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+                                user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) - 2);
+                            } else {
+                                user.setMinAge(Integer.parseInt(minAge.getEditText().getText().toString()));
+                            }
+                            if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+                                user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
+                            } else {
+                                user.setMinAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
+                            }
+                            if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+                                user.setProximity(15);
+                            } else {
+                                user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
+                            }
+                            user.setInterest(interestResult);
+                            user.setBiography(biography.getEditText().getText().toString());
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
                             home.putExtra("profile", user);
                             startActivity(home);
@@ -332,6 +363,20 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    private boolean checkMinMaxAge(TextInputLayout layout) {
+        String ageInput = layout.getEditText().getText().toString().trim();
+
+        if (ageInput.isEmpty()) {
+            return true;
+        } else if (Integer.parseInt(ageInput) > 150) {
+            layout.setError("Invalid age");
+            return false;
+        } else {
+            layout.setError(null);
+            return true;
+        }
+    }
+
     private boolean checkEmail() {
         String emailInput = email.getEditText().getText().toString().trim();
 
@@ -372,7 +417,7 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | !spinnerChecks());
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | !spinnerChecks() | !checkMinMaxAge(minAge) | !checkMinMaxAge(maxAge));
     }
 
     private boolean spinnerChecks() {
