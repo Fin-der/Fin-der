@@ -69,7 +69,7 @@ MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
 };
 
 MatchEdgeSchema.statics.getFriendMatches = async function (userId) {
-    const edges = await this.find({"from._id": userId, fromStatus: "approved"});
+    const edges = await this.find({"from._id": userId, status: "approved"});
     return edges;
 };
 
