@@ -21,7 +21,7 @@ public class MatchView extends FragmentActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private int NUM_PAGES = 5;
+    private int NUM_PAGES;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -39,14 +39,15 @@ public class MatchView extends FragmentActivity {
 
         Intent intent = getIntent();
         user = (UserAccount) intent.getSerializableExtra("user");
-        matches = user.getMatches();
+        matches = (ArrayList<UserAccount>) intent.getSerializableExtra("matches");
+        NUM_PAGES = matches.size();
 
         // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.match_pager);
+        mPager = findViewById(R.id.match_pager);
         /**
          * The pager adapter, which provides the pages to the view pager widget.
          */
-        PagerAdapter pagerAdapter = new MatchViewFragmentAdapter(getSupportFragmentManager());
+        PagerAdapter pagerAdapter = new MatchViewFragmentAdapter(getSupportFragmentManager(), matches, user.getId());
         mPager.setAdapter(pagerAdapter);
     }
 
@@ -64,13 +65,17 @@ public class MatchView extends FragmentActivity {
 
 
     private class MatchViewFragmentAdapter extends FragmentStatePagerAdapter {
-        public MatchViewFragmentAdapter(FragmentManager fm) {
+        private ArrayList<UserAccount> matches;
+        private String userId;
+        public MatchViewFragmentAdapter(FragmentManager fm, ArrayList<UserAccount> matches, String userId) {
             super(fm);
+            this.matches = matches;
+            this.userId = userId;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new MatchViewFragment();
+            return MatchViewFragment.createInstance(matches.get(position), userId);
         }
 
         @Override

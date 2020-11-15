@@ -22,6 +22,7 @@ public class UserAccount implements Serializable {
     private String prefGender;
     private int proximity;
     private String biography;
+    private String matchId;
 
     // TODO
     // change to first name and last name
@@ -142,6 +143,18 @@ public class UserAccount implements Serializable {
 
     public void setBiography(String biography) {
         this.biography = biography;
+    }
+
+    public String getBiography() {
+        return this.biography;
+    }
+
+    public String getMatchId() {
+        return this.matchId;
+    }
+
+    public void setMatchId(String id) {
+        this.matchId = id;
     }
 
 }

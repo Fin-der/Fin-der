@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 public class HomeView extends AppCompatActivity {
     private UserAccount user;
+    private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
 
@@ -52,7 +53,7 @@ public class HomeView extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
-        this.user.setMatches(new ArrayList<UserAccount>());
+        this.user.setId("0");
         initButtons();
         initMessageBoard();
         findMatches();
@@ -74,7 +75,8 @@ public class HomeView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent match = new Intent(HomeView.this, MatchView.class);
-                match.putExtra("User", user);
+                match.putExtra("user", user);
+                match.putExtra("matches", toBeMatched);
                 startActivity(match);
             }
         });
@@ -122,8 +124,24 @@ public class HomeView extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
+                        try { //String id, String firstName, String lastName, String email) {
                             JSONArray matches = (JSONArray) response.get("matches");
+                            for (int i = 0; i < matches.length(); i++) {
+                                JSONObject acc = matches.getJSONObject(i).getJSONObject("to");
+                                String firstName = acc.getString("firstName");
+                                String lastName = acc.getString("lastName");
+                                String email = acc.getString("email");
+                                String id = acc.getString("_id");
+                                String biography = acc.getString("description");
+                                String matchId = matches.getJSONObject(i).getString("_id");
+                                int age = acc.getInt("age");
+                                UserAccount match = new UserAccount(id, firstName, lastName, email);
+                                match.setBiography(biography);
+                                match.setAge(age);
+                                match.setMatchId(matchId);
+                                toBeMatched.add(match);
+                            }
+                            Log.d("HomeView", "Done finding matches");
                             Log.d("HomeView", "Matches" + matches.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -133,7 +151,6 @@ public class HomeView extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.d("HomeView", "Could not find matches");
-                user.setMatches(new ArrayList<UserAccount>());
             }
         });
         que.add(req);
