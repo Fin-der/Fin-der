@@ -55,23 +55,22 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
     return vertex;
 };
 
-MatchVertexSchema.statics.getPotentialMatches = async function (userId) {
-    const user = await UserModel.getUserById(userId);
-    const edges = await this.find({from: user, status: "potential"});
-    return edges;
-};
-
-MatchVertexSchema.statics.getFriendMatches = async function (userId) {
-    const user = await UserModel.getUserById(userId);
-    const edges = await this.find({from: user, status: "approved"});
-    return edges;
-};
-
 MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
     const user = await UserModel.getUserById(userId);
     const otherUser = await UserModel.getUserById(otherUserId);
     const userVertex = await this.update({user},{$push: {matches: otherUser}});
     return userVertex;
+};
+
+MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
+    const edges = await this.find({"from._id": userId, status: "potential"});
+    console.log(edges);
+    return edges;
+};
+
+MatchEdgeSchema.statics.getFriendMatches = async function (userId) {
+    const edges = await this.find({"from._id": userId, status: "approved"});
+    return edges;
 };
 
 MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1, userId2) {
@@ -83,49 +82,49 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
 };
 
 MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
-    const match = await this.find({_id: matchId});
-    const otherMatch = await this.find({from: match.to});
-    const user = await UserModel.getUserById(userId);
-    await this.updateToFromMatchStatus(match, otherMatch, user, status);
-    await this.determineMatchStatus(match, otherMatch);
-    return match;
+    const options = {
+        multi: true
+    };
+    const match = await this.findOne({_id: matchId}).lean();
+    const otherMatch = await this.findOne({from: match.to, to: match.from });
+    await this.updateToFromMatchStatus(match, otherMatch, userId, status, options);
+    await this.determineMatchStatus(matchId, options);
+    return await this.findOne({_id: matchId});
 };
 
-MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, user, status) {
-    if (match.from === user) {
-        match.fromStatus = status;
-        otherMatch.toStatus = status;
-    } else if (match.to === user) {
-        match.toStatus = status;
-        otherMatch.fromStatus = status;
+MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, userId, status, options) {
+    if (match.from._id === userId) {
+        await this.updateOne({_id: match._id}, {$set: {fromStatus: status}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {toStatus: status}}, options);
+    } else if (match.to._id === userId) {
+        await this.updateOne({_id: match._id}, {$set: {toStatus: status}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {fromStatus: status}}, options);
     } else {
         throw ({ error: "User is not a part of this match"});
     }
-    match.save();
-    otherMatch.save();
     return;
 };
 
-MatchEdgeSchema.statics.determineMatchStatus = async function (match, otherMatch) {
-    await this.checkApprovedStatus;
-    await this.checkDeclinedStatus;
-    match.save();
-    otherMatch.save();
+MatchEdgeSchema.statics.determineMatchStatus = async function (matchId, options) {
+    const match = await this.findOne({_id: matchId}).lean();
+    const otherMatch = await this.findOne({from: match.to, to: match.from });
+    await this.checkApprovedStatus(match, otherMatch, options);
+    await this.checkDeclinedStatus(match, otherMatch, options);
     return;
 };
 
-MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch) {
+MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch, options) {
     if (match.toStatus === "approved" && match.fromStatus === "approved") {
-        match.status = "approved";
-        otherMatch.status = "approved";
+        await this.updateOne({_id: match._id}, {$set: {status: "approved"}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {status: "approved"}}, options);
     }
     return;
 };
 
-MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch) {
+MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch, options) {
     if (match.toStatus === "declined" || match.fromStatus === "declined") {
-        match.status = "declined";
-        otherMatch.status = "declined";
+        await this.updateOne({_id: match._id}, {$set: {status: "declined"}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {status: "declined"}}, options);
     } 
     return;
 };

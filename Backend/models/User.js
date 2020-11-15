@@ -26,10 +26,24 @@ const userSchema = new mongoose.Schema(
             gender: String,
             ageRange: {
                 min: {
-                    type: Number, min: 0
+                    type: Number, min: 0,
+                    validate: {
+                        validator: function(val){
+                            const currMax = this.preferences.ageRange.max;
+                            return (currMax !== undefined ? val <= currMax : true);
+                        },
+                        message: "The MIN range with value {VALUE} must be <= than the max range!"
+                    }
                 },
                 max: {
-                    type: Number, min: 0
+                    type: Number, min: 0,
+                    validate: {
+                        validator: function(val) {
+                            const currMin = this.preferences.ageRange.min;
+                            return (currMin !== undefined ? val >= currMin : true);
+                        },
+                        message: "The MAX range with value {VALUE} must be >= than the min range!"
+                    }
                 }
             },
             proximity: Number
