@@ -34,20 +34,20 @@
         android:layout_marginTop="10dp">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/match_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:layout_centerHorizontal="true"
             android:textSize="24sp"
-            android:layout_centerHorizontal="true"/>
+            android:text="@string/match_name"/>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/match_bio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:text="@string/match_desc"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/textView2"/>
+            android:layout_below="@+id/match_name"/>
 
     </RelativeLayout>
 
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/c1"
+                android:id="@+id/match_accept"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginRight="50dp"
@@ -71,7 +71,7 @@
                 android:contentDescription="Profile Pic" />
 
             <Button
-                android:id="@+id/c3"
+                android:id="@+id/match_deny"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginLeft="50dp"
