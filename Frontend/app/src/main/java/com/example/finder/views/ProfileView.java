@@ -13,7 +13,7 @@ import com.example.finder.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ProfileView extends AppCompatActivity {
-    private final static String TAG = "ProfileView";
+//    private final static String TAG = "ProfileView";
 
     private TextView numMatches;
     private TextInputLayout firstName;

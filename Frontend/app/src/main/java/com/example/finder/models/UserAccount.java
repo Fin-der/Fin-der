@@ -1,10 +1,7 @@
 package com.example.finder.models;
 
-import com.example.finder.R;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class UserAccount implements Serializable {
     private String firstName;
@@ -27,11 +24,7 @@ public class UserAccount implements Serializable {
     private ArrayList<UserAccount> friendMatches;
 
     // TODO
-    // change to first name and last name
-    // interest
     //Picture profilePic
-    //Location Range
-    // location home
     //Some google token stuff?
 
     public UserAccount(String id, String firstName, String lastName) {
@@ -196,10 +189,6 @@ public class UserAccount implements Serializable {
         this.biography = biography;
     }
 
-//    public String getBiography() {
-//        return this.biography;
-//    }
-
     public String getMatchId() {
         return this.matchId;
     }
@@ -210,6 +199,10 @@ public class UserAccount implements Serializable {
 
     public void setFriendMatches(ArrayList<UserAccount> list) {
         this.friendMatches = list;
+    }
+
+    public ArrayList<UserAccount> getFriendMatches() {
+        return this.friendMatches;
     }
 
 }
