@@ -63,13 +63,13 @@ MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserI
 };
 
 MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
-    const edges = await this.find({"from._id": userId, status: "potential"});
+    const edges = await this.find({"from._id": userId, fromStatus: "potential"});
     console.log(edges);
     return edges;
 };
 
 MatchEdgeSchema.statics.getFriendMatches = async function (userId) {
-    const edges = await this.find({"from._id": userId, status: "approved"});
+    const edges = await this.find({"from._id": userId, fromStatus: "approved"});
     return edges;
 };
 
