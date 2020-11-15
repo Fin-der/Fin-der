@@ -40,7 +40,7 @@ public class ChatController {
     private List<Message> messages;
     private RecyclerView msgRecycler;
     private MessageAdapter msgAdapter;
-    private RequestQueue que;
+        private RequestQueue que;
     private String rId;
     private String roomId;
     private int chatPos;
@@ -220,7 +220,7 @@ public class ChatController {
                     messageText, rId, ((ChatView) context).getReceiver(), MessageAdapter.MSG_TYPE_RECEIVED, postAt);
         } else {
             msg = new Message(message.getString("_id"),
-                    messageText, userAccount.getId(), userAccount.getUserName(), MessageAdapter.MSG_TYPE_SENT, postAt);
+                    messageText, userAccount.getId(), userAccount.getFirstName(), MessageAdapter.MSG_TYPE_SENT, postAt);
         }
         return msg;
     }

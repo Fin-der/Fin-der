@@ -7,17 +7,21 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.finder.match.MatchViewFragment;
 import com.example.finder.R;
+import com.example.finder.models.UserAccount;
+
+import java.util.ArrayList;
 
 public class MatchView extends FragmentActivity {
 
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 5;
+    private int NUM_PAGES = 5;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -25,10 +29,17 @@ public class MatchView extends FragmentActivity {
      */
     private ViewPager mPager;
 
+    private UserAccount user;
+    private ArrayList<UserAccount> matches;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match_view);
+
+        Intent intent = getIntent();
+        user = (UserAccount) intent.getSerializableExtra("user");
+        matches = user.getMatches();
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.match_pager);

@@ -68,7 +68,7 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
         }
 
         private void bind(UserAccount user) {
-            this.name.setText(user.getUserName());
+            this.name.setText(user.getFirstName());
         }
     }
 }

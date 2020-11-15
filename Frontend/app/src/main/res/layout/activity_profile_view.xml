@@ -156,32 +156,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:hint="Phone Number"
-                android:id="@+id/phone_number_profile"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:hint="Password"
-                android:id="@+id/password_profile"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:inputType="textPassword"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <Button
                 android:id="@+id/update_button"
                 android:background="#2a9df4"

@@ -11,19 +11,43 @@
     <string name="create_acc_btn_caption">Create Account</string>
 
     <!-- Create Account View Strings -->
-    <string name="username_caption">Username</string>
     <string name="first_name_caption">First Name</string>
     <string name="last_name_caption">Last Name</string>
     <string name="email_caption">Email</string>
-    <string name="phone_number_caption">Phone Number (Optional)</string>
-    <string name="password_caption">Password</string>
-    <string name="confirm_password_caption">Confirm Password</string>
+    <string name="location_caption">Location</string>
+    <string name="preference_caption">Preferences</string>
+    <string name="about_caption">About You</string>
     <string name="age_caption">Age</string>
+    <string name="min_age_caption">Minimum Age (Default your age - 2)</string>
+    <string name="max_age_caption">Maximum Age (Default your age + 2)</string>
+    <string name="proximity_caption">Proximity (Default 20 km)</string>
+    <string name="bio_caption">Biography</string>
     <string name="create_acc_caption">Create Account</string>
     <string-array name="gender_choices">
         <item>Select Gender</item>
         <item>Male</item>
         <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="sport_choices">
+        <item>Select Favourite Sport</item>
+        <item>Soccer</item>
+        <item>Football</item>
+        <item>Hockey</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="food_choices">
+        <item>Select Favourite Food</item>
+        <item>Pizza</item>
+        <item>Burger</item>
+        <item>Salad</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="hobby_choices">
+        <item>Select Hobby</item>
+        <item>Read</item>
+        <item>Cook</item>
+        <item>Watch Movies</item>
         <item>Other</item>
     </string-array>
     <string name="interest1_caption">Interest 1</string>

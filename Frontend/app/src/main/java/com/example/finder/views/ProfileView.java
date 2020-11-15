@@ -13,13 +13,12 @@ import com.example.finder.R;
 import com.google.android.material.textfield.TextInputLayout;
 
 public class ProfileView extends AppCompatActivity {
-//    private final static String TAG = "ProfileView";
+    private final static String TAG = "ProfileView";
 
-    //private TextView numMatches;
-    //private TextInputLayout firstName;
-    //private TextInputLayout lastName;
-    //private TextInputLayout email;
-    //private TextInputLayout phoneNumber;
+    private TextView numMatches;
+    private TextInputLayout firstName;
+    private TextInputLayout lastName;
+    private TextInputLayout email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,24 +26,21 @@ public class ProfileView extends AppCompatActivity {
         setContentView(R.layout.activity_profile_view);
 
         TextView fullName = findViewById(R.id.fullNameText);
-        //firstName = findViewById(R.id.first_name_profile);
-        //lastName = findViewById(R.id.last_name_profile);
+        firstName = findViewById(R.id.first_name_profile);
+        lastName = findViewById(R.id.last_name_profile);
         TextInputLayout age = findViewById(R.id.age_profile);
-        //email = findViewById(R.id.email_profile);
-        //phoneNumber = findViewById(R.id.phone_number_profile);
-        //numMatches = findViewById(R.id.number_matches);
+        email = findViewById(R.id.email_profile);
+        numMatches = findViewById(R.id.number_matches);
 
         UserAccount user = (UserAccount) getIntent().getSerializableExtra("profile");
 
-        fullName.setText(user.getUserName());
-//        firstName.getEditText().setText();
-//        lastName.getEditText().setText();
+        String fullNameText = user.getFirstName() + " " + user.getLastName();
+        fullName.setText(fullNameText);
+        firstName.getEditText().setText(user.getFirstName());
+        lastName.getEditText().setText(user.getLastName());
         age.getEditText().setText(user.getAge());
-//        email.getEditText().setText();
-//        phoneNumber.getEditText().setText();
-//        numMatches.setText(user.getNumMatches);
-
-
+        email.getEditText().setText(user.getEmail());
+        numMatches.setText(user.getNumMatches());
 
         findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
