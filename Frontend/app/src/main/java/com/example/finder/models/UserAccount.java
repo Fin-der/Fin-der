@@ -24,6 +24,8 @@ public class UserAccount implements Serializable {
     private String biography;
     private String matchId;
 
+    private ArrayList<UserAccount> friendMatches;
+
     // TODO
     // change to first name and last name
     // interest
@@ -31,6 +33,12 @@ public class UserAccount implements Serializable {
     //Location Range
     // location home
     //Some google token stuff?
+
+    public UserAccount(String id, String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.id = id;
+    }
 
     public UserAccount(String id, String firstName, String lastName, String email) {
         this.firstName = firstName;
@@ -48,6 +56,23 @@ public class UserAccount implements Serializable {
         this.age = age;
         this.gender = gender;
         this.matches = matches;
+        this.interest = interest;
+        this.location = location;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
+        this.prefGender = prefGender;
+        this.proximity = proximity;
+        this.biography = biography;
+    }
+
+    public UserAccount(String id, String firstName, String lastName, String email, int age, String gender, String location,
+                       String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.id = id;
+        this.email = email;
+        this.age = age;
+        this.gender = gender;
         this.interest = interest;
         this.location = location;
         this.minAge = minAge;
@@ -117,37 +142,63 @@ public class UserAccount implements Serializable {
         return Integer.toString(matches.size());
     }
 
+    public String getLocation() {
+        return location;
+    }
+
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getPrefGender() {
+        return prefGender;
     }
 
     public void setPrefGender(String prefGender) {
         this.prefGender = prefGender;
     }
 
+    public String getMinAge() {
+        return Integer.toString(minAge);
+    }
+
     public void setMinAge(int minAge) {
         this.minAge = minAge;
+    }
+
+    public String getMaxAge() {
+        return Integer.toString(maxAge);
     }
 
     public void setMaxAge(int maxAge) {
         this.maxAge = maxAge;
     }
 
+    public String getProximity() {
+        return Integer.toString(proximity);
+    }
+
     public void setProximity(int proximity) {
         this.proximity = proximity;
     }
 
+    // get interests
+
     public void setInterest(String[] interest) {
         this.interest = interest;
+    }
+
+    public String getBiography() {
+        return biography;
     }
 
     public void setBiography(String biography) {
         this.biography = biography;
     }
 
-    public String getBiography() {
-        return this.biography;
-    }
+//    public String getBiography() {
+//        return this.biography;
+//    }
 
     public String getMatchId() {
         return this.matchId;
@@ -155,6 +206,10 @@ public class UserAccount implements Serializable {
 
     public void setMatchId(String id) {
         this.matchId = id;
+    }
+
+    public void setFriendMatches(ArrayList<UserAccount> list) {
+        this.friendMatches = list;
     }
 
 }

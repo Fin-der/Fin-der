@@ -142,7 +142,9 @@ public class CreateAccView extends AppCompatActivity {
             }
         });
 
-        genderSpinner2.setAdapter(adapter);
+        ArrayAdapter<String> adapter5 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender_choices2));
+        adapter5.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genderSpinner2.setAdapter(adapter5);
 
         genderSpinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -216,6 +218,7 @@ public class CreateAccView extends AppCompatActivity {
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO move geolocate here
                 if (checkTests()) {
                     JSONObject locationJson = new JSONObject();
                     try {
@@ -291,9 +294,9 @@ public class CreateAccView extends AppCompatActivity {
                                 user.setMinAge(Integer.parseInt(minAge.getEditText().getText().toString()));
                             }
                             if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
-                                user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
+                                user.setMaxAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
                             } else {
-                                user.setMinAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
+                                user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
                             }
                             if (proximity.getEditText().getText().toString().trim().isEmpty()) {
                                 user.setProximity(15);
@@ -363,16 +366,38 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
-    private boolean checkMinMaxAge(TextInputLayout layout) {
-        String ageInput = layout.getEditText().getText().toString().trim();
+    private boolean checkMinAge() {
+        String minInput = minAge.getEditText().getText().toString().trim();
+        String maxInput = maxAge.getEditText().getText().toString().trim();
 
-        if (ageInput.isEmpty()) {
+        if (minInput.isEmpty()) {
             return true;
-        } else if (Integer.parseInt(ageInput) > 150) {
-            layout.setError("Invalid age");
+        } else if (Integer.parseInt(minInput) > 150) {
+            minAge.setError("Invalid age");
+            return false;
+        } else if (Integer.parseInt(minInput) > Integer.parseInt(maxInput)) {
+            minAge.setError("Minimum age must be less than or equal to Maximum age");
             return false;
         } else {
-            layout.setError(null);
+            minAge.setError(null);
+            return true;
+        }
+    }
+
+    private boolean checkMaxAge() {
+        String minInput = minAge.getEditText().getText().toString().trim();
+        String maxInput = maxAge.getEditText().getText().toString().trim();
+
+        if (maxInput.isEmpty()) {
+            return true;
+        } else if (Integer.parseInt(minInput) > 150) {
+            minAge.setError("Invalid age");
+            return false;
+        } else if (Integer.parseInt(maxInput) < Integer.parseInt(minInput)) {
+            minAge.setError("Maximum age must be greater than or equal to Minimum age");
+            return false;
+        } else {
+            minAge.setError(null);
             return true;
         }
     }
@@ -417,7 +442,7 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | !spinnerChecks() | !checkMinMaxAge(minAge) | !checkMinMaxAge(maxAge));
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | !spinnerChecks() | !checkMinAge() | !checkMaxAge());
     }
 
     private boolean spinnerChecks() {

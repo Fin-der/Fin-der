@@ -18,7 +18,16 @@ public class ProfileView extends AppCompatActivity {
     private TextView numMatches;
     private TextInputLayout firstName;
     private TextInputLayout lastName;
+    private TextInputLayout age;
     private TextInputLayout email;
+    //gender
+    private TextInputLayout location;
+    //gender preferred
+    private TextInputLayout minAge;
+    private TextInputLayout maxAge;
+    private TextInputLayout proximity;
+    //interest
+    private TextInputLayout biography;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +37,14 @@ public class ProfileView extends AppCompatActivity {
         TextView fullName = findViewById(R.id.fullNameText);
         firstName = findViewById(R.id.first_name_profile);
         lastName = findViewById(R.id.last_name_profile);
-        TextInputLayout age = findViewById(R.id.age_profile);
+        age = findViewById(R.id.age_profile);
         email = findViewById(R.id.email_profile);
         numMatches = findViewById(R.id.number_matches);
+        location = findViewById(R.id.location_profile);
+        minAge = findViewById(R.id.min_age_profile);
+        maxAge = findViewById(R.id.max_age_profile);
+        proximity = findViewById(R.id.proximity_profile);
+        biography = findViewById(R.id.bio_profile);
 
         UserAccount user = (UserAccount) getIntent().getSerializableExtra("profile");
 
@@ -41,6 +55,11 @@ public class ProfileView extends AppCompatActivity {
         age.getEditText().setText(user.getAge());
         email.getEditText().setText(user.getEmail());
         numMatches.setText(user.getNumMatches());
+        location.getEditText().setText(user.getLocation());
+        minAge.getEditText().setText(user.getMinAge());
+        maxAge.getEditText().setText(user.getMaxAge());
+        proximity.getEditText().setText(user.getProximity());
+        biography.getEditText().setText(user.getBiography());
 
         findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override

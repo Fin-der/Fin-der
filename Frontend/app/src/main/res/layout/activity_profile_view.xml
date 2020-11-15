@@ -28,8 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/profile_image"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/profile_image"
             android:text="Name"
             android:textColor="#000"
             android:textSize="20sp"/>
@@ -38,7 +38,7 @@
             android:id="@+id/delete_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:text="DELETE ACCOUNT"
             android:layout_alignParentTop="true"/>
 
@@ -87,7 +87,7 @@
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2134"
+                    android:text="Number goes here"
                     android:textSize="20sp">
 
                 </TextView>
@@ -104,7 +104,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="15dp">
 
@@ -140,9 +140,12 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:inputType="number"/>
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <!--gender-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:hint="Email"
@@ -153,6 +156,82 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:hint="Location"
+                android:id="@+id/location_profile"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--gender preference-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:hint="Minimum Age"
+                android:id="@+id/min_age_profile"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:hint="Maximum Age"
+                android:id="@+id/max_age_profile"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:hint="Proximity"
+                android:id="@+id/proximity_profile"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:inputType="number"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--interests-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/bio_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:counterEnabled="true"
+                app:counterMaxLength="150"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Biography"
+                    android:inputType="textMultiLine"
+                    android:lines="3"
+                    android:minLines="2"
+                    android:maxLines="6"
+                    android:gravity="top|start"
+                    android:scrollbars="vertical"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 

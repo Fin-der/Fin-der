@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,8 +30,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
@@ -37,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,16 +168,47 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
+            final ArrayList<UserAccount> friendMatches = new ArrayList<>();
             reqQueue = Volley.newRequestQueue(MainActivity.this);
+            final UserAccount[] profile = {null};
+            String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
             jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    // TODO: parse json to get user information from the backend
-//                    UserAccount profile = new UserAccount("Nicholas Ng", "5", "Male");
-                    Intent home = new Intent(MainActivity.this, HomeView.class);
-//                    home.putExtra("profile", profile);
-                    startActivity(home);
+                    try {
+                        JSONObject account = (JSONObject) response.get("user");
+                        String id = account.getString("_id");
+                        String firstName = account.getString("firstName");
+                        String lastName = account.getString("lastName");
+                        int age = account.getInt("age");
+                        String gender = account.getString("gender");
+                        String email = account.getString("email");
+                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                        List<Address> address = null;
+                        try {
+                            address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lng"), account.getJSONObject("location").getInt("lat"), 1);
+                        } catch (IOException e) {
+                            Log.d(TAG, "failed to get location");
+                            e.printStackTrace();
+                        }
+                        String location = address.get(0).getAddressLine(0);
+                        String prefGender = account.getJSONObject("preferences").getString("gender");
+                        int minAge = account.getJSONObject("preferences").getInt("min");
+                        int maxAge = account.getJSONObject("preferences").getInt("max");
+                        int proximity = account.getJSONObject("preferences").getInt("proximity");
+                        JSONArray interestArr = account.getJSONArray("interests");
+                        String[] interest = new String[interestArr.length()];
+                        for (int i = 0; i < interestArr.length(); i++) {
+                            interest[i] = interestArr.getString(i);
+                        }
+                        String biography = account.getString("description");
+                        profile[0] = new UserAccount(id, firstName, lastName, email, age, gender, location,
+                                prefGender, minAge, maxAge, proximity, interest, biography);
+                    } catch (JSONException e) {
+                        Log.d(TAG, "failed to parse json");
+                        e.printStackTrace();
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -183,6 +221,37 @@ public class MainActivity extends AppCompatActivity {
                         create.putExtra("profile", profile);
                         startActivity(create);
                     }
+                }
+            });
+            reqQueue.add(jsonReq);
+            url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/match/friend/";
+            jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONArray friends = (JSONArray) response.get("match");
+                        for (int i = 0; i < friends.length(); i++) {
+                            JSONObject acc = friends.getJSONObject(i).getJSONObject("to");
+                            String id = acc.getString("_id");
+                            String firstName = acc.getString("firstName");
+                            String lastName = acc.getString("lastName");
+                            UserAccount friend = new UserAccount(id, firstName, lastName);
+                            friendMatches.add(friend);
+                        }
+                    } catch (JSONException e) {
+                        Log.d(TAG, "failed to parse friend json");
+                        e.printStackTrace();
+                    }
+                    profile[0].setFriendMatches(friendMatches);
+                    Intent home = new Intent(MainActivity.this, HomeView.class);
+                    home.putExtra("profile", profile[0]);
+                    startActivity(home);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "Error: " + error.getMessage());
+                    error.printStackTrace();
                 }
             });
             reqQueue.add(jsonReq);
