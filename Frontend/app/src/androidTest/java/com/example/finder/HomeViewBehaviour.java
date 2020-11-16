@@ -16,6 +16,7 @@ import androidx.test.rule.ActivityTestRule;
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.CreateAccView;
 import com.example.finder.views.HomeView;
+import com.example.finder.views.MatchView;
 import com.example.finder.views.ProfileView;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -67,6 +69,18 @@ public class HomeViewBehaviour {
         onView(withId(R.id.home_profileBtn)).perform(click());
         try {
             intended(hasComponent(ProfileView.class.getName()));
+        } catch (AssertionError e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void findMatchesView() {
+        Intent intent = createIntent();
+        activityRule.launchActivity(intent);
+        onView(withId(R.id.home_FindMatchBtn)).perform(click());
+        try {
+            intended(hasComponent(MatchView.class.getName()));
         } catch (AssertionError e) {
             fail();
         }

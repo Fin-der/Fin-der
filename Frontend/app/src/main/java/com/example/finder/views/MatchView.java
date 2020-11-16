@@ -38,8 +38,8 @@ public class MatchView extends FragmentActivity {
         setContentView(R.layout.activity_match_view);
 
         Intent intent = getIntent();
-        user = (UserAccount) intent.getSerializableExtra("user");
-        matches = (ArrayList<UserAccount>) intent.getSerializableExtra("matches");
+        user = (UserAccount) intent.getSerializableExtra("profile");
+        matches = user.getMatches();
         NUM_PAGES = matches.size();
 
         // Instantiate a ViewPager and a PagerAdapter.

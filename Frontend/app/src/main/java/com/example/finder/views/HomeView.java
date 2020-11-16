@@ -54,6 +54,7 @@ public class HomeView extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
+        this.user.setMatches(toBeMatched);
         //this.user.setId("0");
         initButtons();
         initMessageBoard();
@@ -76,7 +77,7 @@ public class HomeView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent match = new Intent(HomeView.this, MatchView.class);
-                match.putExtra("user", user);
+                match.putExtra("profile", user);
                 match.putExtra("matches", toBeMatched);
                 startActivity(match);
             }

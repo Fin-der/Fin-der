@@ -48,7 +48,7 @@ public class MatchViewFragment extends Fragment {
                                                             container, false);
         final String HOST_URL = HomeView.HOST_URL + "/match/";
         TextView name = rootView.findViewById(R.id.match_name);
-        name.setText(match.getFirstName());
+        name.setText(match.getFirstName() + " " + match.getLastName());
         TextView bio = rootView.findViewById(R.id.match_bio);
         bio.setText(match.getBiography());
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {

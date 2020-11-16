@@ -109,106 +109,106 @@
             android:padding="15dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="First Name"
                 android:id="@+id/first_name_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="First Name">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:hint="Last Name"
-                android:id="@+id/last_name_profile"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:hint="Age"
-                android:id="@+id/age_profile"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:inputType="number"/>
+                    android:layout_height="match_parent" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/last_name_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Last Name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/age_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Age">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--gender-->
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="Email"
                 android:id="@+id/email_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="Email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="Location"
                 android:id="@+id/location_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="Location">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--gender preference-->
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="Minimum Age"
                 android:id="@+id/min_age_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="Minimum Age">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:inputType="number"/>
+                    android:layout_height="match_parent"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="Maximum Age"
                 android:id="@+id/max_age_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="Maximum Age">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:inputType="number"/>
+                    android:layout_height="match_parent"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:hint="Proximity"
                 android:id="@+id/proximity_profile"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_width="match_parent">
+                android:hint="Proximity">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:inputType="number"/>
+                    android:layout_height="match_parent"
+                    android:inputType="number" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -225,23 +225,23 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="top|start"
                     android:hint="Biography"
                     android:inputType="textMultiLine"
                     android:lines="3"
-                    android:minLines="2"
                     android:maxLines="6"
-                    android:gravity="top|start"
-                    android:scrollbars="vertical"/>
+                    android:minLines="2"
+                    android:scrollbars="vertical" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/update_button"
-                android:background="#2a9df4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="UPDATE"/>
+                android:background="#2a9df4"
+                android:text="UPDATE" />
 
         </LinearLayout>
 
