@@ -120,11 +120,11 @@ describe("test user controller", () => {
         done();
     }); 
 
-    it("test deleteByUserById pass", async (done) => {
+    it("test deleteUserById pass", async (done) => {
         const user = {
             deletedCount: 1
         };
-        UserModel.deleteByUserById = jest.fn(() => {return user;});
+        UserModel.deleteUserById = jest.fn(() => {return user;});
         
         const resp = {success:true, message: `Deleted a count of 1 user.`};
         
@@ -135,8 +135,8 @@ describe("test user controller", () => {
         done();
     }); 
 
-    it("test deleteByUserById fail", async (done) => {
-        UserModel.deleteByUserById = jest.fn(() => {throw error;});
+    it("test deleteUserById fail", async (done) => {
+        UserModel.deleteUserById = jest.fn(() => {throw error;});
         
         const resp = {success:false};
         
@@ -166,7 +166,7 @@ describe("test user controller", () => {
         done();
     }); 
 
-    it("test deleteByUserById fail", async (done) => {
+    it("test deleteUserById fail", async (done) => {
         UserModel.registerFCMToken = jest.fn(() => {throw error;});
         
         const resp = {success:false};

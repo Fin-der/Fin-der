@@ -5,8 +5,9 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "test": "jest --detectOpenHandles",
-    "start": "nodemon --experimental-json-modules server.js"
+    "test": "jest --detectOpenHandles --runInBand",
+    "start": "nodemon --experimental-json-modules server.js",
+    "coverage": "jest --runInBand --coverage"
   },
   "repository": {
     "type": "git",

@@ -56,7 +56,7 @@ export default {
     },
     onDeleteUserById: async (req, res) => {
         try {
-            const user = await UserModel.deleteByUserById(req.params.id);
+            const user = await UserModel.deleteUserById(req.params.id);
             return res.status(200).json({ 
                 success: true, 
                 message: `Deleted a count of ${user.deletedCount} user.` 

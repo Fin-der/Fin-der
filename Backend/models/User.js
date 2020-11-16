@@ -109,7 +109,7 @@ userSchema.statics.getUsersByIds = async function (ids) {
  * @param {String} id - id of user
  * @return {Object} - details of action performed
  */
-userSchema.statics.deleteByUserById = async function (id) {
+userSchema.statics.deleteUserById = async function (id) {
     const result = await this.remove({ _id: id });
     return result;
 };
