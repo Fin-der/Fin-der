@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
             final ArrayList<UserAccount> friendMatches = new ArrayList<>();
             reqQueue = Volley.newRequestQueue(MainActivity.this);
             final UserAccount[] profile = {null};
-            String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
+            String url = HomeView.HOST_URL + "/users/";
             jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -205,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                         String biography = account.getString("description");
                         profile[0] = new UserAccount(id, firstName, lastName, email, age, gender, location,
                                 prefGender, minAge, maxAge, proximity, interest, biography);
+                        profile[0].setFriendMatches(new ArrayList<UserAccount>());
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to parse json");
                         e.printStackTrace();
@@ -224,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             reqQueue.add(jsonReq);
-            url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/match/friend/";
+            url = HomeView.HOST_URL + "/match/friend/";
             jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {

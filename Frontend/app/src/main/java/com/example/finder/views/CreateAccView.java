@@ -61,7 +61,7 @@ public class CreateAccView extends AppCompatActivity {
 
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
+    private String url = HomeView.HOST_URL + "/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

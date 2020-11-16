@@ -38,6 +38,7 @@ public class HomeView extends AppCompatActivity {
     private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
+    public final static String HOST_URL = "http://192.168.1.72:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +96,6 @@ public class HomeView extends AppCompatActivity {
         RecyclerView msgBoard = findViewById(R.id.home_MsgBoard);
         msgBoard.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<UserAccount> temp = new ArrayList<UserAccount>();
-        temp.add(new UserAccount("0","Jacky", "Le", "Female"));
-        temp.add(new UserAccount("1", "Nick", "Ng", "Male"));
-        temp.add(new UserAccount("2", "Cody", "Li", "Male"));
         MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
         msgBoard.setAdapter(msgBoardAdapter);
     }
@@ -118,7 +116,7 @@ public class HomeView extends AppCompatActivity {
     }
 
     private void findMatches() {
-        final String HOST_MATCH = "http://192.168.1.72:3000/match/";
+        final String HOST_MATCH = HOST_URL + "/match/";
         RequestQueue que = Volley.newRequestQueue(this);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH + 0, null,
                 new Response.Listener<JSONObject>() {
