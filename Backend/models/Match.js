@@ -3,7 +3,6 @@ import UserModel from "./User.js";
 import { v4 as uuidv4 } from "uuid";
 
 // TODO: add error checking (cant find)
-// Not actually necessary except for finding mutuals
 const MatchVertexSchema = new mongoose.Schema(
     {
         _id: {

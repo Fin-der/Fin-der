@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
         location: {
             lng: Number, 
             lat: Number,
-        }, // lng, lat
+        }, // lng, lat TODO: VALIDATE THIS VALUE
         preferences: {
             gender: String,
             ageRange: {
@@ -82,7 +82,9 @@ userSchema.statics.createUser = async function (_id, firstName, lastName,
  */
 userSchema.statics.getUserById = async function (id) {
     const user = await this.findOne({ _id: id });
-    if (!user) { throw ({ error: "No user with this id found" }); }
+    if (!user) { 
+        throw ({ error: "No user with this id found" }); 
+    };
     return user;
 };
 
@@ -98,7 +100,7 @@ userSchema.statics.getUsers = async function () {
  * @param {Array} ids, string of user ids
  * @return {Array of Objects} users list
  */
-userSchema.statics.getUserByIds = async function (ids) {
+userSchema.statics.getUsersByIds = async function (ids) {
     const users = await this.find({ _id: { $in: ids } });
     return users;
 };
@@ -115,11 +117,11 @@ userSchema.statics.deleteByUserById = async function (id) {
 userSchema.statics.registerFCMToken = async function (id, token) {
     let user = await this.findOne({ _id: id });
     if (!user) { throw ({ error: "No user with this id found" }); }
-    user.FCMToken = token;
-    user.save();
+    await this.updateOne({_id: id}, {$set: {FCMToken: token}}, {multi: true});
+    return await this.findOne({ _id: id });
 };
 
-userSchema.statics.getTokensbyIds = async function (ids) {
+userSchema.statics.getTokensByIds = async function (ids) {
     const tokens = await this.find({ _id: { $in: ids } }, "FCMToken");
     return tokens;
 };
