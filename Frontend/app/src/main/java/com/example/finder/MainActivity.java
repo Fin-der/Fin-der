@@ -206,9 +206,6 @@ public class MainActivity extends AppCompatActivity {
                         String biography = account.getString("description");
                         profile[0] = new UserAccount(id, firstName, lastName, email, age, gender, location,
                                 prefGender, minAge, maxAge, proximity, interest, biography);
-//                        Intent home = new Intent(MainActivity.this, HomeView.class);
-//                        home.putExtra("profile", profile[0]);
-//                        startActivity(home);
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to parse json");
                         e.printStackTrace();
