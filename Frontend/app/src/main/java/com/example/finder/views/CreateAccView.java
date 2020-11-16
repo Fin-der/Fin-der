@@ -31,6 +31,7 @@ import com.example.finder.R;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,7 +62,7 @@ public class CreateAccView extends AppCompatActivity {
 
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
-    private String url = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000/users/";
+    private String url = HomeView.HOST_URL + "/users/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +91,7 @@ public class CreateAccView extends AppCompatActivity {
         emailEdit.addTextChangedListener(new MyTextWatcher(emailEdit));
         locationEdit.addTextChangedListener(new MyTextWatcher(locationEdit));
 
-        final double[] longLat = {0, 0};
+        final int[] longLat = {0, 0};
 
         locationEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -110,8 +111,8 @@ public class CreateAccView extends AppCompatActivity {
                     if (list.size() > 0) {
                         Address address = list.get(0);
                         // transfer lat long to user scheme
-                        longLat[0] = address.getLongitude();
-                        longLat[1] = address.getLatitude();
+                        longLat[0] = (int) address.getLongitude();
+                        longLat[1] = (int) address.getLatitude();
                     }
                 }
                 return false;
@@ -220,6 +221,10 @@ public class CreateAccView extends AppCompatActivity {
             public void onClick(View view) {
                 // TODO move geolocate here
                 if (checkTests()) {
+                    JSONArray interests = new JSONArray();
+                    interests.put(interestResult[0]);
+                    interests.put(interestResult[1]);
+                    interests.put(interestResult[2]);
                     JSONObject locationJson = new JSONObject();
                     try {
                         locationJson.put("lng", longLat[0]);
@@ -260,15 +265,15 @@ public class CreateAccView extends AppCompatActivity {
                     JSONObject userJson = new JSONObject();
                     try {
                         userJson.put("_id", user.getId());
-                        userJson.put("first_name", firstName.getEditText().getText().toString());
-                        userJson.put("last_name", lastName.getEditText().getText().toString());
-//                        userJson.put("age", age.getEditText().getText().toString());
-//                        userJson.put("gender", genderResult[0]);
-//                        userJson.put("email", email.getEditText().getText().toString());
-//                        userJson.put("location", locationJson);
-//                        userJson.put("preferences", preferenceJson);
-//                        userJson.put("interests", interestResult);
-//                        userJson.put("description", biography.getEditText().getText().toString());
+                        userJson.put("firstName", firstName.getEditText().getText().toString());
+                        userJson.put("lastName", lastName.getEditText().getText().toString());
+                        userJson.put("age", age.getEditText().getText().toString());
+                        userJson.put("gender", genderResult[0]);
+                        userJson.put("email", email.getEditText().getText().toString());
+                        userJson.put("location", locationJson);
+                        userJson.put("preferences", preferenceJson);
+                        userJson.put("interests", interests);
+                        userJson.put("description", biography.getEditText().getText().toString());
                         Log.d(TAG, userJson.toString());
                     } catch (JSONException e) {
                             Log.d(TAG, "failed to create user json");

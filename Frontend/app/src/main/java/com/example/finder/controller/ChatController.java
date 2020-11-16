@@ -22,6 +22,7 @@ import com.example.finder.models.UserAccount;
 import com.example.finder.models.Message;
 import com.example.finder.R;
 import com.example.finder.views.ChatView;
+import com.example.finder.views.HomeView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +35,7 @@ import java.util.concurrent.Semaphore;
 
 public class ChatController {
     private Socket socket;
-    private String HOST_URL = "http://192.168.1.72:3000/";
+    private String HOST_URL = HomeView.HOST_URL;
     private ChatView context;
     private UserAccount userAccount;
     private List<Message> messages;
@@ -118,7 +119,7 @@ public class ChatController {
         obj.put("userIds", arr);
         obj.put("type", "consumer-to-consumer");
         Log.d("ChatController", "Initiate: " + obj.toString());
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "room/initiate", obj, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "/room/initiate", obj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -142,7 +143,7 @@ public class ChatController {
 
     private JsonObjectRequest grabConversation() {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
-                HOST_URL + "room/" + roomId + "/" + chatPos, null,
+                HOST_URL + "/room/" + roomId + "/" + chatPos, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -236,7 +237,7 @@ public class ChatController {
         }
         Log.d("ChatController", "JSONobject to postMessage " + data.toString());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                    HOST_URL + "room/" + roomId + "/" + userAccount.getId() + "/message",
+                    HOST_URL + "/room/" + roomId + "/" + userAccount.getId() + "/message",
                         data,
                 new Response.Listener<JSONObject>() {
             @Override

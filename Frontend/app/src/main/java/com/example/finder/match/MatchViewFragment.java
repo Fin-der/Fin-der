@@ -17,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.R;
 import com.example.finder.models.UserAccount;
+import com.example.finder.views.HomeView;
 
 import org.json.JSONObject;
 
@@ -45,7 +46,7 @@ public class MatchViewFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_match_fragment,
                                                             container, false);
-        final String HOST_URL = "http://192.168.1.72:3000/match/";
+        final String HOST_URL = HomeView.HOST_URL + "/match/";
         TextView name = rootView.findViewById(R.id.match_name);
         name.setText(match.getFirstName());
         TextView bio = rootView.findViewById(R.id.match_bio);

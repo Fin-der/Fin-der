@@ -38,6 +38,7 @@ public class HomeView extends AppCompatActivity {
     private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
+    public final static String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class HomeView extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
-        this.user.setId("0");
+        //this.user.setId("0");
         initButtons();
         initMessageBoard();
         findMatches();
@@ -95,10 +96,11 @@ public class HomeView extends AppCompatActivity {
         RecyclerView msgBoard = findViewById(R.id.home_MsgBoard);
         msgBoard.setLayoutManager(new LinearLayoutManager(this));
         ArrayList<UserAccount> temp = new ArrayList<UserAccount>();
-        temp.add(new UserAccount("0","Jacky", "Le", "Female"));
-        temp.add(new UserAccount("1", "Nick", "Ng", "Male"));
-        temp.add(new UserAccount("2", "Cody", "Li", "Male"));
-        MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, temp, user);
+        if (user.getFriendMatches() == null) {
+            user.setFriendMatches(temp);
+            Log.e("HomeView", "friendMatches was null");
+        }
+        MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, user.getFriendMatches(), user);
         msgBoard.setAdapter(msgBoardAdapter);
     }
 
@@ -118,9 +120,9 @@ public class HomeView extends AppCompatActivity {
     }
 
     private void findMatches() {
-        final String HOST_MATCH = "http://192.168.1.72:3000/match/";
+        final String HOST_MATCH = HOST_URL + "/match/";
         RequestQueue que = Volley.newRequestQueue(this);
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH + 0, null,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH + user.getId(), null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
