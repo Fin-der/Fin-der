@@ -11,6 +11,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
 
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.CreateAccView;
@@ -25,6 +26,7 @@ import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.fail;
 
 
@@ -32,11 +34,8 @@ import static org.junit.Assert.fail;
 @LargeTest
 public class HomeViewBehaviour {
     @Rule
-    public ActivityScenarioRule<HomeView> activityRule
-            = new ActivityScenarioRule<>(createIntent());
-    @Rule
-    public IntentsTestRule<MainActivity> mLoginActivityActivityTestRule =
-            new IntentsTestRule<>(MainActivity.class);
+    public ActivityTestRule<HomeView> activityRule
+            = new ActivityTestRule<>(HomeView.class, false, false);
 
     Intent createIntent() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), HomeView.class);
@@ -51,8 +50,10 @@ public class HomeViewBehaviour {
 
     @Test
     public void countMessageBoard() {
+        Intent intent = createIntent();
+        activityRule.launchActivity(intent);
         try {
-            onView(withId(R.layout.msgboard_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.msgboard_profilename)).check(matches(withText("Jack")));
         } catch(Exception err) {
             fail(err.toString());
         }
@@ -60,6 +61,8 @@ public class HomeViewBehaviour {
 
     @Test
     public void editProfileView() {
+        Intent intent = createIntent();
+        activityRule.launchActivity(intent);
         onView(withId(R.id.home_profileBtn)).perform(click());
         try {
             intended(hasComponent(CreateAccView.class.getName()));
