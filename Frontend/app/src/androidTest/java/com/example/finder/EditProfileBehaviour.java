@@ -26,50 +26,50 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.supportsInputMethods;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.fail;
 
-
-@RunWith(AndroidJUnit4.class)
-@LargeTest
-public class HomeViewBehaviour {
+public class EditProfileBehaviour {
     @Rule
-    public IntentsTestRule<HomeView> activityRule
-            = new IntentsTestRule<>(HomeView.class, false, false);
+    public IntentsTestRule<ProfileView> activityRule
+            = new IntentsTestRule<>(ProfileView.class, false, false);
 
-    Intent createIntent() {
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), HomeView.class);
-        UserAccount user = new UserAccount("0", "Bob", "Smith");
-        ArrayList<UserAccount> friends = new ArrayList<>();
-        friends.add(new UserAccount("1", "Jack", "Lantern"));
-        user.setFriendMatches(friends);
-        user.setMatches(new ArrayList<UserAccount>());
+    Intent createFullAcc() {
+        Intent intent = new Intent();
+        String id = "0";
+        String firstName = "Jacky";
+        String lastName = "Smith";
+        String email = "Email";
+        int age = 5;
+        String gender = "Male";
+        String location = "Vancouver";
+        String prefGender = "Female";
+        int minAge = 0;
+        int maxAge = age + 5;
+        int prox = 5;
+        String[] interest = new String[]{"a", "b", "c"};
+        String bio = "hello";
+        ArrayList<UserAccount> friend = new ArrayList<>();
+        friend.add(new UserAccount("1", "Jack", "Frost"));
+        ArrayList<UserAccount> matches = new ArrayList<>();
+
+        UserAccount user = new UserAccount(id, firstName, lastName, email, age, gender,
+                location, prefGender, minAge, maxAge, prox, interest, bio);
+        user.setMatches(matches);
+        user.setFriendMatches(friend);
         intent.putExtra("profile", user);
+
         return intent;
     }
 
     @Test
-    public void countMessageBoard() {
-        Intent intent = createIntent();
+    public void openActivity() {
+        Intent intent = createFullAcc();
         activityRule.launchActivity(intent);
-        try {
-            onView(withId(R.id.msgboard_profilename)).check(matches(withText("Jack")));
-        } catch(Exception err) {
-            fail(err.toString());
-        }
     }
 
-    @Test
-    public void editProfileView() {
-        Intent intent = createIntent();
-        activityRule.launchActivity(intent);
-        onView(withId(R.id.home_profileBtn)).perform(click());
-        try {
-            intended(hasComponent(ProfileView.class.getName()));
-        } catch (AssertionError e) {
-            fail();
-        }
-    }
+
 
 }
