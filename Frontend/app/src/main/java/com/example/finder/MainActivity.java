@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
 
+    private ArrayList<UserAccount> friendMatches = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
-            final ArrayList<UserAccount> friendMatches = new ArrayList<>();
             reqQueue = Volley.newRequestQueue(MainActivity.this);
             final UserAccount[] profile = {null};
             String url = HomeView.HOST_URL + "/users/";
@@ -187,15 +188,15 @@ public class MainActivity extends AppCompatActivity {
                         Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
                         List<Address> address = null;
                         try {
-                            address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lng"), account.getJSONObject("location").getInt("lat"), 1);
+                            address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lat"), account.getJSONObject("location").getInt("lng"), 1);
                         } catch (IOException e) {
                             Log.d(TAG, "failed to get location");
                             e.printStackTrace();
                         }
                         String location = address.get(0).getAddressLine(0);
                         String prefGender = account.getJSONObject("preferences").getString("gender");
-                        int minAge = account.getJSONObject("preferences").getInt("min");
-                        int maxAge = account.getJSONObject("preferences").getInt("max");
+                        int minAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("min");
+                        int maxAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("max");
                         int proximity = account.getJSONObject("preferences").getInt("proximity");
                         JSONArray interestArr = account.getJSONArray("interests");
                         String[] interest = new String[interestArr.length()];
@@ -205,7 +206,9 @@ public class MainActivity extends AppCompatActivity {
                         String biography = account.getString("description");
                         profile[0] = new UserAccount(id, firstName, lastName, email, age, gender, location,
                                 prefGender, minAge, maxAge, proximity, interest, biography);
-                        profile[0].setFriendMatches(new ArrayList<UserAccount>());
+//                        Intent home = new Intent(MainActivity.this, HomeView.class);
+//                        home.putExtra("profile", profile[0]);
+//                        startActivity(home);
                     } catch (JSONException e) {
                         Log.d(TAG, "failed to parse json");
                         e.printStackTrace();

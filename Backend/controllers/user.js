@@ -67,10 +67,10 @@ export default {
     },
     onRegisterFCMToken: async (req, res) => {
         try {
-            const user = await UserModel.registerFCMToken(req.params.id, req.params.token);
+            await UserModel.registerFCMToken(req.params.id, req.params.token);
             return res.status(200).json({
                 success: true, 
-                message: `Token: ${user.FCMToken} successfully registed with User(ID): ${user.id}` 
+                message: `Token: ${req.params.token} successfully registed with User(ID): ${req.params.id}` 
             });
         } catch(error) {
             return res.status(500).json({ success:false, error });
