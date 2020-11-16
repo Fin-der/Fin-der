@@ -27,7 +27,7 @@ export default {
             global.io.sockets.in(roomId).emit("new message", { message: post });
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
-            const registrationTokens = await UserModel.getTokensbyIds(userIds);
+            const registrationTokens = await UserModel.getTokensByIds(userIds);
             var notifMessage = {
                 "notification": {
                     "title": "Message From ",
@@ -65,7 +65,7 @@ export default {
         try {
             const { roomId, skip } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
-            const users = await UserModel.getUserByIds(room.userIds);
+            const users = await UserModel.getUsersByIds(room.userIds);
             const options = await this.generateOptions(req, skip);
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({

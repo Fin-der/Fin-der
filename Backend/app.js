@@ -25,10 +25,6 @@ app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
 app.use("/match", matchRouter);
 
-app.use("/test", async (req, res) => {
-    res.status(200).json({message: "pass!"});
-});
-
 app.use("*", (req, res) => {
     return res.status(404).json({
         success: false,
