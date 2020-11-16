@@ -41,24 +41,6 @@ public class UserAccount implements Serializable {
     }
 
     public UserAccount(String id, String firstName, String lastName, String email, int age, String gender, String location,
-                       String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography, ArrayList<UserAccount> matches) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.id = id;
-        this.email = email;
-        this.age = age;
-        this.gender = gender;
-        this.matches = matches;
-        this.interest = interest;
-        this.location = location;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.prefGender = prefGender;
-        this.proximity = proximity;
-        this.biography = biography;
-    }
-
-    public UserAccount(String id, String firstName, String lastName, String email, int age, String gender, String location,
                        String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography) {
         this.firstName = firstName;
         this.lastName = lastName;
