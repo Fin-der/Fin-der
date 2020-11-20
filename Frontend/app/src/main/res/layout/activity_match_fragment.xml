@@ -26,7 +26,7 @@
         android:id="@+id/view"
         android:layout_width="match_parent"
         android:layout_height="4dp"
-        android:background="#dfdfdf" />
+        android:background="#8E8E8E" />
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -50,7 +50,7 @@ public class MatchViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_match_fragment,
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_match_fragment,
                                                             container, false);
         TextView name = rootView.findViewById(R.id.match_name);
         name.setText(match.getFirstName() + " " + match.getLastName());
@@ -59,30 +59,30 @@ public class MatchViewFragment extends Fragment {
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               approve();
+               approve(rootView);
             }
         });
 
         rootView.findViewById(R.id.match_deny).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deny();
+                deny(rootView);
             }
         });
 
         rootView.setOnTouchListener(new OnSwipeTouchListener(getActivity()) {
             public void onSwipeRight() {
-                Toast.makeText(getActivity(), "right", Toast.LENGTH_SHORT).show();
+                approve(rootView);
             }
             public void onSwipeLeft() {
-                Toast.makeText(getActivity(), "left", Toast.LENGTH_SHORT).show();
+                deny(rootView);
             }
         });
 
         return rootView;
     }
 
-    private void approve() {
+    private void approve(final View view) {
         RequestQueue que = Volley.newRequestQueue(getActivity());
         JsonObjectRequest req = new JsonObjectRequest(
                 Request.Method.PUT, HOST_URL + "approve/" + match.getMatchId() + "/" + userId,
@@ -90,6 +90,7 @@ public class MatchViewFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 Toast.makeText(getActivity(), "Approval Sent!", Toast.LENGTH_SHORT).show();
+                view.setBackgroundResource(R.color.green);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -100,7 +101,7 @@ public class MatchViewFragment extends Fragment {
         que.add(req);
     }
 
-    private void deny() {
+    private void deny(final View view) {
         RequestQueue que = Volley.newRequestQueue(getActivity());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT,
                 HOST_URL + "decline/" + match.getMatchId() + "/" + userId, null,
@@ -108,6 +109,7 @@ public class MatchViewFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         Toast.makeText(getActivity(), "Goodbye " + match.getFirstName(), Toast.LENGTH_SHORT).show();
+                        view.setBackgroundResource(R.color.red);
                     }
                 }, new Response.ErrorListener() {
             @Override

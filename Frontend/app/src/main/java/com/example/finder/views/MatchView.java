@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.finder.match.MatchViewFragment;
@@ -46,9 +47,10 @@ public class MatchView extends FragmentActivity {
         matches = user.getMatches();
         NUM_PAGES = matches.size();
         final String err = "Huh... Doesn't look like there are any available matches right now... Please Come Back Later";
-        if (NUM_PAGES == 0)
-            Toast.makeText(this, err, Toast.LENGTH_LONG);
-
+        if (NUM_PAGES == 0) {
+            Toast.makeText(this, err, Toast.LENGTH_LONG).show();
+            findViewById(R.id.match_err).setVisibility(View.VISIBLE);
+        }
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.match_pager);
         /**

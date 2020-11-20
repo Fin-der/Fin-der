@@ -64,6 +64,7 @@
     <string name="interest1_caption">Interest 1</string>
     <string name="interest2_caption">Interest 2</string>
     <string name="interest3_caption">Interest 3</string>
+    <string name="match_err_text">Maybe Next Time?</string>
 
     <!-- Profile View Strings -->
 </resources>

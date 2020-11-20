@@ -56,11 +56,18 @@ public class HomeView extends AppCompatActivity {
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
         this.user.setMatches(toBeMatched);
         if (this.user != null)
-            this.user.setId("110210516334230656872");
+            this.user.setId("3");
         else
-            this.user = new UserAccount("110210516334230656872", "Jack", "Smith");
+            this.user = new UserAccount("3", "Jack", "Smith");
         initButtons();
         initMessageBoard();
+        findMatches();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        user.getMatches().clear();
         findMatches();
     }
 
