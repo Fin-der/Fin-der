@@ -38,7 +38,7 @@ public class HomeView extends AppCompatActivity {
     private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
-    public final static String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000";
+    public final static String HOST_URL = "http://192.168.1.72:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,10 @@ public class HomeView extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
         this.user.setMatches(toBeMatched);
-        //this.user.setId("0");
+        if (this.user != null)
+            this.user.setId("110210516334230656872");
+        else
+            this.user = new UserAccount("110210516334230656872", "Jack", "Smith");
         initButtons();
         initMessageBoard();
         findMatches();
