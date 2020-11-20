@@ -2,8 +2,6 @@ import { app, port } from "../../../app.js"; // Link to your server file
 import http from "http";
 import mongoose, {ValidationError} from "mongoose";
 import UserModel from "../../../models/User.js";
-import {MatchVertexModel, MatchEdgeModel} from "../../../models/Match.js";
-import { hasUncaughtExceptionCaptureCallback } from "process";
 
 describe("test user models", () => {
 
@@ -33,7 +31,7 @@ describe("test user models", () => {
         },
         description : "plz",
 
-    }
+    };
     const badUser = {
         _id : "3",
         preferences : {
@@ -124,7 +122,7 @@ describe("test user models", () => {
         done();
     })
 
-    it("test createUser creates a user", async done => {
+    it("test createUser creates a without max", async done => {
         var actualUser = await UserModel.createUser(user._id, user.firstName, user.lastName, user.age,
             user.gender, user.email, user.location, user.preferences, user.interests, 
             user.description);
@@ -137,7 +135,7 @@ describe("test user models", () => {
         done();
     });
 
-    it("test createUser creates a user", async done => {
+    it("test createUser creates a without min", async done => {
         var actualUser = await UserModel.createUser(badUser2._id, badUser2.firstName, badUser2.lastName, badUser2.age,
             badUser2.gender, badUser2.email, badUser2.location, badUser2.preferences, badUser2.interests, 
             badUser2.description);
@@ -192,14 +190,14 @@ describe("test user models", () => {
         done();
     });
 
-    it("deleteByUserById", async done => {
+    it("deleteUserById", async done => {
         const deleteMsg = {
             "deletedCount": 0, 
             "n": 0, 
             "ok": 1
         };
         UserModel.remove = jest.fn(() => {return deleteMsg;});
-        const msg = await UserModel.deleteByUserById(user._id);
+        const msg = await UserModel.deleteUserById(user._id);
         expect(msg).toBe(deleteMsg);
         done();
     });

@@ -54,16 +54,15 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
     return vertex;
 };
 
-MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
-    const user = await UserModel.getUserById(userId);
-    const otherUser = await UserModel.getUserById(otherUserId);
-    const userVertex = await this.update({user},{$push: {matches: otherUser}});
-    return userVertex;
-};
+// MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
+//     const user = await UserModel.getUserById(userId);
+//     const otherUser = await UserModel.getUserById(otherUserId);
+//     const userVertex = await this.update({user},{$push: {matches: otherUser}});
+//     return userVertex;
+// };
 
 MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
     const edges = await this.find({"from._id": userId, fromStatus: "potential"});
-    console.log(edges);
     return edges;
 };
 
@@ -77,7 +76,7 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
     const user2 = await UserModel.getUserById(userId2);
     const edge1 = await this.create({score, from: user1, to: user2});
     const edge2 = await this.create({score, from: user2, to: user1});
-    return edge1, edge2;
+    return [ edge1, edge2 ];
 };
 
 MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
@@ -113,7 +112,7 @@ MatchEdgeSchema.statics.determineMatchStatus = async function (matchId, options)
 };
 
 MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch, options) {
-    if (match.toStatus === "approved" && match.fromStatus === "approved") {
+    if (match.toStatus === "approved" && match.fromStatus === "approved") {       
         await this.updateOne({_id: match._id}, {$set: {status: "approved"}}, options);
         await this.updateOne({_id: otherMatch._id}, {$set: {status: "approved"}}, options);
     }

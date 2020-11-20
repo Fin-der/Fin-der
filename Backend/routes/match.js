@@ -3,7 +3,7 @@ import express from "express";
 import match from "../controllers/match.js";
 
 const router = express.Router();
-// route: ip:port/matching
+// route: ip:port/match
 router
     // params: userId
     // returns: list of "potential" matches
