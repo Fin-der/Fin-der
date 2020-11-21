@@ -38,36 +38,44 @@ public class EditProfileBehaviour {
 
     Intent createFullAcc() {
         Intent intent = new Intent();
-        String id = "0";
-        String firstName = "Jacky";
-        String lastName = "Smith";
-        String email = "Email";
-        int age = 5;
-        String gender = "Male";
-        String location = "Vancouver";
-        String prefGender = "Female";
-        int minAge = 0;
-        int maxAge = age + 5;
-        int prox = 5;
-        String[] interest = new String[]{"a", "b", "c"};
-        String bio = "hello";
-        ArrayList<UserAccount> friend = new ArrayList<>();
-        friend.add(new UserAccount("1", "Jack", "Frost"));
-        ArrayList<UserAccount> matches = new ArrayList<>();
-
-        UserAccount user = new UserAccount(id, firstName, lastName, email, age, gender,
-                location, prefGender, minAge, maxAge, prox, interest, bio);
-        user.setMatches(matches);
-        user.setFriendMatches(friend);
+        UserAccount user = UserAccGenerator.createFullAcc();
         intent.putExtra("profile", user);
 
         return intent;
     }
 
     @Test
-    public void openActivity() {
+    public void startActivity() {
         Intent intent = createFullAcc();
         activityRule.launchActivity(intent);
+    }
+
+    @Test
+    public void openActivity() {
+        startActivity();
+    }
+
+    @Test
+    public void checkName() {
+        startActivity();
+        onView(withId(R.id.fullNameText)).check(matches(withText("Jacky Smith")));
+    }
+
+    @Test
+    public void checkMatchNum() {
+        startActivity();
+        onView(withId(R.id.number_matches)).check(matches(withText("0")));
+    }
+
+    @Test
+    public void checkDetails() {
+        startActivity();
+        onView(withId(R.id.first_name_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.last_name_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.age_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.location_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
     }
 
 

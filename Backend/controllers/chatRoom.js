@@ -6,10 +6,10 @@ import admin from "../config/firebase-config.js";
 export default {
     initiate: async (req, res) => {
         try {
-            const { userIds, type } = req.body;
+            const { userIds } = req.body;
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
-            const chatRoom = await ChatRoomModel.initiateChat(allUserIds, type, chatInitiator);
+            const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
             
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
