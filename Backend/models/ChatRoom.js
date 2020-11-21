@@ -13,7 +13,6 @@ const chatRoomSchema = new mongoose.Schema(
             default: () => uuidv4().replace(/\-/g, ""),
         },
         userIds: Array,
-        type: String,
         chatInitiator: String,
     },
     {
@@ -41,29 +40,26 @@ chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     return room;
 };
 
-chatRoomSchema.statics.initiateChat = async function (userIds, type, chatInitiator) {
+chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
     const availableRoom = await this.findOne({
         userIds: {
             $size: userIds.length,
             $all: [...userIds],
         },
-        type,
     });
     if (availableRoom) {
         return {
             isNew: false,
             message: "retrieving an old chat room",
             chatRoomId: availableRoom._doc._id,
-            type: availableRoom._doc.type,
         };
     }
 
-    const newRoom = await this.create({ userIds, type, chatInitiator });
+    const newRoom = await this.create({ userIds, chatInitiator });
     return {
         isNew: true,
         message: "creating a new chatroom",
         chatRoomId: newRoom._doc._id,
-        type: newRoom._doc.type,
     };
 };
 
