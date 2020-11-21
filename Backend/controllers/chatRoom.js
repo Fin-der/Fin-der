@@ -66,14 +66,15 @@ export default {
             const { roomId, skip } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
             const users = await UserModel.getUsersByIds(room.userIds);
-            const options = await this.generateOptions(req, skip);
+            const options = await generateOptions(req, skip);   
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({
                 success: true,
-                conversation,
+                conversation,   
                 users,
             });
         } catch (error) {
+            console.log(error)
             return res.status(500).json({ success: false, error });
         }
     },
@@ -95,17 +96,18 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
-    generateOptions: async (req, skip) => {
-        try {
-            const options = {
-                page: parseInt(req.query.page, 10),
-                limit: parseInt(req.query.limit, 10) || 25,
-                skip: parseInt(skip, 10),
-            };
-            return options;
-        } catch (error) {
-            throw error;
-        }
-    },
+};
+
+var generateOptions = (req, skip) => {
+    try {
+        const options = {
+            page: parseInt(req.query.page, 10),
+            limit: parseInt(req.query.limit, 10) || 25,
+            skip: parseInt(skip, 10),
+        };
+        return options;
+    } catch (error) {
+        throw error;
+    }
 };
 
