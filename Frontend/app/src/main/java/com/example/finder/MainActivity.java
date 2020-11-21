@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        JSONArray friends = (JSONArray) response.get("match");
+                        JSONArray friends = (JSONArray) response.get("friends");
                         for (int i = 0; i < friends.length(); i++) {
                             JSONObject acc = friends.getJSONObject(i).getJSONObject("to");
                             String id = acc.getString("_id");

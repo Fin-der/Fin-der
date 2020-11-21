@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class HomeView extends AppCompatActivity {
@@ -38,7 +39,7 @@ public class HomeView extends AppCompatActivity {
     private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
-    public final static String HOST_URL = "http://192.168.1.72:3000";
+    public final static String HOST_URL = "http://10.0.2.2:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class HomeView extends AppCompatActivity {
         else
             this.user = new UserAccount("3", "Jack", "Smith");
         initButtons();
-        initMessageBoard();
+        getFriends();
         findMatches();
     }
 
@@ -113,6 +114,39 @@ public class HomeView extends AppCompatActivity {
         }
         MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, user.getFriendMatches(), user);
         msgBoard.setAdapter(msgBoardAdapter);
+    }
+
+    private void getFriends() {
+        final String url = HomeView.HOST_URL + "/match/friend/";
+        RequestQueue que = Volley.newRequestQueue(this);
+        user.setFriendMatches(new ArrayList<UserAccount>());
+        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + user.getId(), null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray friends = (JSONArray) response.get("friends");
+                    for (int i = 0; i < friends.length(); i++) {
+                        JSONObject acc = friends.getJSONObject(i).getJSONObject("to");
+                        String id = acc.getString("_id");
+                        String firstName = acc.getString("firstName");
+                        String lastName = acc.getString("lastName");
+                        UserAccount friend = new UserAccount(id, firstName, lastName);
+                        user.getFriendMatches().add(friend);
+                    }
+                    initMessageBoard();
+                } catch (JSONException e) {
+                    Log.d(TAG, "failed to parse friend json");
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error: " + error.getMessage());
+                error.printStackTrace();
+            }
+        });
+        que.add(jsonReq);
     }
 
     private void signOut() {

@@ -20,18 +20,12 @@ public class ChatView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_view);
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         Intent intent = getIntent();
         this.receiver = intent.getStringExtra("chatterName");
         setTitle(this.receiver);
         UserAccount user = (UserAccount) intent.getSerializableExtra("user");
-
-        user.setId("2430507c1a7d41f09f003d8c4dc6d442");
-        String rId = "753b1955dcef440fa21197092f659b38";
-        //this.user.setId("753b1955dcef440fa21197092f659b38");
-        //rId = "2430507c1a7d41f09f003d8c4dc6d442" ;
-
+        String rId = intent.getStringExtra("rId");
         controller = new ChatController(this, user, rId);
 
         init();
