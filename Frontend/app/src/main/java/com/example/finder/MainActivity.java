@@ -43,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
-    private RequestQueue reqQueue;
-    private JsonObjectRequest jsonReq;
 
     private ArrayList<UserAccount> friendMatches = new ArrayList<>();
+    private UserAccount profile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,14 +169,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
-            reqQueue = Volley.newRequestQueue(MainActivity.this);
-            final UserAccount[] profile = {null};
-            String url = HomeView.HOST_URL + "/users/";
-            jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
+            RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
+            JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, HomeView.HOST_URL + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    profile[0] = parseAccount(response);
+                    profile = parseAccount(response);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -193,8 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             reqQueue.add(jsonReq);
-            url = HomeView.HOST_URL + "/match/friend/";
-            jsonReq = new JsonObjectRequest(Request.Method.GET, url + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
+            jsonReq = new JsonObjectRequest(Request.Method.GET, HomeView.HOST_URL + "/match/friend/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
@@ -211,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "failed to parse friend json");
                         e.printStackTrace();
                     }
-                    profile[0].setFriendMatches(friendMatches);
+                    profile.setFriendMatches(friendMatches);
                     Intent home = new Intent(MainActivity.this, HomeView.class);
-                    home.putExtra("profile", profile[0]);
+                    home.putExtra("profile", profile);
                     startActivity(home);
                 }
             }, new Response.ErrorListener() {
