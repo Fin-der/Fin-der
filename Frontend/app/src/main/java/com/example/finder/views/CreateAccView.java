@@ -64,6 +64,10 @@ public class CreateAccView extends AppCompatActivity {
     private JsonObjectRequest jsonReq;
     private String url = HomeView.HOST_URL + "/users/";
 
+    private int[] longLat = {200, 100};
+    private String[] genderResult = new String[2];
+    private String[] interestResult = new String[3];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,34 +95,6 @@ public class CreateAccView extends AppCompatActivity {
         emailEdit.addTextChangedListener(new MyTextWatcher(emailEdit));
         locationEdit.addTextChangedListener(new MyTextWatcher(locationEdit));
 
-        final int[] longLat = {0, 0};
-
-        locationEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_SEARCH
-                    || i == EditorInfo.IME_ACTION_DONE
-                    || keyEvent.getAction() == KeyEvent.ACTION_DOWN
-                    || keyEvent.getAction() == KeyEvent.KEYCODE_ENTER) {
-                    String searchString = locationEdit.getText().toString();
-                    Geocoder geocoder = new Geocoder(CreateAccView.this);
-                    List<Address> list = new ArrayList<>();
-                    try {
-                        list = geocoder.getFromLocationName(searchString, 1);
-                    } catch (IOException e) {
-                        // catch
-                    }
-                    if (list.size() > 0) {
-                        Address address = list.get(0);
-                        // transfer lat long to user scheme
-                        longLat[0] = (int) address.getLongitude();
-                        longLat[1] = (int) address.getLatitude();
-                    }
-                }
-                return false;
-            }
-        });
-
         genderSpinner1 = findViewById(R.id.genderSpinner1);
         genderSpinner2 = findViewById(R.id.genderSpinner2);
         interest1Spinner = findViewById(R.id.interest1Spinner);
@@ -128,8 +104,6 @@ public class CreateAccView extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender_choices));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         genderSpinner1.setAdapter(adapter);
-
-        final String[] genderResult = new String[2];
 
         genderSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -162,8 +136,6 @@ public class CreateAccView extends AppCompatActivity {
         ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.sport_choices));
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         interest1Spinner.setAdapter(adapter2);
-
-        final String[] interestResult = new String[3];
 
         interest1Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -220,66 +192,22 @@ public class CreateAccView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO move geolocate here
+                String searchString = locationEdit.getText().toString();
+                Geocoder geocoder = new Geocoder(CreateAccView.this);
+                List<Address> list = new ArrayList<>();
+                try {
+                    list = geocoder.getFromLocationName(searchString, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "something wrong finding location");
+                }
+                if (list.size() > 0) {
+                    Address address = list.get(0);
+                    longLat[0] = (int) address.getLongitude();
+                    longLat[1] = (int) address.getLatitude();
+                }
                 if (checkTests()) {
-                    JSONArray interests = new JSONArray();
-                    interests.put(interestResult[0]);
-                    interests.put(interestResult[1]);
-                    interests.put(interestResult[2]);
-                    JSONObject locationJson = new JSONObject();
-                    try {
-                        locationJson.put("lng", longLat[0]);
-                        locationJson.put("lat", longLat[1]);
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to create location json");
-                        e.printStackTrace();
-                    }
-                    JSONObject ageRangeJson = new JSONObject();
-                    try {
-                        if (minAge.getEditText().getText().toString().trim().isEmpty()) {
-                            ageRangeJson.put("min", Integer.parseInt(age.getEditText().getText().toString()) - 2);
-                        } else {
-                            ageRangeJson.put("min", Integer.parseInt(minAge.getEditText().getText().toString()));
-                        }
-                        if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
-                            ageRangeJson.put("max", Integer.parseInt(age.getEditText().getText().toString()) + 2);
-                        } else {
-                            ageRangeJson.put("max", Integer.parseInt(maxAge.getEditText().getText().toString()));
-                        }
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to create age range json");
-                        e.printStackTrace();
-                    }
-                    JSONObject preferenceJson = new JSONObject();
-                    try {
-                        preferenceJson.put("gender", genderResult[1]);
-                        preferenceJson.put("ageRange", ageRangeJson);
-                        if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-                            preferenceJson.put("proximity", 15);
-                        } else {
-                            preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
-                        }
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to create preference json");
-                        e.printStackTrace();
-                    }
-                    JSONObject userJson = new JSONObject();
-                    try {
-                        userJson.put("_id", user.getId());
-                        userJson.put("firstName", firstName.getEditText().getText().toString());
-                        userJson.put("lastName", lastName.getEditText().getText().toString());
-                        userJson.put("age", age.getEditText().getText().toString());
-                        userJson.put("gender", genderResult[0]);
-                        userJson.put("email", email.getEditText().getText().toString());
-                        userJson.put("location", locationJson);
-                        userJson.put("preferences", preferenceJson);
-                        userJson.put("interests", interests);
-                        userJson.put("description", biography.getEditText().getText().toString());
-                        Log.d(TAG, userJson.toString());
-                    } catch (JSONException e) {
-                            Log.d(TAG, "failed to create user json");
-                            e.printStackTrace();
-                    }
-                    Log.d(TAG, userJson.toString());
+                    JSONObject userJson = packJson();
                     reqQueue = Volley.newRequestQueue(CreateAccView.this);
                     jsonReq = new JsonObjectRequest(Request.Method.POST, url, userJson, new Response.Listener<JSONObject>() {
                         @Override
@@ -324,6 +252,69 @@ public class CreateAccView extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private JSONObject packJson() {
+        JSONArray interests = new JSONArray();
+        interests.put(interestResult[0]);
+        interests.put(interestResult[1]);
+        interests.put(interestResult[2]);
+        JSONObject locationJson = new JSONObject();
+        try {
+            locationJson.put("lng", longLat[0]);
+            locationJson.put("lat", longLat[1]);
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create location json");
+            e.printStackTrace();
+        }
+        JSONObject ageRangeJson = new JSONObject();
+        try {
+            if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+                ageRangeJson.put("min", Integer.parseInt(age.getEditText().getText().toString()) - 2);
+            } else {
+                ageRangeJson.put("min", Integer.parseInt(minAge.getEditText().getText().toString()));
+            }
+            if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+                ageRangeJson.put("max", Integer.parseInt(age.getEditText().getText().toString()) + 2);
+            } else {
+                ageRangeJson.put("max", Integer.parseInt(maxAge.getEditText().getText().toString()));
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create age range json");
+            e.printStackTrace();
+        }
+        JSONObject preferenceJson = new JSONObject();
+        try {
+            preferenceJson.put("gender", genderResult[1]);
+            preferenceJson.put("ageRange", ageRangeJson);
+            if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+                preferenceJson.put("proximity", 15);
+            } else {
+                preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create preference json");
+            e.printStackTrace();
+        }
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("_id", user.getId());
+            userJson.put("firstName", firstName.getEditText().getText().toString());
+            userJson.put("lastName", lastName.getEditText().getText().toString());
+            userJson.put("age", age.getEditText().getText().toString());
+            userJson.put("gender", genderResult[0]);
+            userJson.put("email", email.getEditText().getText().toString());
+            userJson.put("location", locationJson);
+            userJson.put("preferences", preferenceJson);
+            userJson.put("interests", interests);
+            userJson.put("description", biography.getEditText().getText().toString());
+            Log.d(TAG, userJson.toString());
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create user json");
+            e.printStackTrace();
+        }
+        Log.d(TAG, userJson.toString());
+        return userJson;
     }
 
     private boolean checkFirstName() {
@@ -434,6 +425,15 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    private boolean isLocationValid(int longitude, int latitude) {
+        if (longitude == 200 | latitude == 100) {
+            location.setError("Invalid location");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private boolean checkSpinner(Spinner spinner) {
         String spinnerInput = spinner.getSelectedItem().toString();
 
@@ -447,11 +447,11 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | !spinnerChecks() | !checkMinAge() | !checkMaxAge());
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | spinnerChecks() | !checkMinAge() | !checkMaxAge() | !isLocationValid(longLat[0], longLat[1]));
     }
 
     private boolean spinnerChecks() {
-        return (checkSpinner(genderSpinner1) | checkSpinner(genderSpinner2) | checkSpinner(interest1Spinner) | checkSpinner(interest2Spinner) | checkSpinner(interest3Spinner));
+        return (!checkSpinner(genderSpinner1) | !checkSpinner(genderSpinner2) | !checkSpinner(interest1Spinner) | !checkSpinner(interest2Spinner) | !checkSpinner(interest3Spinner));
     }
 
     private class MyTextWatcher implements TextWatcher {

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -65,15 +66,22 @@ public class CreateAccBehaviour {
         Intent intent = createIntent();
         mActivityTestRule.launchActivity(intent);
         onView(withId(R.id.create_button)).perform(scrollTo()).perform(click());
-        onView((withId(R.id.textinput_error))).perform(scrollTo()).check(matches(hasErrorText("Field can't be empty")));
+        onView((withId(R.id.editTextAge))).perform(scrollTo()).check(matches(hasErrorText("Field can't be empty")));
     }
 
     @Test
     public void checkAgeError2() {
         Intent intent = createIntent();
         mActivityTestRule.launchActivity(intent);
-        onView(withId(R.id.editTextAge)).perform(typeText("153"));
-        onView(withId(R.id.create_button)).perform(scrollTo()).perform(click());
-        onView((withId(R.id.editTextAge))).perform(scrollTo()).check(matches(hasErrorText("Invalid age")));
+        onView(withId(R.id.ageInput)).perform(replaceText("153"));
+        onView((withId(R.id.ageInput))).perform(scrollTo()).check(matches(hasErrorText("Invalid age")));
+    }
+
+    @Test
+    public void checkAgeError3() {
+        Intent intent = createIntent();
+        mActivityTestRule.launchActivity(intent);
+        onView(withId(R.id.ageInput)).perform(replaceText("20"));
+        onView((withId(R.id.ageInput))).perform(scrollTo()).check(matches(hasErrorText("Invalid age")));
     }
 }

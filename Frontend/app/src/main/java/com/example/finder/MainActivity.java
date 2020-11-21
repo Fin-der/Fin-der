@@ -177,39 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    try {
-                        JSONObject account = (JSONObject) response.get("user");
-                        String id = account.getString("_id");
-                        String firstName = account.getString("firstName");
-                        String lastName = account.getString("lastName");
-                        int age = account.getInt("age");
-                        String gender = account.getString("gender");
-                        String email = account.getString("email");
-                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                        List<Address> address = null;
-                        try {
-                            address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lat"), account.getJSONObject("location").getInt("lng"), 1);
-                        } catch (IOException e) {
-                            Log.d(TAG, "failed to get location");
-                            e.printStackTrace();
-                        }
-                        String location = address.get(0).getAddressLine(0);
-                        String prefGender = account.getJSONObject("preferences").getString("gender");
-                        int minAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("min");
-                        int maxAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("max");
-                        int proximity = account.getJSONObject("preferences").getInt("proximity");
-                        JSONArray interestArr = account.getJSONArray("interests");
-                        String[] interest = new String[interestArr.length()];
-                        for (int i = 0; i < interestArr.length(); i++) {
-                            interest[i] = interestArr.getString(i);
-                        }
-                        String biography = account.getString("description");
-                        profile[0] = new UserAccount(id, firstName, lastName, email, age, gender, location,
-                                prefGender, minAge, maxAge, proximity, interest, biography);
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to parse json");
-                        e.printStackTrace();
-                    }
+                    profile[0] = parseAccount(response);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -257,5 +225,43 @@ public class MainActivity extends AppCompatActivity {
             });
             reqQueue.add(jsonReq);
         }
+    }
+
+    private UserAccount parseAccount(JSONObject response) {
+        UserAccount profile = null;
+        try {
+            JSONObject account = (JSONObject) response.get("user");
+            String id = account.getString("_id");
+            String firstName = account.getString("firstName");
+            String lastName = account.getString("lastName");
+            int age = account.getInt("age");
+            String gender = account.getString("gender");
+            String email = account.getString("email");
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+            List<Address> address = null;
+            try {
+                address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lat"), account.getJSONObject("location").getInt("lng"), 1);
+            } catch (IOException e) {
+                Log.d(TAG, "failed to get location");
+                e.printStackTrace();
+            }
+            String location = address.get(0).getAddressLine(0);
+            String prefGender = account.getJSONObject("preferences").getString("gender");
+            int minAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("min");
+            int maxAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("max");
+            int proximity = account.getJSONObject("preferences").getInt("proximity");
+            JSONArray interestArr = account.getJSONArray("interests");
+            String[] interest = new String[interestArr.length()];
+            for (int i = 0; i < interestArr.length(); i++) {
+                interest[i] = interestArr.getString(i);
+            }
+            String biography = account.getString("description");
+            profile = new UserAccount(id, firstName, lastName, email, age, gender, location,
+                    prefGender, minAge, maxAge, proximity, interest, biography);
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to parse json");
+            e.printStackTrace();
+        }
+        return profile;
     }
 }
