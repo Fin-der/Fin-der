@@ -25,7 +25,7 @@ public class Message {
         this.msgType = msgType;
         @SuppressLint("SimpleDateFormat") SimpleDateFormat parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         parse.setTimeZone(TimeZone.getTimeZone("UTC"));
-        SimpleDateFormat date = new SimpleDateFormat("MMM-dd, hh:mm a");
+        SimpleDateFormat date = new SimpleDateFormat("MMM dd, hh:mm a");
         date.setTimeZone(TimeZone.getDefault());
         System.out.println(TimeZone.getDefault());
         try {

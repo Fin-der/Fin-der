@@ -60,15 +60,18 @@ public class HomeView extends AppCompatActivity {
 //        else
 //            this.user = new UserAccount("3", "Jack", "Smith");
         initButtons();
-        getFriends();
-        findMatches();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         user.getMatches().clear();
+        if (user.getFriendMatches() == null)
+            user.setFriendMatches(new ArrayList<UserAccount>());
+        else
+            user.getFriendMatches().clear();
         findMatches();
+        getFriends();
     }
 
     private void initButtons() {

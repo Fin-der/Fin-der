@@ -190,6 +190,7 @@ public class ChatController {
                         public void run() {
                             try {
                                 Message msg = parseMessage(response.getJSONObject("message"));
+                                chatPos++;
                                 messages.add(msg);
                                 msgAdapter.notifyDataSetChanged();
                                 msgRecycler.getLayoutManager().scrollToPosition(messages.size() - 1);
