@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
 
-    private ArrayList<UserAccount> friendMatches = new ArrayList<>();
     private UserAccount profile;
 
     @Override

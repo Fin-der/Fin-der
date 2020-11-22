@@ -121,7 +121,6 @@ public class CreateAccView extends AppCompatActivity {
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO move geolocate here
                 String searchString = locationEdit.getText().toString();
                 Geocoder geocoder = new Geocoder(CreateAccView.this);
                 List<Address> list = new ArrayList<>();
@@ -143,31 +142,7 @@ public class CreateAccView extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.d(TAG, response.toString());
-                            //TODO: update the user account information when creating account
-                            user.setFirstName(firstName.getEditText().getText().toString());
-                            user.setLastName(lastName.getEditText().getText().toString());
-                            user.setAge(Integer.parseInt(age.getEditText().getText().toString()));
-                            user.setGender(genderResult[0]);
-                            user.setEmail(email.getEditText().getText().toString());
-                            user.setLocation(location.getEditText().getText().toString());
-                            user.setPrefGender(genderResult[1]);
-                            if (minAge.getEditText().getText().toString().trim().isEmpty()) {
-                                user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) - 2);
-                            } else {
-                                user.setMinAge(Integer.parseInt(minAge.getEditText().getText().toString()));
-                            }
-                            if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
-                                user.setMaxAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
-                            } else {
-                                user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
-                            }
-                            if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-                                user.setProximity(15);
-                            } else {
-                                user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
-                            }
-                            user.setInterest(interestResult);
-                            user.setBiography(biography.getEditText().getText().toString());
+                            packUserAccount();
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
                             home.putExtra("profile", user);
                             startActivity(home);
@@ -200,6 +175,33 @@ public class CreateAccView extends AppCompatActivity {
 //                nothing action handled in the error spinner error checkers
             }
         });
+    }
+
+    private void packUserAccount() {
+        user.setFirstName(firstName.getEditText().getText().toString());
+        user.setLastName(lastName.getEditText().getText().toString());
+        user.setAge(Integer.parseInt(age.getEditText().getText().toString()));
+        user.setGender(genderResult[0]);
+        user.setEmail(email.getEditText().getText().toString());
+        user.setLocation(location.getEditText().getText().toString());
+        user.setPrefGender(genderResult[1]);
+        if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+            user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) - 2);
+        } else {
+            user.setMinAge(Integer.parseInt(minAge.getEditText().getText().toString()));
+        }
+        if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+            user.setMaxAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
+        } else {
+            user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
+        }
+        if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+            user.setProximity(15);
+        } else {
+            user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
+        }
+        user.setInterest(interestResult);
+        user.setBiography(biography.getEditText().getText().toString());
     }
 
     private JSONObject packJson() {
