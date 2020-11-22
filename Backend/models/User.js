@@ -1,3 +1,4 @@
+import { Decimal128 } from "mongodb";
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
@@ -19,8 +20,8 @@ const userSchema = new mongoose.Schema(
         gender: String,
         email: String,
         location: {
-            lng: Number, 
-            lat: Number,
+            lng: Decimal128, 
+            lat: Decimal128,
         }, // lng, lat TODO: VALIDATE THIS VALUE
         preferences: {
             gender: String,
@@ -46,7 +47,7 @@ const userSchema = new mongoose.Schema(
                     }
                 }
             },
-            proximity: Number
+            proximity: Number // in km
         },
         interests: [String],
         description: String,
