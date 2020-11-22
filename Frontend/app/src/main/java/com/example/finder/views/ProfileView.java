@@ -37,25 +37,6 @@ import org.json.JSONObject;
 public class ProfileView extends AppCompatActivity {
     private final static String TAG = "ProfileView";
 
-    private TextView numMatches;
-    private TextInputLayout firstName;
-    private TextInputLayout lastName;
-    private TextInputLayout age;
-    private TextInputLayout email;
-    //gender
-    private Spinner genderSpinner1;
-    private TextInputLayout location;
-    //gender preferred
-    private Spinner genderSpinner2;
-    private TextInputLayout minAge;
-    private TextInputLayout maxAge;
-    private TextInputLayout proximity;
-    //interest
-    private Spinner interest1Spinner;
-    private Spinner interest2Spinner;
-    private Spinner interest3Spinner;
-    private TextInputLayout biography;
-
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
     private GoogleSignInClient mGoogleSignInClient;
@@ -72,16 +53,16 @@ public class ProfileView extends AppCompatActivity {
         setContentView(R.layout.activity_profile_view);
 
         TextView fullName = findViewById(R.id.fullNameText);
-        firstName = findViewById(R.id.first_name_profile);
-        lastName = findViewById(R.id.last_name_profile);
-        age = findViewById(R.id.age_profile);
-        email = findViewById(R.id.email_profile);
-        numMatches = findViewById(R.id.number_matches);
-        location = findViewById(R.id.location_profile);
-        minAge = findViewById(R.id.min_age_profile);
-        maxAge = findViewById(R.id.max_age_profile);
-        proximity = findViewById(R.id.proximity_profile);
-        biography = findViewById(R.id.bio_profile);
+        TextInputLayout firstName = findViewById(R.id.first_name_profile);
+        TextInputLayout lastName = findViewById(R.id.last_name_profile);
+        TextInputLayout age = findViewById(R.id.age_profile);
+        TextInputLayout email = findViewById(R.id.email_profile);
+        TextView numMatches = findViewById(R.id.number_matches);
+        TextInputLayout location = findViewById(R.id.location_profile);
+        TextInputLayout minAge = findViewById(R.id.min_age_profile);
+        TextInputLayout maxAge = findViewById(R.id.max_age_profile);
+        TextInputLayout proximity = findViewById(R.id.proximity_profile);
+        TextInputLayout biography = findViewById(R.id.bio_profile);
 
         user = (UserAccount) getIntent().getSerializableExtra("profile");
 
@@ -107,11 +88,11 @@ public class ProfileView extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        genderSpinner1 = findViewById(R.id.genderSpinner1_profile);
-        genderSpinner2 = findViewById(R.id.genderSpinner2_profile);
-        interest1Spinner = findViewById(R.id.interest1Spinner_profile);
-        interest2Spinner = findViewById(R.id.interest2Spinner_profile);
-        interest3Spinner = findViewById(R.id.interest3Spinner_profile);
+        Spinner genderSpinner1 = findViewById(R.id.genderSpinner1_profile);
+        Spinner genderSpinner2 = findViewById(R.id.genderSpinner2_profile);
+        Spinner interest1Spinner = findViewById(R.id.interest1Spinner_profile);
+        Spinner interest2Spinner = findViewById(R.id.interest2Spinner_profile);
+        Spinner interest3Spinner = findViewById(R.id.interest3Spinner_profile);
 
         getGenderSpinnerIndex(user);
         getInterestSpinnerIndex(user);
