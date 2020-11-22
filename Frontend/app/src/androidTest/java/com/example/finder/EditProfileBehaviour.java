@@ -16,6 +16,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.fail;
 
 public class EditProfileBehaviour {
     @Rule
@@ -32,38 +33,58 @@ public class EditProfileBehaviour {
     @Test
     public void startActivity() {
         Intent intent = createFullAcc();
-        activityRule.launchActivity(intent);
+        try {
+            activityRule.launchActivity(intent);
+        } catch (AssertionError error) {
+            fail();
+        }
     }
 
     @Test
     public void openActivity() {
-        startActivity();
+        try {
+            startActivity();
+        } catch (AssertionError error) {
+            fail();
+        }
     }
 
     @Test
     public void checkName() {
         startActivity();
-        onView(withId(R.id.fullNameText)).check(matches(withText("Jacky Smith")));
+        try {
+            onView(withId(R.id.fullNameText)).check(matches(withText("Jacky Smith")));
+        } catch (AssertionError error) {
+            fail();
+        }
     }
 
     @Test
     public void checkMatchNum() {
         startActivity();
-        onView(withId(R.id.number_matches)).check(matches(withText("0")));
+        try {
+            onView(withId(R.id.number_matches)).check(matches(withText("0")));
+        } catch (AssertionError error) {
+            fail();
+        }
     }
 
     @Test
     public void checkDetails() {
         startActivity();
-        onView(withId(R.id.first_name_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.last_name_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.age_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.email_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.location_profile)).perform(scrollTo()).check(matches(isDisplayed()));
-        onView(withId(R.id.proximity_profile)).perform(scrollTo()).check(matches(isDisplayed()));
-        onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.bio_profile)).perform(scrollTo()).check(matches(isDisplayed()));
+        try {
+            onView(withId(R.id.first_name_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.last_name_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.age_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.email_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.location_profile)).perform(scrollTo()).check(matches(isDisplayed()));
+            onView(withId(R.id.proximity_profile)).perform(scrollTo()).check(matches(isDisplayed()));
+            onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
+            onView(withId(R.id.bio_profile)).perform(scrollTo()).check(matches(isDisplayed()));
+        } catch (AssertionError error) {
+            fail();
+        }
     }
 
 
