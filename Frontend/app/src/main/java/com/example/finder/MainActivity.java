@@ -170,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
-            JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, HomeView.HOST_URL + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
+            String url = HomeView.HOST_URL;
+            JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
@@ -190,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             reqQueue.add(jsonReq);
-            jsonReq = new JsonObjectRequest(Request.Method.GET, HomeView.HOST_URL + "/match/friend/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
+            jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/match/friend/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {

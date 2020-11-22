@@ -52,6 +52,8 @@ public class ProfileView extends AppCompatActivity {
     private JsonObjectRequest jsonReq;
     private GoogleSignInClient mGoogleSignInClient;
 
+    private String url = HomeView.HOST_URL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,8 +114,7 @@ public class ProfileView extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         reqQueue = Volley.newRequestQueue(ProfileView.this);
-                        String url = HomeView.HOST_URL + user.getId();
-                        jsonReq = new JsonObjectRequest(Request.Method.DELETE, url, idInfo, new Response.Listener<JSONObject>() {
+                        jsonReq = new JsonObjectRequest(Request.Method.DELETE, url + user.getId(), idInfo, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
                                 signOut();

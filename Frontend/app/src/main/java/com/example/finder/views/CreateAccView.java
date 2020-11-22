@@ -86,12 +86,18 @@ public class CreateAccView extends AppCompatActivity {
         TextInputEditText ageEdit = findViewById(R.id.ageInput);
         TextInputEditText emailEdit = findViewById(R.id.emailInput);
         final TextInputEditText locationEdit = findViewById(R.id.locationInput);
+        TextInputEditText minAgeEdit = findViewById(R.id.minAgeInput);
+        TextInputEditText maxAgeEdit = findViewById(R.id.maxAgeInput);
+        TextInputEditText bioEdit = findViewById(R.id.bioInput);
 
         firstNameEdit.addTextChangedListener(new MyTextWatcher(firstNameEdit));
         lastNameEdit.addTextChangedListener(new MyTextWatcher(lastNameEdit));
         ageEdit.addTextChangedListener(new MyTextWatcher(ageEdit));
         emailEdit.addTextChangedListener(new MyTextWatcher(emailEdit));
         locationEdit.addTextChangedListener(new MyTextWatcher(locationEdit));
+        minAgeEdit.addTextChangedListener(new MyTextWatcher(minAgeEdit));
+        maxAgeEdit.addTextChangedListener(new MyTextWatcher(maxAgeEdit));
+        bioEdit.addTextChangedListener(new MyTextWatcher(bioEdit));
 
         genderSpinner1 = findViewById(R.id.genderSpinner1);
         genderSpinner2 = findViewById(R.id.genderSpinner2);
@@ -362,15 +368,12 @@ public class CreateAccView extends AppCompatActivity {
 
     private boolean checkMinAge() {
         String minInput = minAge.getEditText().getText().toString().trim();
-        String maxInput = maxAge.getEditText().getText().toString().trim();
 
         if (minInput.isEmpty()) {
+            minAge.setError(null);
             return true;
         } else if (Integer.parseInt(minInput) > 150) {
             minAge.setError("Invalid age");
-            return false;
-        } else if (Integer.parseInt(minInput) > Integer.parseInt(maxInput)) {
-            minAge.setError("Minimum age must be less than or equal to Maximum age");
             return false;
         } else {
             minAge.setError(null);
@@ -379,19 +382,35 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkMaxAge() {
-        String minInput = minAge.getEditText().getText().toString().trim();
         String maxInput = maxAge.getEditText().getText().toString().trim();
 
         if (maxInput.isEmpty()) {
+            maxAge.setError(null);
             return true;
-        } else if (Integer.parseInt(minInput) > 150) {
-            minAge.setError("Invalid age");
+        } else if (Integer.parseInt(maxInput) > 150) {
+            maxAge.setError("Invalid age");
             return false;
+        } else {
+            maxAge.setError(null);
+            return true;
+        }
+    }
+
+    private boolean checkAgeDiff() {
+        String minInput = minAge.getEditText().getText().toString().trim();
+        String maxInput = maxAge.getEditText().getText().toString().trim();
+
+        if (minInput.isEmpty() || maxInput.isEmpty()) {
+            minAge.setError(null);
+            maxAge.setError(null);
+            return true;
         } else if (Integer.parseInt(maxInput) < Integer.parseInt(minInput)) {
-            minAge.setError("Maximum age must be greater than or equal to Minimum age");
+            minAge.setError("Minimum age must be less than or equal to Maximum age");
+            maxAge.setError("Maximum age must be greater than or equal to Minimum age");
             return false;
         } else {
             minAge.setError(null);
+            maxAge.setError(null);
             return true;
         }
     }
@@ -424,10 +443,31 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean isLocationValid(int longitude, int latitude) {
-        if (longitude == 200 | latitude == 100) {
+        String locationInput = location.getEditText().getText().toString().trim();
+
+        if (locationInput.isEmpty()) {
+            location.setError("Field can't be empty");
+            return false;
+        } else if (longitude == 200 | latitude == 100) {
             location.setError("Invalid location");
             return false;
         } else {
+            location.setError(null);
+            return true;
+        }
+    }
+
+    private boolean checkBio() {
+        String bioInput = biography.getEditText().getText().toString().trim();
+
+        if (bioInput.isEmpty()) {
+            biography.setError(null);
+            return true;
+        } else if (bioInput.length() > 150) {
+            biography.setError("Biography too long");
+            return false;
+        } else {
+            biography.setError(null);
             return true;
         }
     }
@@ -445,7 +485,7 @@ public class CreateAccView extends AppCompatActivity {
     }
 
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | spinnerChecks() | !checkMinAge() | !checkMaxAge() | !isLocationValid(longLat[0], longLat[1]));
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | spinnerChecks() | !checkMinAge() | !checkMaxAge() | !isLocationValid(longLat[0], longLat[1]) | !checkAgeDiff() | !checkBio());
     }
 
     private boolean spinnerChecks() {
@@ -487,6 +527,15 @@ public class CreateAccView extends AppCompatActivity {
                     break;
                 case R.id.locationInput:
                     checkLocation();
+                    break;
+                case R.id.minAgeInput:
+                    checkMinAge();
+                    break;
+                case R.id.maxAgeInput:
+                    checkMaxAge();
+                    break;
+                case R.id.bioInput:
+                    checkBio();
                     break;
                 default:
                     break;
