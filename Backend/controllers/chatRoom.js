@@ -10,9 +10,10 @@ export default {
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
             const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
-            
+            //console.log(chatRoom);
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
+           // console.log(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -24,7 +25,9 @@ export default {
             const currentLoggedUser = req.body.userId;
             const roomId = req.body.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
-            global.io.sockets.in(roomId).emit("new message", { message: post });
+            if (global.io){
+                global.io.sockets.in(roomId).emit("new message", { message: post });
+            }
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
             const registrationTokens = await UserModel.getTokensByIds(userIds);
@@ -51,11 +54,15 @@ export default {
                 page: parseInt(req.query.page, 10) || 0,
                 limit: parseInt(req.query.limit, 10) || 10,
             };
+            console.log("1");
             const rooms = await ChatRoomModel.getChatRoomsByUserId(currentLoggedUser);
+            console.log("2");
             const roomIds = rooms.map((room) => room._id);
+            console.log("3");
             const recentConversation = await ChatMessageModel.getRecentConversation(
                 roomIds, options, currentLoggedUser
             );
+            console.log("4");
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
             return res.status(500).json({ success: false, error });
