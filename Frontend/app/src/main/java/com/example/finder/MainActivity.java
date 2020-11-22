@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> address = null;
             try {
-                address = geocoder.getFromLocation(account.getJSONObject("location").getInt("lat"), account.getJSONObject("location").getInt("lng"), 1);
+                address = geocoder.getFromLocation(account.getJSONObject("location").getDouble("lat"), account.getJSONObject("location").getDouble("lng"), 1);
             } catch (IOException e) {
                 Log.d(TAG, "failed to get location");
                 e.printStackTrace();

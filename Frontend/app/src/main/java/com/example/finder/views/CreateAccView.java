@@ -62,7 +62,7 @@ public class CreateAccView extends AppCompatActivity {
     private JsonObjectRequest jsonReq;
     private String url = HomeView.HOST_URL + "/users/";
 
-    private int[] longLat = {200, 100};
+    private double[] longLat = {200, 100};
     private String[] genderResult = new String[2];
     private String[] interestResult = new String[3];
 
@@ -133,8 +133,8 @@ public class CreateAccView extends AppCompatActivity {
                 }
                 if (list.size() > 0) {
                     Address address = list.get(0);
-                    longLat[0] = (int) address.getLongitude();
-                    longLat[1] = (int) address.getLatitude();
+                    longLat[0] = address.getLongitude();
+                    longLat[1] = address.getLatitude();
                 }
                 if (checkTests()) {
                     JSONObject userJson = packJson();
@@ -386,7 +386,7 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
-    private boolean isLocationValid(int longitude, int latitude) {
+    private boolean isLocationValid(double longitude, double latitude) {
         String locationInput = location.getEditText().getText().toString().trim();
 
         if (locationInput.isEmpty()) {
