@@ -19,8 +19,8 @@ const userSchema = new mongoose.Schema(
         gender: String,
         email: String,
         location: {
-            lng: Number, 
-            lat: Number,
+            lng: mongoose.Types.Decimal128, 
+            lat: mongoose.Types.Decimal128,
         }, // lng, lat TODO: VALIDATE THIS VALUE
         preferences: {
             gender: String,
@@ -46,7 +46,7 @@ const userSchema = new mongoose.Schema(
                     }
                 }
             },
-            proximity: Number
+            proximity: Number // in km
         },
         interests: [String],
         description: String,
