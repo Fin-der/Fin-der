@@ -11,6 +11,7 @@ import com.example.finder.models.UserAccount;
 import com.example.finder.views.ProfileView;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -25,7 +26,6 @@ public class EditProfileBehaviour {
         Intent intent = new Intent();
         UserAccount user = UserAccGenerator.createFullAcc();
         intent.putExtra("profile", user);
-
         return intent;
     }
 
@@ -58,9 +58,12 @@ public class EditProfileBehaviour {
         onView(withId(R.id.first_name_profile)).check(matches(isDisplayed()));
         onView(withId(R.id.last_name_profile)).check(matches(isDisplayed()));
         onView(withId(R.id.age_profile)).check(matches(isDisplayed()));
-        onView(withId(R.id.location_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.email_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.location_profile)).perform(scrollTo()).check(matches(isDisplayed()));
+        onView(withId(R.id.proximity_profile)).perform(scrollTo()).check(matches(isDisplayed()));
         onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
         onView(withId(R.id.min_age_profile)).check(matches(isDisplayed()));
+        onView(withId(R.id.bio_profile)).perform(scrollTo()).check(matches(isDisplayed()));
     }
 
 

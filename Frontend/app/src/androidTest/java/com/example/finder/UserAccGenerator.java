@@ -23,8 +23,16 @@ public class UserAccGenerator {
          friend.add(new UserAccount("1", "Jack", "Frost"));
          ArrayList<UserAccount> matches = new ArrayList<>();
 
-         UserAccount user = new UserAccount(id, firstName, lastName, email, age, gender,
-                 location, prefGender, minAge, maxAge, prox, interest, bio);
+         UserAccount user = new UserAccount(id, firstName, lastName, email);
+         user.setAge(age);
+         user.setGender(gender);
+         user.setLocation(location);
+         user.setPrefGender(prefGender);
+         user.setMinAge(minAge);
+         user.setMaxAge(maxAge);
+         user.setProximity(prox);
+         user.setInterest(interest);
+         user.setBiography(bio);
          user.setMatches(matches);
          user.setFriendMatches(friend);
          return user;
