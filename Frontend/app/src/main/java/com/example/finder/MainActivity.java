@@ -176,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
                     profile = parseAccount(response);
+                    Intent home = new Intent(MainActivity.this, HomeView.class);
+                    home.putExtra("profile", profile);
+                    startActivity(home);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -188,36 +191,6 @@ public class MainActivity extends AppCompatActivity {
                         create.putExtra("profile", profile);
                         startActivity(create);
                     }
-                }
-            });
-            reqQueue.add(jsonReq);
-            jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/match/friend/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        JSONArray friends = (JSONArray) response.get("friends");
-                        for (int i = 0; i < friends.length(); i++) {
-                            JSONObject acc = friends.getJSONObject(i).getJSONObject("to");
-                            String id = acc.getString("_id");
-                            String firstName = acc.getString("firstName");
-                            String lastName = acc.getString("lastName");
-                            UserAccount friend = new UserAccount(id, firstName, lastName);
-                            friendMatches.add(friend);
-                        }
-                    } catch (JSONException e) {
-                        Log.d(TAG, "failed to parse friend json");
-                        e.printStackTrace();
-                    }
-                    profile.setFriendMatches(friendMatches);
-                    Intent home = new Intent(MainActivity.this, HomeView.class);
-                    home.putExtra("profile", profile);
-                    startActivity(home);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    error.printStackTrace();
                 }
             });
             reqQueue.add(jsonReq);

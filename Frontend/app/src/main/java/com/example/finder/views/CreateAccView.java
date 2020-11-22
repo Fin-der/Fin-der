@@ -105,85 +105,11 @@ public class CreateAccView extends AppCompatActivity {
         interest2Spinner = findViewById(R.id.interest2Spinner);
         interest3Spinner = findViewById(R.id.interest3Spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender_choices));
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderSpinner1.setAdapter(adapter);
-
-        genderSpinner1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                genderResult[0] = genderSpinner1.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-//                nothing action handled in the error spinner error checkers
-            }
-        });
-
-        ArrayAdapter<String> adapter5 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.gender_choices2));
-        adapter5.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        genderSpinner2.setAdapter(adapter5);
-
-        genderSpinner2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                genderResult[1] = genderSpinner2.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-//                nothing action handled in the error spinner error checkers
-            }
-        });
-
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.sport_choices));
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        interest1Spinner.setAdapter(adapter2);
-
-        interest1Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                interestResult[0] = interest1Spinner.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-//                nothing action handled in the error spinner error checkers
-            }
-        });
-
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.food_choices));
-        adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        interest2Spinner.setAdapter(adapter3);
-
-        interest2Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                interestResult[1] = interest2Spinner.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-//                nothing action handled in the error spinner error checkers
-            }
-        });
-
-        ArrayAdapter<String> adapter4 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.hobby_choices));
-        adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        interest3Spinner.setAdapter(adapter4);
-
-        interest3Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                interestResult[2] = interest3Spinner.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-//                nothing action handled in the error spinner error checkers
-            }
-        });
+        spinnerSetup(genderSpinner1, R.array.gender_choices, genderResult, 0);
+        spinnerSetup(genderSpinner2, R.array.gender_choices2, genderResult, 1);
+        spinnerSetup(interest1Spinner, R.array.sport_choices, interestResult, 0);
+        spinnerSetup(interest2Spinner, R.array.food_choices, interestResult, 1);
+        spinnerSetup(interest3Spinner, R.array.hobby_choices, interestResult, 2);
 
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
 
@@ -254,6 +180,24 @@ public class CreateAccView extends AppCompatActivity {
                     });
                     reqQueue.add(jsonReq);
                 }
+            }
+        });
+    }
+
+    private void spinnerSetup(final Spinner spinner, int resource, final String[] output, final int arrayIndex) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(resource));
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                output[arrayIndex] = spinner.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+//                nothing action handled in the error spinner error checkers
             }
         });
     }
