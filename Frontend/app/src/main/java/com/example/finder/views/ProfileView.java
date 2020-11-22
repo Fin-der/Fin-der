@@ -37,8 +37,6 @@ import org.json.JSONObject;
 public class ProfileView extends AppCompatActivity {
     private final static String TAG = "ProfileView";
 
-    private RequestQueue reqQueue;
-    private JsonObjectRequest jsonReq;
     private GoogleSignInClient mGoogleSignInClient;
 
     private String url = HomeView.HOST_URL;
@@ -234,8 +232,8 @@ public class ProfileView extends AppCompatActivity {
                     Log.d(TAG, "failed to create json");
                     e.printStackTrace();
                 }
-                reqQueue = Volley.newRequestQueue(ProfileView.this);
-                jsonReq = new JsonObjectRequest(Request.Method.DELETE, url + "/users/" + user.getId(), idInfo, new Response.Listener<JSONObject>() {
+                RequestQueue reqQueue = Volley.newRequestQueue(ProfileView.this);
+                JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.DELETE, url + "/users/" + user.getId(), idInfo, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         signOut();
