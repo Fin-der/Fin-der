@@ -210,12 +210,13 @@ public class MainActivity extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> address = null;
             try {
-                address = geocoder.getFromLocation(account.getJSONObject("location").getDouble("lat"), account.getJSONObject("location").getDouble("lng"), 1);
+                address = geocoder.getFromLocation(Double.parseDouble(account.getJSONObject("location").getJSONObject("lat").getString("$numberDecimal")),
+                        Double.parseDouble(account.getJSONObject("location").getJSONObject("lng").getString("$numberDecimal")), 1);
             } catch (IOException e) {
                 Log.d(TAG, "failed to get location");
                 e.printStackTrace();
             }
-            String location = address.get(0).getAddressLine(0);
+            String location = address.get(0).getLocality();
             String prefGender = account.getJSONObject("preferences").getString("gender");
             int minAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("min");
             int maxAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("max");

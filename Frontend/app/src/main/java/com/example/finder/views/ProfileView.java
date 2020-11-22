@@ -113,7 +113,8 @@ public class ProfileView extends AppCompatActivity {
         interest2Spinner = findViewById(R.id.interest2Spinner_profile);
         interest3Spinner = findViewById(R.id.interest3Spinner_profile);
 
-        getSpinnerIndex(user);
+        getGenderSpinnerIndex(user);
+        getInterestSpinnerIndex(user);
 
         spinnerSetup(genderSpinner1, R.array.gender_choices, genderResult, 0, spinnerIndex[0]);
         spinnerSetup(genderSpinner2, R.array.gender_choices2, genderResult, 1, spinnerIndex[1]);
@@ -172,7 +173,7 @@ public class ProfileView extends AppCompatActivity {
         });
     }
 
-    private void getSpinnerIndex(UserAccount user) {
+    private void getGenderSpinnerIndex(UserAccount user) {
         if (user.getGender().equals("Male")) {
             spinnerIndex[0] = 1;
         } else if (user.getGender().equals("Female")) {
@@ -189,6 +190,9 @@ public class ProfileView extends AppCompatActivity {
         } else {
             spinnerIndex[1] = 4;
         }
+    }
+
+    private void getInterestSpinnerIndex(UserAccount user) {
         switch (user.getInterest()[0]) {
             case "Soccer":
                 spinnerIndex[2] = 1;
