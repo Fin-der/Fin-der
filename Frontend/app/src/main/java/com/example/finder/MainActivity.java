@@ -35,7 +35,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -226,8 +225,16 @@ public class MainActivity extends AppCompatActivity {
                 interest[i] = interestArr.getString(i);
             }
             String biography = account.getString("description");
-            profile = new UserAccount(id, firstName, lastName, email, age, gender, location,
-                    prefGender, minAge, maxAge, proximity, interest, biography);
+            profile = new UserAccount(id, firstName, lastName, email);
+            profile.setAge(age);
+            profile.setGender(gender);
+            profile.setLocation(location);
+            profile.setPrefGender(prefGender);
+            profile.setMinAge(minAge);
+            profile.setMaxAge(maxAge);
+            profile.setProximity(proximity);
+            profile.setInterest(interest);
+            profile.setBiography(biography);
         } catch (JSONException e) {
             Log.d(TAG, "failed to parse json");
             e.printStackTrace();
