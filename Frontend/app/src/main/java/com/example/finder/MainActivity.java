@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
+            Log.d("photo", String.valueOf(account.getPhotoUrl()));
             // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {

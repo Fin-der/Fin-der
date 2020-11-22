@@ -39,7 +39,7 @@ public class HomeView extends AppCompatActivity {
     private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
-    public final static String HOST_URL = "http://10.0.2.2:3000";
+    public final static String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
