@@ -146,6 +146,12 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--gender-->
+            <Spinner
+                android:id="@+id/genderSpinner1_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_profile"
@@ -172,6 +178,19 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--gender preference-->
+
+            <TextView
+                android:id="@+id/preferenceText_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/preference_caption" />
+
+            <Spinner
+                android:id="@+id/genderSpinner2_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/min_age_profile"
@@ -213,6 +232,32 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!--interests-->
+            <TextView
+                android:id="@+id/aboutText_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_caption" />
+
+            <Spinner
+                android:id="@+id/interest1Spinner_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"/>
+
+            <Spinner
+                android:id="@+id/interest2Spinner_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"/>
+
+            <Spinner
+                android:id="@+id/interest3Spinner_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="25dp"
+                android:paddingBottom="25dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/bio_profile"

@@ -21,6 +21,8 @@ public class UserAccount implements Serializable {
     private String biography;
     private String matchId;
 
+    private int[] spinnerIndex;
+
     private ArrayList<UserAccount> friendMatches;
 
     // TODO
@@ -33,7 +35,7 @@ public class UserAccount implements Serializable {
         this.id = id;
     }
 
-    public UserAccount(String id, String firstName, String lastName, String email) {
+    public UserAccount(String id, String firstName, String lastName, String email/*, String photo*/) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
@@ -41,7 +43,7 @@ public class UserAccount implements Serializable {
     }
 
     public UserAccount(String id, String firstName, String lastName, String email, int age, String gender, String location,
-                       String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography) {
+                       String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography/*, String photo*/) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
@@ -157,7 +159,9 @@ public class UserAccount implements Serializable {
         this.proximity = proximity;
     }
 
-    // get interests
+    public String[] getInterest() {
+        return this.interest;
+    }
 
     public void setInterest(String[] interest) {
         this.interest = interest;
@@ -187,4 +191,11 @@ public class UserAccount implements Serializable {
         return this.friendMatches;
     }
 
+    public void setSpinnerIndex(int[] spinnerIndex) {
+        this.spinnerIndex = spinnerIndex;
+    }
+
+    public int[] getSpinnerIndex() {
+        return this.spinnerIndex;
+    }
 }
