@@ -48,8 +48,8 @@ describe("test chat room controller", () => {
     it("test initiate chatroom success", async (done) => {
         ChatRoomModel.initiateChat = jest.fn(() => {return exampleRoom1;});
         
-        const resp = {success:true, exampleRoom1};
-        const response = await request.post("/room/initiate").send({userIds: exampleRoom1.userIds});
+        const resp = {success:true, "chatRoom": exampleRoom1};
+        const response = await request.post("/room/initiate").send({"userIds": exampleRoom1.userIds, "type": "", "userId": "4"});
 
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(resp);
@@ -72,10 +72,10 @@ describe("test chat room controller", () => {
         
     it("test postMessage success", async (done) => {
         ChatMessageModel.createPostInChatRoom = jest.fn((roomId, messagePayload, currentLoggedUser) => {return examplePost;});
-        ChatRoomModel.getUsersIdsFromRoomId = jest.fn((roomId) => {return exampleRoom1.userIds})
+        ChatRoomModel.getUserIdsFromRoomId = jest.fn((roomId) => {return exampleRoom1.userIds})
         UserModel.getTokensByIds = jest.fn((userIds) => {return ["asdfasfd"];})
         
-        const resp = {success:true, examplePost};
+        const resp = {success:true, post: examplePost};
         
         const response = await request.post("/room/" + exampleRoom1._id + "/" + examplePost.postedByUser + "/message");
 
@@ -106,7 +106,7 @@ describe("test chat room controller", () => {
         
         const resp = {success:true, conversation: [exampleRoom1]};
         
-        const response = await request.get("/room");
+        const response = await request.get("/room/");
 
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(resp);
@@ -119,7 +119,7 @@ describe("test chat room controller", () => {
         
         const resp = {success:false};
         
-        const response = await request.get("/room");
+        const response = await request.get("/room/");
 
         expect(response.status).toBe(500);
         expect(response.body).toMatchObject(resp);
@@ -134,7 +134,7 @@ describe("test chat room controller", () => {
         
         const resp = {success:true, conversation: [exampleRoom1], users: [exampleUser, exampleUser2, exampleUser3]};
         
-        const response = await request.get("/room/" + exampleRoom1._id + "/");
+        const response = await request.get("/room/" + exampleRoom1._id + "/0");
 
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(resp);
@@ -147,7 +147,7 @@ describe("test chat room controller", () => {
         
         const resp = {success:false};
         
-        const response = await request.get("/room/" + exampleRoom1._id + "/");
+        const response = await request.get("/room/" + exampleRoom1._id + "/0");
 
         expect(response.status).toBe(500);
         expect(response.body).toMatchObject(resp);
@@ -157,9 +157,9 @@ describe("test chat room controller", () => {
 
     it("test markConversationRead success", async (done) => {
         ChatRoomModel.getChatRoomByRoomId = jest.fn((roomId) => {return exampleRoom1;});
-        ChatMessageModel.markMessageRead = jest.fn((room, currentLoggedUser) => {return {}});
+        ChatMessageModel.markMessageRead = jest.fn((room, currentLoggedUser) => {return;});
         
-        const resp = {success:true, result: {}};
+        const resp = {success:true};
         
         const response = await request.put("/room/" + exampleRoom1._id + "/" + exampleUser._id + "/mark-read");
 
