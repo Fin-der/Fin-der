@@ -27,7 +27,6 @@ public class UserAccount implements Serializable {
 
     // TODO
     //Picture profilePic
-    //Some google token stuff?
 
     public UserAccount(String id, String firstName, String lastName) {
         this.firstName = firstName;
