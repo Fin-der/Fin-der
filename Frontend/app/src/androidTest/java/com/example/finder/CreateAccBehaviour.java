@@ -17,16 +17,14 @@ import org.junit.runner.RunWith;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
 
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.CreateAccView;
 import com.example.finder.views.HomeView;
-
-import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -50,13 +48,11 @@ import static org.junit.Assert.fail;
 public class CreateAccBehaviour {
 
     @Rule
-    public ActivityTestRule<CreateAccView> mActivityTestRule = new ActivityTestRule<>(CreateAccView.class, false, false);
+    public IntentsTestRule<CreateAccView> mActivityTestRule = new IntentsTestRule<>(CreateAccView.class, false, false);
 
     private Intent createIntent() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), CreateAccView.class);
         UserAccount user = new UserAccount("0", "Bob", "Smith", "email@email.com");
-        user.setFriendMatches(new ArrayList<UserAccount>());
-        user.setMatches(new ArrayList<UserAccount>());
         intent.putExtra("profile", user);
         return intent;
     }

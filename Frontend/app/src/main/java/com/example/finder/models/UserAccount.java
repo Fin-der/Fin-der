@@ -27,7 +27,6 @@ public class UserAccount implements Serializable {
 
     // TODO
     //Picture profilePic
-    //Some google token stuff?
 
     public UserAccount(String id, String firstName, String lastName) {
         this.firstName = firstName;
@@ -40,23 +39,6 @@ public class UserAccount implements Serializable {
         this.lastName = lastName;
         this.id = id;
         this.email = email;
-    }
-
-    public UserAccount(String id, String firstName, String lastName, String email, int age, String gender, String location,
-                       String prefGender, int minAge, int maxAge, int proximity, String[] interest, String biography/*, String photo*/) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.id = id;
-        this.email = email;
-        this.age = age;
-        this.gender = gender;
-        this.interest = interest;
-        this.location = location;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.prefGender = prefGender;
-        this.proximity = proximity;
-        this.biography = biography;
     }
 
     public String getId() {
