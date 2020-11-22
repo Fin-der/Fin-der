@@ -10,9 +10,10 @@ export default {
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
             const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
-            
+            //console.log(chatRoom);
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
+           // console.log(error);
             return res.status(500).json({ success: false, error });
         }
     },
