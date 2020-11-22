@@ -41,7 +41,7 @@ public class ChatController {
     private List<Message> messages;
     private RecyclerView msgRecycler;
     private MessageAdapter msgAdapter;
-        private RequestQueue que;
+    private RequestQueue que;
     private String rId;
     private String roomId;
     private int chatPos;
