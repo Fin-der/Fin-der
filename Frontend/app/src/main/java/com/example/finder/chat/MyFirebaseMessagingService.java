@@ -2,8 +2,18 @@ package com.example.finder.chat;
 
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private final String TAG = "FireBaseMessaging";
@@ -60,6 +70,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param token
      */
     private void sendRegistrationToServer(String token) {
-        Log.d("Firebase", token);
+        final String url = com.example.finder.views.HomeView.HOST_URL + "/users/" + com.example.finder.views.HomeView.id + "/" + token + "/";
+        RequestQueue que = Volley.newRequestQueue(this);
+        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String token = response.getString("token");
+                } catch (JSONException e) {
+                    Log.d(TAG, "failed to parse friend json");
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "Error: " + error.getMessage());
+                error.printStackTrace();
+            }
+    });
+        que.add(jsonReq);
     }
 }

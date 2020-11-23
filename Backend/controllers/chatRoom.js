@@ -23,6 +23,7 @@ export default {
                 messageText: req.body.messageText,
             };
             const currentLoggedUser = req.body.userId;
+            const user = await UserModel.getUserById(currentLoggedUser);
             const roomId = req.body.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             if (global.io){
@@ -33,8 +34,8 @@ export default {
             const registrationTokens = await UserModel.getTokensByIds(userIds);
             var notifMessage = {
                 "notification": {
-                    "title": "Message From ",
-                    "body": "message"
+                    "title": "Fin-der",
+                    "body": "You have a new message from " + user.firstName + " " + messagePayload.messageText
                 },
                 "tokens": registrationTokens
             };

@@ -23,33 +23,13 @@ export default {
             // TODO: validate input
             const { _id, firstName, lastName, 
                 age, gender, email, location, preferences,
-                interests, description} = req.body;
-            const curUser = await UserModel.createUser(_id, firstName, lastName, 
+                interests, description, FCMToken, profileURL} = req.body;
+            const user = await UserModel.createUser(_id, firstName, lastName, 
                 age, gender, email, location, preferences,
-                interests, description);
+                interests, description, FCMToken, profileURL);
+            await MatchVertexModel.createMatchVertex(user, []);
             
-            var potentialMatches = []; 
-            // go through each vertex and find if interests are same 
-            // on success create bidirectional edge 
-            const curInterests = new Set(curUser.interests); 
-            const users = await UserModel.getUsers(); 
-            users.forEach((user) => { 
-                if (user._id !== curUser._id) { 
-                    var sameInterests = 0; 
-                    user.interests.forEach((interest) => { 
-                        if (curInterests.has(interest)) { 
-                            sameInterests++; 
-                        } 
-                    }); 
-                    if (sameInterests > 0) { 
-                        potentialMatches.push(user); 
-                        MatchEdgeModel.createBidirectionalEdge(sameInterests, curUser._id, user._id); 
-                    } 
-                } 
-            });
-            await MatchVertexModel.createMatchVertex(curUser, potentialMatches);
-            
-            return res.status(200).json({ success: true, user: curUser });
+            return res.status(200).json({ success: true, user });
         } catch (error) {
             return res.status(500).json({ success: false, error });
         }

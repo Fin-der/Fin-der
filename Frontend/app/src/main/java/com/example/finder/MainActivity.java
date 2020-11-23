@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
+    private String FCM_token;
 
     private UserAccount profile;
 
@@ -99,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         // Get new FCM registration token
-                        String token = task.getResult();
+                        String FCM_token = task.getResult();
 
                         // Log and toast
-                        String msg = getString(R.string.msg_token_fmt, token);
+                        String msg = getString(R.string.msg_token_fmt, FCM_token);
                         Log.d(TAG, msg);
                         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
@@ -187,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
+                        create.putExtra("FCMToken", FCM_token);
                         startActivity(create);
                     }
                 }

@@ -1,6 +1,8 @@
 import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
-import {MatchEdgeModel} from "../../../models/Match.js";
+import UserModel from "../../../models/User.js";
+import {MatchEdgeModel, MatchVertexModel} from "../../../models/Match.js";
+import admin from "firebase-admin";
 
 const request = supertest(app);
 
@@ -8,6 +10,12 @@ describe("test match controller", () => {
 
     const errorResp = {success:false};
     const userId = "42";
+    const user = {
+        _id: "eb176894d456475e9f2be1868bab8fd6",
+        firstName: "Foo",
+        lastName: "Bar",
+        interests: ["music", "coding"]
+    };
     const match1 = {
         _id : "27e817beabf241aa915ff84be81ac182",
         status : "approved",
@@ -58,9 +66,17 @@ describe("test match controller", () => {
         }
 
     };
+    const exampleFCMToken = "e9f2be1868bab8fd";
     const matches = [match1, match2];
     it("getPotentialMatches pass", async (done) => {
+        UserModel.getUserById = jest.fn(() => {return user});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user]});
+        UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken});
+        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
+        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+
         const resp = {success:true, matches: matches};
         const response = await request.get("/match/" + userId);
 
@@ -70,7 +86,15 @@ describe("test match controller", () => {
     }); 
 
     it("getPotentialMatches fail", async (done) => {
-        MatchEdgeModel.getPotentialMatches = jest.fn(() => {throw error;});
+        UserModel.getUserById = jest.fn(() => {return user});
+        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user]});
+        UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken});
+        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        MatchVertexModel.addPotentialMatches = jest.fn(() => {throw error; });
+        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+
+
         const response = await request.get("/match/" + userId);
 
         expect(response.status).toBe(500);
