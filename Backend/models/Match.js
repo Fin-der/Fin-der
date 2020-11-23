@@ -54,12 +54,44 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
     return vertex;
 };
 
-// MatchVertexSchema.statics.addPotentialMatch = async function (userId, otherUserId) {
-//     const user = await UserModel.getUserById(userId);
-//     const otherUser = await UserModel.getUserById(otherUserId);
-//     const userVertex = await this.update({user},{$push: {matches: otherUser}});
-//     return userVertex;
-// };
+MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
+    const user = UserModel.getUserById(userId);
+    let query = {};
+    // generate query using user preferences
+    if (user.preferences != undefined) {
+        if (user.preferences.gender != undefined) {
+            query.gender = user.preferences.gender;
+        }
+        if (user.preferences.ageRange != undefined) {
+            query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
+        }
+    }
+
+    const aggregate = await this.aggregate( [
+    { $match: { "user._id": userId }},
+    { $graphLookup: { 
+        from: "MatchVertices",
+        startWith: "$matches",
+        connectFromField: "matches",
+        connectToField: "user",
+        maxDepth: 2,
+        as: "mutuals",
+        restrictSearchWithMatch: { query }
+        }
+    }]);
+
+    if (aggregate === undefined && aggregate.mutuals.length >= options.limit / 2) {
+        return aggregate.mutuals;
+    } else {
+        return UserModel.find().skip(options.page * options.limit).limit(options.limit)
+    }
+}
+
+MatchVertexSchema.statics.addPotentialMatches = async function (userId, users) {
+    const user = await UserModel.getUserById(userId);
+    const userVertex = await this.updateOne({user: user}, {$push: {matches: { $each: users }}}, {multi: true});
+    return userVertex;
+};
 
 MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
     const edges = await this.find({"from._id": userId, fromStatus: "potential"});

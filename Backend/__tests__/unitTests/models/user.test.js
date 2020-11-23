@@ -224,9 +224,16 @@ describe("test user models", () => {
     });
 
     it("getTokensByIds retrieve a token", async done => {
-        UserModel.find = jest.fn(() => {return exampleFCMToken;});
+        UserModel.find = jest.fn(() => {return [exampleFCMToken];});
         const tokens = await UserModel.getTokensByIds(user._id);
-        expect(tokens).toBe(exampleFCMToken);
+        expect(tokens).toMatchObject([exampleFCMToken]);
+        done();
+    });
+
+    it("getTokensByIds no token associated", async done => {
+        UserModel.find = jest.fn(() => {return [{}, {}];});
+        const tokens = await UserModel.getTokensByIds(user._id);
+        expect(tokens).toMatchObject([]);
         done();
     });
 

@@ -57,6 +57,7 @@ public class CreateAccView extends AppCompatActivity {
     private Spinner interest3Spinner;
 
     private UserAccount user;
+    private String FCM_token;
 
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
@@ -112,6 +113,7 @@ public class CreateAccView extends AppCompatActivity {
         spinnerSetup(interest3Spinner, R.array.hobby_choices, interestResult, 2);
 
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
+        this.FCM_token = (String) getIntent().getSerializableExtra("FCMToken");
 
         // auto fill information
         firstName.getEditText().setText(user.getFirstName());
@@ -258,6 +260,7 @@ public class CreateAccView extends AppCompatActivity {
             userJson.put("preferences", preferenceJson);
             userJson.put("interests", interests);
             userJson.put("description", biography.getEditText().getText().toString());
+            userJson.put("FCMToken", this.FCM_token);
             Log.d(TAG, userJson.toString());
         } catch (JSONException e) {
             Log.d(TAG, "failed to create user json");

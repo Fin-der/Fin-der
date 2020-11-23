@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema(
         },
         age: Number,
         gender: String,
-        email: String,
+        email: String, 
         location: {
             lng: mongoose.Types.Decimal128, 
             lat: mongoose.Types.Decimal128,
@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema(
             gender: String,
             ageRange: {
                 min: {
-                    type: Number, min: 0,
+                    type: Number, 
+                    min: 0,
                     validate: {
                         validator: function(val){
                             const currMax = this.preferences.ageRange.max;
@@ -36,7 +37,8 @@ const userSchema = new mongoose.Schema(
                     }
                 },
                 max: {
-                    type: Number, min: 0,
+                    type: Number, 
+                    min: 0,
                     validate: {
                         validator: function(val) {
                             const currMin = this.preferences.ageRange.min;
@@ -51,6 +53,7 @@ const userSchema = new mongoose.Schema(
         interests: [String],
         description: String,
         FCMToken: String,
+        profileURL: String
     },
     {
         timestamps: true,
@@ -69,10 +72,10 @@ const userSchema = new mongoose.Schema(
  */
 userSchema.statics.createUser = async function (_id, firstName, lastName, 
                                 age, gender, email, location, preferences,
-                                interests, description) {
+                                interests, description, FCMToken, profileURL) {
     const user = await this.create({ _id, firstName, lastName, 
         age, gender, email, location, preferences,
-        interests, description});
+        interests, description, FCMToken, profileURL});
     return user;
 };
 
@@ -122,7 +125,12 @@ userSchema.statics.registerFCMToken = async function (id, token) {
 };
 
 userSchema.statics.getTokensByIds = async function (ids) {
-    const tokens = await this.find({ _id: { $in: ids } }, "FCMToken");
+    const tokens = await this.find({ _id: { $in: ids } },"FCMToken -_id", {lean: true});
+    for (var i = tokens.length - 1; i >= 0; i--) {
+        if (Object.keys(tokens[i]).length === 0) {
+            tokens.splice(i,1);
+        }
+    }
     return tokens;
 };
 

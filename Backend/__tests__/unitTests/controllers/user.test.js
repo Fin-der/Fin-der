@@ -55,22 +55,6 @@ describe("test user controller", () => {
 
     it("test createUser pass many users", async (done) => {
         UserModel.createUser = jest.fn(() => {return exampleUser;});
-        UserModel.getUsers = jest.fn(() => {return users;});
-        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
-        MatchVertexModel.createMatchVertex = jest.fn(() => {return; });
-        
-        const resp = {success:true, user: exampleUser};
-        const response = await request.post("/users");
-
-        expect(response.status).toBe(200);
-        expect(response.body).toMatchObject(resp);
-        done();
-    }); 
-
-    it("test createUser pass one user", async (done) => {
-        UserModel.createUser = jest.fn(() => {return exampleUser;});
-        UserModel.getUsers = jest.fn(() => {return users2;});
-        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
         MatchVertexModel.createMatchVertex = jest.fn(() => {return; });
         
         const resp = {success:true, user: exampleUser};
@@ -83,9 +67,7 @@ describe("test user controller", () => {
 
     it("test createUser internal error", async (done) => {
         UserModel.createUser = jest.fn(() => {return exampleUser;});
-        UserModel.getUsers = jest.fn(() => {return users;});
-        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {throw error;});
-        MatchVertexModel.createMatchVertex = jest.fn(() => {return; });
+        MatchVertexModel.createMatchVertex = jest.fn(() => {throw error; });
         
         const resp = {success:false};
         
