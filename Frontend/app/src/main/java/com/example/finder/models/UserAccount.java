@@ -1,5 +1,7 @@
 package com.example.finder.models;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -11,6 +13,8 @@ public class UserAccount implements Serializable {
     private String gender;
     private String email;
     private ArrayList<UserAccount> matches;
+    private ArrayList<UserAccount> friendMatches;
+    private Uri pfpUrl;
 
     private String[] interest;
     private String location;
@@ -23,18 +27,13 @@ public class UserAccount implements Serializable {
 
     private int[] spinnerIndex;
 
-    private ArrayList<UserAccount> friendMatches;
-
-    // TODO
-    //Picture profilePic
-
     public UserAccount(String id, String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
     }
 
-    public UserAccount(String id, String firstName, String lastName, String email/*, String photo*/) {
+    public UserAccount(String id, String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
@@ -171,6 +170,14 @@ public class UserAccount implements Serializable {
 
     public ArrayList<UserAccount> getFriendMatches() {
         return this.friendMatches;
+    }
+
+    public void setpfpUrl(Uri url) {
+        this.pfpUrl = url;
+    }
+
+    public Uri getpfpUrl() {
+        return this.pfpUrl;
     }
 
     public void setSpinnerIndex(int[] spinnerIndex) {

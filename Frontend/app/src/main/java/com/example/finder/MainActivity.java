@@ -186,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                     error.printStackTrace();
                     if (error instanceof ServerError) {
                         UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
+                        profile.setpfpUrl(account.getPhotoUrl());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
                         create.putExtra("FCMToken", FCM_token);
