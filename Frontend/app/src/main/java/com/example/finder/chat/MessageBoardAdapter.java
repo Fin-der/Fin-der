@@ -60,13 +60,13 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
         }
 
         private void bind(final UserAccount friend, final UserAccount user) {
-            this.name.setText(user.getFirstName());
+            final String fullFriendName = friend.getFirstName() + " " + friend.getLastName();
+            this.name.setText(fullFriendName);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent toMsgs = new Intent(context,ChatView.class);
-                    String chatterName = ((TextView) itemView.findViewById(R.id.msgboard_profilename)).getText().toString();
-                    toMsgs.putExtra("chatterName", chatterName);
+                    toMsgs.putExtra("chatterName", fullFriendName);
                     toMsgs.putExtra("user", user);
                     toMsgs.putExtra("rId", friend.getId());
                     context.startActivity(toMsgs);

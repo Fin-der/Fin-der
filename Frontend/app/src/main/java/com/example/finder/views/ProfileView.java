@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.MainActivity;
+import com.example.finder.controller.GProfileImageLoader;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -61,6 +63,7 @@ public class ProfileView extends AppCompatActivity {
         TextInputLayout maxAge = findViewById(R.id.max_age_profile);
         TextInputLayout proximity = findViewById(R.id.proximity_profile);
         TextInputLayout biography = findViewById(R.id.bio_profile);
+        ImageView profilePic = findViewById(R.id.profile_image);
 
         user = (UserAccount) getIntent().getSerializableExtra("profile");
 
@@ -76,6 +79,7 @@ public class ProfileView extends AppCompatActivity {
         maxAge.getEditText().setText(user.getMaxAge());
         proximity.getEditText().setText(user.getProximity());
         biography.getEditText().setText(user.getBiography());
+        GProfileImageLoader.loadProfilePic(this, profilePic, user.getpfpUrl(), 100, 100);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
