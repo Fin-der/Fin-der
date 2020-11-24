@@ -91,6 +91,27 @@ userSchema.statics.getUserById = async function (id) {
     return user;
 };
 
+userSchema.statics.updateUserById = async function (_id, firstName, lastName, 
+                                age, gender, email, location, preferences,
+                                interests, description, FCMToken, profileURL) {
+    const update = {
+        firstName: firstName, 
+        lastName: lastName, 
+        age: age, 
+        gender: gender,
+        email: email,
+        location: location,
+        preferences: preferences,
+        interests: interests,
+        description: description,
+        FCMToken: FCMToken,
+        profileURL: profileURL
+    };
+    const updatedUser = await this.findOneAndUpdate({_id: _id}, update, {new: true});
+
+    return updatedUser;
+};
+
 /**
  * @return {Array} List of all users
  */
@@ -113,7 +134,10 @@ userSchema.statics.getUsersByIds = async function (ids) {
  * @return {Object} - details of action performed
  */
 userSchema.statics.deleteUserById = async function (id) {
-    const result = await this.remove({ _id: id });
+    const {MatchEdgeModel, MatchVertexModel} = await import("../models/Match.js");
+    await MatchVertexModel.deleteMatchVertex(id);
+    await MatchEdgeModel.deleteAllEdgesWithId(id);
+    const result = await this.deleteOne({ _id: id });
     return result;
 };
 

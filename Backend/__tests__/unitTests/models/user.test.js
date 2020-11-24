@@ -1,11 +1,13 @@
 import { app, port } from "../../../app.js"; // Link to your server file
 import http from "http";
 import mongoose, {ValidationError} from "mongoose";
+import {MatchVertexModel, MatchEdgeModel} from "../../../models/Match.js";
 import UserModel from "../../../models/User.js";
 
 describe("test user models", () => {
 
     var server;
+    const exampleFCMToken = "e9f2be1868bab8fd";
     const user = {
         _id : "3",
         preferences : {
@@ -30,6 +32,8 @@ describe("test user models", () => {
             "lng" : 1
         },
         description : "plz",
+        FCMToken: exampleFCMToken,
+        profileURL: ""
 
     };
     const badUser = {
@@ -56,7 +60,9 @@ describe("test user models", () => {
             "lat" : 0,
             "lng" : 1
         },
-        description : "plz"
+        description : "plz",
+        FCMToken: exampleFCMToken,
+        profileURL: ""
     };
     const badUser2 = {
         _id : "3",
@@ -82,12 +88,13 @@ describe("test user models", () => {
             "lng" : 1
         },
         description : "plz",
+        FCMToken: exampleFCMToken,
+        profileURL: ""
 
     };
 
     const users = [user, badUser];
     const noUsers = [];
-    const exampleFCMToken = "e9f2be1868bab8fd";
 
     beforeEach(async () => {
         const { collections } = mongoose.connection;
@@ -115,7 +122,7 @@ describe("test user models", () => {
         const func = async () => {
             return UserModel.createUser(badUser._id, badUser.firstName, badUser.lastName, badUser.age,
             badUser.gender, badUser.email, badUser.location, badUser.preferences, badUser.interests, 
-            badUser.description);
+            badUser.description, badUser.FCMToken, badUser.profileURL);
         }
         await expect(func).rejects.toThrow(ValidationError);
 
@@ -125,7 +132,7 @@ describe("test user models", () => {
     it("test createUser creates a without max", async done => {
         var actualUser = await UserModel.createUser(user._id, user.firstName, user.lastName, user.age,
             user.gender, user.email, user.location, user.preferences, user.interests, 
-            user.description);
+            user.description, user.FCMToken, user.profileURL);
         delete actualUser._doc.createdAt;
         delete actualUser._doc.updatedAt;
         delete actualUser._doc.__v;
@@ -138,7 +145,7 @@ describe("test user models", () => {
     it("test createUser creates a without min", async done => {
         var actualUser = await UserModel.createUser(badUser2._id, badUser2.firstName, badUser2.lastName, badUser2.age,
             badUser2.gender, badUser2.email, badUser2.location, badUser2.preferences, badUser2.interests, 
-            badUser2.description);
+            badUser2.description, badUser2.FCMToken, badUser2.profileURL);
         delete actualUser._doc.createdAt;
         delete actualUser._doc.updatedAt;
         delete actualUser._doc.__v;
@@ -196,7 +203,10 @@ describe("test user models", () => {
             "n": 0, 
             "ok": 1
         };
-        UserModel.remove = jest.fn(() => {return deleteMsg;});
+        UserModel.prototype.import = jest.fn(() => {return; });
+        MatchVertexModel.deleteMatchVertex = jest.fn(() => {return; });
+        MatchEdgeModel.deleteAllEdgesWithId = jest.fn(() => {return; });
+        UserModel.deleteOne = jest.fn(() => {return deleteMsg;});
         const msg = await UserModel.deleteUserById(user._id);
         expect(msg).toBe(deleteMsg);
         done();

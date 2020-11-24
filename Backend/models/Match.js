@@ -54,6 +54,15 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
     return vertex;
 };
 
+MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
+    const vertex = await this.findOne({"user._id": id});
+    await Promise.all(vertex.matches.map(async (user) => {
+        await this.findOneAndUpdate({"user._id": user._id},{ $pull: { matches: { _id: id }}},{multi: true})
+    }))
+    const result = await this.deleteOne({"user._id": id});
+    return result;
+};
+
 MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
     const user = UserModel.getUserById(userId);
     let query = {};
@@ -110,6 +119,11 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
     const edge2 = await this.create({score, from: user2, to: user1});
     return [ edge1, edge2 ];
 };
+
+MatchEdgeSchema.statics.deleteAllEdgesWithId = async function (id) {
+    const result = await this.deleteMany({ $or: [{"from._id": id}, {"to._id": id}]});
+    return result;
+}
 
 MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
     const options = {

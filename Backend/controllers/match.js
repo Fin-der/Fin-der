@@ -47,7 +47,6 @@ export default {
                             admin.messaging().sendToDevice(msg)
                         }
                         
-    
                         potentialMatches.push(user); 
                         await MatchVertexModel.addPotentialMatches(user._id, [curUser])
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 

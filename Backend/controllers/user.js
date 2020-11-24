@@ -34,6 +34,14 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    onUpdateUserById: async (req, res) => {
+        try {
+            const updatedUser = await UserModel.updateUserById(req.params.id);
+            return res.status(200).json({ success: true, user: updatedUser});
+        } catch (error) {
+            return res.status(500).json({ success: false, error });
+        }
+    },
     onDeleteUserById: async (req, res) => {
         try {
             const user = await UserModel.deleteUserById(req.params.id);

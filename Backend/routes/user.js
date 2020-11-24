@@ -14,6 +14,11 @@ router
     // params: :id the id of the user to get
     // returns: user info
     .get("/:id", user.onGetUserById)
+    // params: :id the id of the user to get
+    // returns: updated user info
+    .put("/:id", user.onUpdateUserById)
+    // params: :id the id of the user to get
+    // returns: deletion info
     .delete("/:id", user.onDeleteUserById)
     // params: FCM token, user id
     // returns: message containing token and user id
