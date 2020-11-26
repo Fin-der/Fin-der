@@ -19,8 +19,10 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_profile_image">
-
+            android:padding="5dp"
+            android:background="@drawable/black_pic_border"
+            android:src="@drawable/ic_profile_image"
+            >
         </ImageView>
 
         <TextView

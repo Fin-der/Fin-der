@@ -14,7 +14,7 @@ public class UserAccount implements Serializable {
     private String email;
     private ArrayList<UserAccount> matches;
     private ArrayList<UserAccount> friendMatches;
-    private Uri pfpUrl;
+    private String pfpUrl;
 
     private String[] interest;
     private String location;
@@ -173,10 +173,10 @@ public class UserAccount implements Serializable {
     }
 
     public void setpfpUrl(Uri url) {
-        this.pfpUrl = url;
+        this.pfpUrl = String.valueOf(url);
     }
 
-    public Uri getpfpUrl() {
+    public String getpfpUrl() {
         return this.pfpUrl;
     }
 

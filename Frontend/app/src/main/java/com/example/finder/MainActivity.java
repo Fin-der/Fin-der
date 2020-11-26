@@ -175,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
                     profile = parseAccount(response);
+                    profile.setpfpUrl(account.getPhotoUrl());
                     Intent home = new Intent(MainActivity.this, HomeView.class);
                     home.putExtra("profile", profile);
                     startActivity(home);
@@ -186,7 +187,6 @@ public class MainActivity extends AppCompatActivity {
                     error.printStackTrace();
                     if (error instanceof ServerError) {
                         UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
-                        profile.setpfpUrl(account.getPhotoUrl());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
                         create.putExtra("FCMToken", FCM_token);
