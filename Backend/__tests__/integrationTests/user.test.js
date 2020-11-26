@@ -12,8 +12,9 @@ describe("user creation integration test", () => {
         const { collections } = mongoose.connection;
 
         for (const key in collections) {
-            const collection = collections[key];
-            await collection.deleteMany();
+            if (Object.prototype.hasOwnProperty.call(collections, key)) {
+                await collections[key].deleteMany();
+            }
         }
     });
 
@@ -83,7 +84,7 @@ describe("user creation integration test", () => {
         }
     };
     const FCMToken = "234878239487";
-    it("IntegrationTest Matching", async done => {
+    it("IntegrationTest Matching", async (done) => {
         // populate users
         let response = await request.post("/users")
                         .send(user1);

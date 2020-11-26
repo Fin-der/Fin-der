@@ -6,7 +6,8 @@ const CONNECTION_URL = `mongodb://${config.db.url}/${config.db.name}`;
 mongoose.connect(CONNECTION_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true
+  useCreateIndex: true,
+  useFindAndModify: false 
 });
 
 mongoose.connection.on("connected", () => {

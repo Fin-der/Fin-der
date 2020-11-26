@@ -12,7 +12,8 @@ export default {
     },
     onGetUserById: async (req, res) => {
         try {
-            const user = await UserModel.getUserById(req.params.id);
+            const id = req.params.id;
+            const user = await UserModel.getUserById(id);
             return res.status(200).json({ success: true, user });
         } catch (error) {
             return res.status(500).json({ success: false, error });
@@ -20,8 +21,7 @@ export default {
     },
     onCreateUser: async (req, res) => {
         try {
-            // TODO: validate input
-            const { _id, firstName, lastName, 
+            const {_id, firstName, lastName, 
                 age, gender, email, location, preferences,
                 interests, description, FCMToken, profileURL} = req.body;
             const user = await UserModel.createUser(_id, firstName, lastName, 
@@ -34,9 +34,31 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    onUpdateUserById: async (req, res) => {
+        try {
+            const id = req.params.id;
+            const {firstName, lastName, 
+                age, gender, email, location, preferences,
+                interests, description, FCMToken, profileURL} = req.body;
+            var updateInfo = {
+                firstName, lastName, 
+                age, gender, email, location, preferences,
+                interests, description, FCMToken, profileURL
+            };    
+            const updatedUser = await UserModel.updateUser(id, updateInfo);
+            await MatchVertexModel.updateMatchVertex(id, updateInfo);
+            await MatchEdgeModel.updateEdgesWithId(id, updateInfo);
+            return res.status(200).json({ success: true, user: updatedUser});
+        } catch (error) {
+            return res.status(500).json({ success: false, error });
+        }
+    },
     onDeleteUserById: async (req, res) => {
         try {
-            const user = await UserModel.deleteUserById(req.params.id);
+            const id = req.params.id;
+            const user = await UserModel.deleteUserById(id);
+            await MatchVertexModel.deleteMatchVertex(id);
+            await MatchEdgeModel.deleteEdgesWithId(id);
             return res.status(200).json({ 
                 success: true, 
                 message: `Deleted a count of ${user.deletedCount} user.` 
@@ -47,10 +69,11 @@ export default {
     },
     onRegisterFCMToken: async (req, res) => {
         try {
-            await UserModel.registerFCMToken(req.params.id, req.params.token);
+            const id = req.params.id;
+            await UserModel.registerFCMToken(id, req.params.token);
             return res.status(200).json({
                 success: true, 
-                message: `Token: ${req.params.token} successfully registed with User(ID): ${req.params.id}` 
+                message: `Token: ${req.params.token} successfully registed with User(ID): ${id}` 
             });
         } catch(error) {
             return res.status(500).json({ success:false, error });

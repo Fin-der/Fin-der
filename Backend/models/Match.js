@@ -54,16 +54,54 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
     return vertex;
 };
 
+// Note this function removes the timestamps and _v fields
+// this is fine because those fields aren't used
+MatchVertexSchema.statics.updateMatchVertex = async function (id, updateInfo) {
+    const updateInfoWithId = Object.assign({_id: id}, updateInfo);
+    const vertex = await this.findOneAndUpdate({"user._id": id}, {user: updateInfoWithId}, {new: true});
+    await Promise.all(vertex.matches.map(async (user) => {
+        await this.updateOne({"user._id": user._id,},{"matches.$[element]" : updateInfoWithId},{multi: true, arrayFilters: [ { "element._id": id}]});
+    })); 
+    
+    return vertex;
+};
+
+MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
+    const vertex = await this.findOne({"user._id": id});
+    await Promise.all(vertex.matches.map(async (user) => {
+        await this.updateOne({"user._id": user._id},{ $pull: { matches: { _id: id }}},{multi: true});
+    }));
+    const result = await this.deleteOne({"user._id": id});
+    return result;
+};
+
 MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
     const user = UserModel.getUserById(userId);
     let query = {};
-    // generate query using user preferences
-    if (user.preferences != undefined) {
-        if (user.preferences.gender != undefined) {
+    // Generate query using user preferences
+    if (user.preferences !== undefined) {
+        if (user.preferences.gender !== undefined) {
             query.gender = user.preferences.gender;
         }
-        if (user.preferences.ageRange != undefined) {
+        if (user.preferences.ageRange !== undefined) {
             query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
+        }
+        if (user.preferences.proximity !== undefined) {
+            // Numbers and Formulae from 
+            // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
+            const latKmPerDeg = 110.574;
+            const lngKmPerDeg = 111.32;
+            const latProximityDeg = user.preferences.proximity / latKmPerDeg;
+            const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
+            query.location = new Object();
+            query.location.lng = { 
+                $gt: user.location.lng - lngProximityDeg,
+                $lt: user.location.lng + lngProximityDeg
+            }
+            query.location.lat = {
+                $gt: user.location.lat - latProximityDeg,
+                $lt: user.location.lat + latProximityDeg
+            }
         }
     }
 
@@ -77,19 +115,18 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         maxDepth: 2,
         as: "mutuals",
         restrictSearchWithMatch: { query }
-        }
+      }
     }]);
-
-    if (aggregate === undefined && aggregate.mutuals.length >= options.limit / 2) {
+    if (aggregate.mutuals !== undefined && aggregate.mutuals.length >= options.limit / 2) {
         return aggregate.mutuals;
     } else {
-        return UserModel.find().skip(options.page * options.limit).limit(options.limit)
+        return UserModel.find().skip(options.page * options.limit).limit(options.limit);
     }
 }
 
 MatchVertexSchema.statics.addPotentialMatches = async function (userId, users) {
     const user = await UserModel.getUserById(userId);
-    const userVertex = await this.updateOne({user: user}, {$push: {matches: { $each: users }}}, {multi: true});
+    const userVertex = await this.updateOne({user}, {$push: {matches: { $each: users }}}, {multi: true});
     return userVertex;
 };
 
@@ -111,15 +148,38 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
     return [ edge1, edge2 ];
 };
 
-MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
-    const options = {
-        multi: true
-    };
-    const match = await this.findOne({_id: matchId}).lean();
-    const otherMatch = await this.findOne({from: match.to, to: match.from });
-    await this.updateToFromMatchStatus(match, otherMatch, userId, status, options);
-    await this.determineMatchStatus(matchId, options);
-    return await this.findOne({_id: matchId});
+MatchEdgeSchema.statics.updateEdgesWithId = async function (id, updateInfo) {
+    const updateInfoWithId = Object.assign({_id: id}, updateInfo);
+    const result = await this.updateMany(
+        {"from._id": id}, 
+        {from: updateInfoWithId}
+    );
+    await this.updateMany(
+        {"to._id": id},
+        {to: updateInfoWithId}
+    );
+    return result;
+}
+
+MatchEdgeSchema.statics.deleteEdgesWithId = async function (id) {
+    const result = await this.deleteMany({ $or: [{"from._id": id}, {"to._id": id}]});
+    return result;
+}
+
+MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch, options) {
+    if (match.toStatus === "approved" && match.fromStatus === "approved") {       
+        await this.updateOne({_id: match._id}, {$set: {status: "approved"}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {status: "approved"}}, options);
+    }
+    return;
+};
+
+MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch, options) {
+    if (match.toStatus === "declined" || match.fromStatus === "declined") {
+        await this.updateOne({_id: match._id}, {$set: {status: "declined"}}, options);
+        await this.updateOne({_id: otherMatch._id}, {$set: {status: "declined"}}, options);
+    } 
+    return;
 };
 
 MatchEdgeSchema.statics.updateToFromMatchStatus = async function (match, otherMatch, userId, status, options) {
@@ -143,20 +203,15 @@ MatchEdgeSchema.statics.determineMatchStatus = async function (matchId, options)
     return;
 };
 
-MatchEdgeSchema.statics.checkApprovedStatus = async function (match, otherMatch, options) {
-    if (match.toStatus === "approved" && match.fromStatus === "approved") {       
-        await this.updateOne({_id: match._id}, {$set: {status: "approved"}}, options);
-        await this.updateOne({_id: otherMatch._id}, {$set: {status: "approved"}}, options);
-    }
-    return;
-};
-
-MatchEdgeSchema.statics.checkDeclinedStatus = async function (match, otherMatch, options) {
-    if (match.toStatus === "declined" || match.fromStatus === "declined") {
-        await this.updateOne({_id: match._id}, {$set: {status: "declined"}}, options);
-        await this.updateOne({_id: otherMatch._id}, {$set: {status: "declined"}}, options);
-    } 
-    return;
+MatchEdgeSchema.statics.changeMatchStatus = async function (matchId, userId, status) {
+    const options = {
+        multi: true
+    };
+    const match = await this.findOne({_id: matchId}).lean();
+    const otherMatch = await this.findOne({from: match.to, to: match.from });
+    await this.updateToFromMatchStatus(match, otherMatch, userId, status, options);
+    await this.determineMatchStatus(matchId, options);
+    return await this.findOne({_id: matchId});
 };
 
 const MatchVertexModel = mongoose.model("matchVertex", MatchVertexSchema);

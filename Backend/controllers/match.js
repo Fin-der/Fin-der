@@ -36,7 +36,7 @@ export default {
                     if (sameInterests > 0) { 
                         // notify other user of potential match
                         const FCMToken = await UserModel.getTokensByIds([user._id]);
-                        if (FCMToken.length === 1) {
+                        if (FCMToken?.length) {
                             var msg = {
                                 "notification": {
                                     "title": "Fin-der",
@@ -47,7 +47,6 @@ export default {
                             admin.messaging().sendToDevice(msg)
                         }
                         
-    
                         potentialMatches.push(user); 
                         await MatchVertexModel.addPotentialMatches(user._id, [curUser])
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 
@@ -69,7 +68,7 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "approved");
             if (match.status === "approved") {
                 const FCMToken = await UserModel.getTokensByIds([match.to._id]);
-                if (FCMToken.length === 1) {
+                if (FCMToken?.length) {
                     var msg = {
                         "notification": {
                             "title": "Fin-der",

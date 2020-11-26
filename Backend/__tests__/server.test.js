@@ -5,7 +5,7 @@ const request = supertest(app);
 
 describe("test", () => {
       
-    it("missing endpoint", async done => {
+    it("missing endpoint", async (done) => {
         const response = await request.get("/test")
     
         expect(response.status).toBe(404)

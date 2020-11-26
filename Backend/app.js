@@ -1,9 +1,5 @@
 import express from "express";
-//import bodyparser from "body-parser";
-//import admin from "./config/firebase-config.js";
-//import cors from "cors";
 // routes
-import indexRouter from "./routes/index.js";
 import userRouter from "./routes/user.js";
 import chatRoomRouter from "./routes/chatRoom.js";
 import deleteRouter from "./routes/delete.js";
@@ -19,7 +15,6 @@ app.set("port", port);
 
 app.use(express.json());
 
-app.use("/", indexRouter);
 app.use("/users", userRouter);
 app.use("/room", chatRoomRouter); // add decryption here
 app.use("/delete", deleteRouter);
