@@ -22,10 +22,8 @@ export default {
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
             const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
-            //console.log(chatRoom);
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
-           // console.log(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -67,15 +65,11 @@ export default {
                 page: parseInt(req.query.page, 10) || 0,
                 limit: parseInt(req.query.limit, 10) || 10,
             };
-            console.log("1");
             const rooms = await ChatRoomModel.getChatRoomsByUserId(currentLoggedUser);
-            console.log("2");
             const roomIds = rooms.map((room) => room._id);
-            console.log("3");
             const recentConversation = await ChatMessageModel.getRecentConversation(
                 roomIds, options, currentLoggedUser
             );
-            console.log("4");
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
             return res.status(500).json({ success: false, error });
@@ -94,7 +88,6 @@ export default {
                 users,
             });
         } catch (error) {
-            console.log(error)
             return res.status(500).json({ success: false, error });
         }
     },
