@@ -55,7 +55,7 @@ describe("matching integration", () => {
         interests: ["music", "masonry"]
     };
 
-    it("IntegrationTest Matching", async done => {
+    it("IntegrationTest Matching", async (done) => {
         // populate users
         let response = await request.post("/users")
                         .send(user1);

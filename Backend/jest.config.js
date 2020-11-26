@@ -1,3 +1,4 @@
 export default {
-    preset: "@shelf/jest-mongodb"
+    preset: "@shelf/jest-mongodb",
+    restoreMocks: true
 };

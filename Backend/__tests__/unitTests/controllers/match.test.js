@@ -16,6 +16,12 @@ describe("test match controller", () => {
         lastName: "Bar",
         interests: ["music", "coding"]
     };
+    const user1 = {
+        _id: "420",
+        firstName: "Foo",
+        lastName: "Bar",
+        interests: []
+    };
     const match1 = {
         _id : "27e817beabf241aa915ff84be81ac182",
         status : "approved",
@@ -68,17 +74,68 @@ describe("test match controller", () => {
     };
     const exampleFCMToken = "e9f2be1868bab8fd";
     const matches = [match1, match2];
-    it("getPotentialMatches pass", async (done) => {
+    it("getPotentialMatches pass fcm token not registered", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user]});
-        UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken});
+        UserModel.getTokensByIds = jest.fn(() => {return []});
         admin.messaging().sendToDevice = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
         const resp = {success:true, matches: matches};
         const response = await request.get("/match/" + userId);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject(resp);
+        done();
+    }); 
+
+    it("getPotentialMatches pass fcm token registered", async (done) => {
+        UserModel.getUserById = jest.fn(() => {return user});
+        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user]});
+        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken]});
+        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
+        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+
+        const resp = {success:true, matches: matches};
+        const response = await request.get("/match/" + userId);
+        
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject(resp);
+        done();
+    }); 
+
+    it("getPotentialMatches matches already created", async (done) => {
+        UserModel.getUserById = jest.fn(() => {return user;});
+        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, user1];});
+        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
+        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
+        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+
+        const resp = {success:true, matches: matches};
+        const response = await request.get("/match/" + 420);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject(resp);
+        done();
+    }); 
+
+    it("getPotentialMatches no shared interest", async (done) => {
+        UserModel.getUserById = jest.fn(() => {return user1;});
+        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return [];});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, user1];});
+        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
+        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
+        MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+
+        const resp = {success:true, matches: []};
+        const response = await request.get("/match/" + 420);
 
         expect(response.status).toBe(200);
         expect(response.body).toMatchObject(resp);
@@ -102,8 +159,31 @@ describe("test match controller", () => {
         done();
     }); 
 
-    it("approveMatch pass", async (done) => {
+    it("approveMatch pass fcm token not registered", async (done) => {
         MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1});
+        UserModel.getTokensByIds = jest.fn(() => {return []});
+        const resp = {success:true, match: match1};
+        const response = await request.put("/match/approve/" + match1._id + "/"+ userId);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject(resp);
+        done();
+    }); 
+
+    it("approveMatch pass status declined", async (done) => {
+        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match2});
+        UserModel.getTokensByIds = jest.fn(() => {return []});
+        const resp = {success:true, match: match2};
+        const response = await request.put("/match/approve/" + match2._id + "/"+ userId);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject(resp);
+        done();
+    }); 
+
+    it("approveMatch pass fcm token registered", async (done) => {
+        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1});
+        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken]});
         const resp = {success:true, match: match1};
         const response = await request.put("/match/approve/" + match1._id + "/"+ userId);
 
