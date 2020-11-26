@@ -6,6 +6,7 @@ import android.service.autofill.FieldClassification;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.R;
+import com.example.finder.controller.GProfileImageLoader;
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
 import com.example.finder.views.MatchView;
@@ -56,6 +58,9 @@ public class MatchViewFragment extends Fragment {
         name.setText(match.getFirstName() + " " + match.getLastName());
         TextView bio = rootView.findViewById(R.id.match_bio);
         bio.setText(match.getBiography());
+        ImageView profilePic = rootView.findViewById(R.id.match_profilePic);
+        GProfileImageLoader.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
+                                        profilePic.getWidth(), profilePic.getHeight());
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

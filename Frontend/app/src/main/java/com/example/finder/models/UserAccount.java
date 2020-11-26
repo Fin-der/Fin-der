@@ -31,6 +31,7 @@ public class UserAccount implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.id = id;
+        this.pfpUrl = "null";
     }
 
     public UserAccount(String id, String firstName, String lastName, String email) {
@@ -38,6 +39,7 @@ public class UserAccount implements Serializable {
         this.lastName = lastName;
         this.id = id;
         this.email = email;
+        this.pfpUrl = "null";
     }
 
     public String getId() {

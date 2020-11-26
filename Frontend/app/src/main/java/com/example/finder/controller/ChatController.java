@@ -35,23 +35,25 @@ import java.util.concurrent.Semaphore;
 
 public class ChatController {
     private Socket socket;
-    private String HOST_URL = HomeView.HOST_URL;
-    private ChatView context;
-    private UserAccount userAccount;
-    private List<Message> messages;
+    private final String HOST_URL = HomeView.HOST_URL;
+    private final ChatView context;
+    private final UserAccount userAccount;
+    private final List<Message> messages;
     private RecyclerView msgRecycler;
     private MessageAdapter msgAdapter;
-    private RequestQueue que;
+    private final RequestQueue que;
     private String rId;
+    private UserAccount friend;
     private String roomId;
     private int chatPos;
-    private Semaphore queLock = new Semaphore(0);
+    private final Semaphore queLock = new Semaphore(0);
 
-    public ChatController(ChatView context, UserAccount user, String rId) {
+    public ChatController(ChatView context, UserAccount user, UserAccount friend) {
         this.userAccount = user;
         this.context = context;
         this.messages = new ArrayList<>();
-        this.rId = rId;
+        this.rId = friend.getId();
+        this.friend = friend;
         this.que = Volley.newRequestQueue(context);
         this.chatPos = 0;
         try {
@@ -64,7 +66,7 @@ public class ChatController {
 
     private void initChatAdapters() {
         this.msgRecycler = context.findViewById(R.id.reyclerview_message_list);
-        this.msgAdapter = new MessageAdapter(this.messages);
+        this.msgAdapter = new MessageAdapter(this.messages, this.friend);
         this.msgRecycler.setLayoutManager(new LinearLayoutManager(context));
         this.msgRecycler.setAdapter(msgAdapter);
         new Thread(new Runnable() {
