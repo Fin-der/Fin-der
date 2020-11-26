@@ -90,10 +90,10 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
             // Numbers and Formulae from 
             // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
             const latKmPerDeg = 110.574;
-            const lngKmPerDeg = 111.320;
+            const lngKmPerDeg = 111.32;
             const latProximityDeg = user.preferences.proximity / latKmPerDeg;
             const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
-            query.location = {};
+            query.location = new Object();
             query.location.lng = { 
                 $gt: user.location.lng - lngProximityDeg,
                 $lt: user.location.lng + lngProximityDeg

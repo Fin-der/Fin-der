@@ -3,6 +3,18 @@ import ChatMessageModel from "../models/ChatMessage.js";
 import UserModel from "../models/User.js";
 import admin from "../config/firebase-config.js";
 
+let generateOptions = (req, skip) => {
+    try {
+        const options = {
+            page: parseInt(req.query.page, 10),
+            limit: parseInt(req.query.limit, 10) || 25,
+            skip: parseInt(skip, 10),
+        };
+        return options;
+    } catch (error) {
+        throw error;
+    }
+};
 export default {
     initiate: async (req, res) => {
         try {
@@ -105,17 +117,3 @@ export default {
         }
     },
 };
-
-var generateOptions = (req, skip) => {
-    try {
-        const options = {
-            page: parseInt(req.query.page, 10),
-            limit: parseInt(req.query.limit, 10) || 25,
-            skip: parseInt(skip, 10),
-        };
-        return options;
-    } catch (error) {
-        throw error;
-    }
-};
-

@@ -87,7 +87,7 @@ userSchema.statics.getUserById = async function (id) {
     const user = await this.findOne({ _id: id });
     if (!user) { 
         throw ({ error: "No user with this id found" }); 
-    };
+    }
     return user;
 };
 
@@ -95,7 +95,7 @@ userSchema.statics.updateUser = async function (id, updateInfo) {
     const updatedUser = await this.findOneAndUpdate({_id: id}, updateInfo, {new: true});
     if (!updatedUser) { 
         throw ({ error: "No user with this id found" }); 
-    };
+    }
     return updatedUser;
 };
 
