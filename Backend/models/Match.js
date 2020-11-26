@@ -57,19 +57,19 @@ MatchVertexSchema.statics.createMatchVertex = async function (newUser, potential
 // Note this function removes the timestamps and _v fields
 // this is fine because those fields aren't used
 MatchVertexSchema.statics.updateMatchVertex = async function (id, updateInfo) {
-    const updateInfoWithId = Object.assign({_id: id}, updateInfo)
+    const updateInfoWithId = Object.assign({_id: id}, updateInfo);
     const vertex = await this.findOneAndUpdate({"user._id": id}, {user: updateInfoWithId}, {new: true});
     await Promise.all(vertex.matches.map(async (user) => {
         await this.updateOne({"user._id": user._id,},{"matches.$[element]" : updateInfoWithId},{multi: true, arrayFilters: [ { "element._id": id}]});
     })); 
     
     return vertex;
-}
+};
 
 MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
     const vertex = await this.findOne({"user._id": id});
     await Promise.all(vertex.matches.map(async (user) => {
-        await this.updateOne({"user._id": user._id},{ $pull: { matches: { _id: id }}},{multi: true})
+        await this.updateOne({"user._id": user._id},{ $pull: { matches: { _id: id }}},{multi: true});
     }));
     const result = await this.deleteOne({"user._id": id});
     return result;
@@ -120,13 +120,13 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     if (aggregate.mutuals !== undefined && aggregate.mutuals.length >= options.limit / 2) {
         return aggregate.mutuals;
     } else {
-        return UserModel.find().skip(options.page * options.limit).limit(options.limit)
+        return UserModel.find().skip(options.page * options.limit).limit(options.limit);
     }
 }
 
 MatchVertexSchema.statics.addPotentialMatches = async function (userId, users) {
     const user = await UserModel.getUserById(userId);
-    const userVertex = await this.updateOne({user: user}, {$push: {matches: { $each: users }}}, {multi: true});
+    const userVertex = await this.updateOne({user}, {$push: {matches: { $each: users }}}, {multi: true});
     return userVertex;
 };
 

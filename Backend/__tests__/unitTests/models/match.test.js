@@ -59,11 +59,11 @@ describe("test matchs models", () => {
             },
         },
         description : "plz",
-    }
+    };
 
     const vertex = {
         _id: "23409183674",
-        user: user,
+        user,
         matches: [user, user]
     };
     const snoopUser = {
@@ -163,8 +163,9 @@ describe("test matchs models", () => {
         const { collections } = mongoose.connection;
 
         for (const key in collections) {
-            const collection = collections[key];
-            await collection.deleteMany();
+            if (Object.prototype.hasOwnProperty.call(collections, key)) {
+                await collections[key].deleteMany();
+            }
         }
     });
     
@@ -187,7 +188,7 @@ describe("test matchs models", () => {
             matches: []
         };
         const potentialMatches = [];
-        const vert = await MatchVertexModel.createMatchVertex(snoopUser, potentialMatches)
+        const vert = await MatchVertexModel.createMatchVertex(snoopUser, potentialMatches);
         vertex._id = vert._id;
         delete vert._doc.createdAt;
         delete vert._doc.updatedAt;
@@ -201,7 +202,7 @@ describe("test matchs models", () => {
     it("createMatchVertex", async (done) => {
         const potentialMatches = [user];
         MatchVertexModel.create = jest.fn(() => {return vertex;});
-        const vert = await MatchVertexModel.createMatchVertex(user, potentialMatches)
+        const vert = await MatchVertexModel.createMatchVertex(user, potentialMatches);
         expect(vert).toBe(vertex);
         done();
     });
@@ -222,7 +223,7 @@ describe("test matchs models", () => {
         MatchVertexModel.findOneAndUpdate = jest.fn(() => {return vertex;});
         MatchVertexModel.updateOne = jest.fn(() => {return;});
 
-        const vert = await MatchVertexModel.updateMatchVertex(user._id, {})
+        const vert = await MatchVertexModel.updateMatchVertex(user._id, {});
         expect(vert).toBe(vertex);
         done();
     });
@@ -238,7 +239,7 @@ describe("test matchs models", () => {
         MatchVertexModel.updateOne = jest.fn(() => {return;});
         MatchVertexModel.deleteOne = jest.fn(() => {return deleteMsg;});
 
-        const msg = await MatchVertexModel.deleteMatchVertex(user._id, {})
+        const msg = await MatchVertexModel.deleteMatchVertex(user._id, {});
         expect(msg).toBe(deleteMsg);
         done();
     });
@@ -260,7 +261,7 @@ describe("test matchs models", () => {
             }
         ));
 
-        const users = await MatchVertexModel.getUsersForMatching(user._id, options)
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
         done();
     });
@@ -433,7 +434,7 @@ describe("test matchs models", () => {
         MatchEdgeModel.create = jest.fn(() => {return; });
     
         try {
-            const [edge1, edge2] = await MatchEdgeModel.createBidirectionalEdge("0", user._id, user._id);
+            await MatchEdgeModel.createBidirectionalEdge("0", user._id, user._id);
             done.fail(new Error("create should have thrown an error"));
         }  
         catch (err) {
@@ -471,7 +472,7 @@ describe("test matchs models", () => {
     it("checkApprovedStatus 2 approves", async (done) => {
         var match = JSON.parse( JSON.stringify(match1));
         // we use error here to determine that it hit the if statement
-        MatchEdgeModel.updateOne = jest.fn(() => {throw error});
+        MatchEdgeModel.updateOne = jest.fn(() => {throw error;});
         match.toStatus = "approved";
         match.fromStatus = "approved";
 
@@ -617,7 +618,7 @@ describe("test matchs models", () => {
         MatchEdgeModel.checkDeclinedStatus = jest.fn(() => {return;});
     
         try {
-            await MatchEdgeModel.determineMatchStatus(match1, options)
+            await MatchEdgeModel.determineMatchStatus(match1, options);
             done.fail(new Error("update should have thrown an error"));
         }  
         catch (err) {

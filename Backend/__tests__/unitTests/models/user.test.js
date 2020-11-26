@@ -96,8 +96,9 @@ describe("test user models", () => {
         const { collections } = mongoose.connection;
 
         for (const key in collections) {
-            const collection = collections[key];
-            await collection.deleteMany();
+            if (Object.prototype.hasOwnProperty.call(collections, key)) {
+                await collections[key].deleteMany();
+            }
         }
     });
     
@@ -119,11 +120,11 @@ describe("test user models", () => {
             return UserModel.createUser(badUser._id, badUser.firstName, badUser.lastName, badUser.age,
             badUser.gender, badUser.email, badUser.location, badUser.preferences, badUser.interests, 
             badUser.description, badUser.FCMToken, badUser.profileURL);
-        }
+        };
         await expect(func).rejects.toThrow(ValidationError);
 
         done();
-    })
+    });
 
     it("test createUser creates without max", async (done) => {
         var actualUser = await UserModel.createUser(user._id, user.firstName, user.lastName, user.age,

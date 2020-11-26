@@ -137,7 +137,7 @@ describe("test user controller", () => {
         MatchVertexModel.deleteMatchVertex = jest.fn(() => {return;});
         MatchEdgeModel.deleteEdgesWithId = jest.fn(() => {return;});
         
-        const resp = {success:true, message: `Deleted a count of 1 user.`};
+        const resp = {success:true, message: "Deleted a count of 1 user."};
         
         const response = await request.delete("/users/" + exampleUser._id);
 
@@ -164,7 +164,7 @@ describe("test user controller", () => {
         const query = {
             id: exampleUser._id,
             token: exampleFCMToken
-        }
+        };
         UserModel.registerFCMToken = jest.fn(() => {return;});
         
         const resp = {
