@@ -40,7 +40,7 @@ export default {
                         FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
                         
                         potentialMatches.push(user); 
-                        await MatchVertexModel.addPotentialMatches(user._id, [curUser])
+                        await MatchVertexModel.addPotentialMatches(user._id, [curUser]);
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 
                     } 
                 } 

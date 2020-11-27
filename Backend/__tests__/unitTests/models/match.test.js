@@ -270,10 +270,10 @@ describe("test matchs models", () => {
         const options = {
             skip: 0,
             limit: 0
-        }
+        };
         const aggregate = {
             mutuals: [user, user, user]
-        }
+        };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
         UserModel.find = jest.fn().mockImplementationOnce(() => (
@@ -308,7 +308,7 @@ describe("test matchs models", () => {
             }
         ));
 
-        const users = await MatchVertexModel.getUsersForMatching(user._id, options)
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
         done();
     });
@@ -518,13 +518,12 @@ describe("test matchs models", () => {
     it("checkDeclinedStatus 2 approves", async (done) => {
         var match = JSON.parse( JSON.stringify(match1));
         // we use error here to determine that it hit the if statement
-        MatchEdgeModel.updateOne = jest.fn(() => {throw error});
+        MatchEdgeModel.updateOne = jest.fn(() => {throw error;});
         match.toStatus = "approved";
         match.fromStatus = "approved";
 
         try {
-            await MatchEdgeModel.checkDeclinedStatus(match, match1, options);
-            
+            await MatchEdgeModel.checkDeclinedStatus(match, match1, options); 
         } catch (err) {
             done.fail(new Error("checkDeclined shouldnt have thrown an error"));
         }

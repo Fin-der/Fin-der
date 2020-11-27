@@ -22,7 +22,7 @@ export default {
         }
     },
     sendMultiNotifMsg: (FCMTokens, msgBody) => {
-        if (FCMToken?.length) {
+        if (FCMTokens?.length) {
             var notifMessage = {
                 "notification": {
                     "title": "Fin-der",

@@ -111,7 +111,7 @@ describe("test match controller", () => {
 
     it("getPotentialMatches matches already created", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
-        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
+        MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
         FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
@@ -172,8 +172,8 @@ describe("test match controller", () => {
     }); 
 
     it("approveMatch pass status declined", async (done) => {
-        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match2});
-        UserModel.getTokensByIds = jest.fn(() => {return []});
+        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match2;});
+        UserModel.getTokensByIds = jest.fn(() => {return [];});
         const resp = {success:true, match: match2};
         const response = await request.put("/match/approve/" + match2._id + "/" + userId);
 
@@ -203,7 +203,7 @@ describe("test match controller", () => {
     }); 
 
     it("declineMatch pass", async (done) => {
-        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1});
+        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1;});
         const resp = {success:true, match: match1};
         const response = await request.put("/match/decline/" + match1._id + "/"+ userId);
 
