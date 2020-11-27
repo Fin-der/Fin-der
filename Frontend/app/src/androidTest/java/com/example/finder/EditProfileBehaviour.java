@@ -11,8 +11,10 @@ import com.example.finder.models.UserAccount;
 import com.example.finder.views.ProfileView;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -63,7 +65,7 @@ public class EditProfileBehaviour {
     public void checkMatchNum() {
         startActivity();
         try {
-            onView(withId(R.id.number_matches)).check(matches(withText("0")));
+            onView(withId(R.id.number_matches)).check(matches(withText("1")));
         } catch (AssertionError error) {
             fail();
         }
@@ -87,6 +89,29 @@ public class EditProfileBehaviour {
         }
     }
 
+    @Test
+    public void deleteButtonNo() {
+        startActivity();
+        onView(withId(R.id.delete_button)).perform(click());
+        try {
+            onView(withText("CONFIRM ACCOUNT DELETION")).check(matches(isDisplayed()));
+            onView(withText("No")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click());
+            onView(withId(R.id.fullNameText)).check(matches(withText("Jacky Smith")));
+        } catch (AssertionError error) {
+            fail();
+        }
+    }
 
-
+    @Test
+    public void updateButtonNo() {
+        startActivity();
+        onView(withId(R.id.update_button)).perform(scrollTo(), click());
+        try {
+            onView(withText("CONFIRM ACCOUNT CHANGE")).check(matches(isDisplayed()));
+            onView(withText("No")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click());
+            onView(withId(R.id.fullNameText)).check(matches(withText("Jacky Smith")));
+        } catch (AssertionError error) {
+            fail();
+        }
+    }
 }

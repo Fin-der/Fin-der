@@ -24,15 +24,4 @@ public class MainActivityBehaviour {
     @Rule
     public IntentsTestRule<MainActivity> mLoginActivityActivityTestRule =
             new IntentsTestRule<>(MainActivity.class);
-    @Test
-    public void pushCreateAccount() {
-        onView(withId(R.id.create_acc_button)).perform(click());
-        try {
-            intended(hasComponent(CreateAccView.class.getName()));
-        } catch (AssertionError e) {
-            fail();
-        }
-    }
-
-
 }

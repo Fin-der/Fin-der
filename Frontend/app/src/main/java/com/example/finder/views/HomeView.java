@@ -56,11 +56,6 @@ public class HomeView extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
         this.user.setMatches(toBeMatched);
-        id = user.getId();
-//        if (this.user != null)
-//            this.user.setId("3");
-//        else
-//            this.user = new UserAccount("3", "Jack", "Smith");
         initButtons();
     }
 

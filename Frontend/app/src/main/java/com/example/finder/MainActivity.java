@@ -64,30 +64,10 @@ public class MainActivity extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        findViewById(R.id.skipHome).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email@email.com");
-                Intent intent = new Intent(MainActivity.this, HomeView.class);
-                intent.putExtra("profile", profile);
-                startActivity(intent);
-            }
-        });
-
         findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signIn();
-            }
-        });
-
-        findViewById(R.id.create_acc_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserAccount profile = new UserAccount("id", "Nicholas", "Ng", "email@email.com");
-                Intent createAcc = new Intent(MainActivity.this, CreateAccView.class);
-                createAcc.putExtra("profile", profile);
-                startActivity(createAcc);
             }
         });
 
