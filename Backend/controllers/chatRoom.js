@@ -1,7 +1,7 @@
 import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
 import UserModel from "../models/User.js";
-import admin from "../config/firebase-config.js";
+import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 
 let generateOptions = (req, skip) => {
     try {
@@ -43,17 +43,9 @@ export default {
             }
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
-            const registrationTokens = await UserModel.getTokensByIds(userIds);
-            var notifMessage = {
-                "notification": {
-                    "title": "Fin-der",
-                    "body": "You have a new message from " + user.firstName + " " + messagePayload.messageText
-                },
-                "tokens": registrationTokens
-            };
-            if (registrationTokens.length !== 0) {
-                admin.messaging().sendMulticast(notifMessage);
-            }
+            const FCMTokens = await UserModel.getTokensByIds(userIds);
+            const msgBody = "You have a new message from " + user.firstName + " " + messagePayload.messageText;
+            FirebaseMessaging.sendMultiNotifMsg(FCMTokens, msgBody);
             
             return res.status(200).json({ success: true, post });
         } catch (error) {

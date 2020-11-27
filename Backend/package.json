@@ -7,6 +7,7 @@
   "scripts": {
     "test": "jest --detectOpenHandles --runInBand",
     "start": "nodemon --experimental-json-modules server.js",
+    "server": "nohup node --experimental-json-modules server.js &",
     "coverage": "jest --runInBand --coverage"
   },
   "repository": {

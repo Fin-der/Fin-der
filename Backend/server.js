@@ -8,7 +8,7 @@ const server = http.createServer(app);
 
 global.io = socketio.listen(server);
 global.io.on("connection", (socket) => WebSockets.connection(socket));
-//global.io.on("join-room", (socket) => WebSockets.subscribeOtherUser(socket));
+global.io.on("join-room", (socket) => WebSockets.subscribeOtherUser(socket));
 
 server.listen(port);
 

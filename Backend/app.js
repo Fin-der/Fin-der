@@ -5,8 +5,6 @@ import chatRoomRouter from "./routes/chatRoom.js";
 import deleteRouter from "./routes/delete.js";
 import matchRouter from "./routes/match.js";
 
-//import { decode } from "./middlewares/jwt.js"
-
 // run server with node --experimental-json-modules server.js
 export const app = express();
 
@@ -16,7 +14,7 @@ app.set("port", port);
 app.use(express.json());
 
 app.use("/users", userRouter);
-app.use("/room", chatRoomRouter); // add decryption here
+app.use("/room", chatRoomRouter); 
 app.use("/delete", deleteRouter);
 app.use("/match", matchRouter);
 
