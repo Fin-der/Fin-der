@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -147,6 +148,7 @@ public class CreateAccView extends AppCompatActivity {
                             packUserAccount();
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
                             home.putExtra("profile", user);
+                            Toast.makeText(CreateAccView.this, "Account Creation Successful", Toast.LENGTH_SHORT).show();
                             startActivity(home);
                         }
                     }, new Response.ErrorListener() {
@@ -156,6 +158,8 @@ public class CreateAccView extends AppCompatActivity {
                         }
                     });
                     reqQueue.add(jsonReq);
+                } else {
+                    Toast.makeText(CreateAccView.this, "Something is Wrong with your Information", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -261,6 +265,7 @@ public class CreateAccView extends AppCompatActivity {
             userJson.put("interests", interests);
             userJson.put("description", biography.getEditText().getText().toString());
             userJson.put("FCMToken", this.FCM_token);
+            userJson.put("profileURL", user.getpfpUrl());
             Log.d(TAG, userJson.toString());
         } catch (JSONException e) {
             Log.d(TAG, "failed to create user json");

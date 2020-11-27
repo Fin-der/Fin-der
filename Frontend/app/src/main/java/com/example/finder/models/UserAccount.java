@@ -25,8 +25,6 @@ public class UserAccount implements Serializable {
     private String biography;
     private String matchId;
 
-    private int[] spinnerIndex;
-
     public UserAccount(String id, String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -174,6 +172,10 @@ public class UserAccount implements Serializable {
         return this.friendMatches;
     }
 
+    public String getNumFriends() {
+        return Integer.toString(friendMatches.size());
+    }
+
     public void setpfpUrl(Uri url) {
         this.pfpUrl = String.valueOf(url);
     }
@@ -182,11 +184,4 @@ public class UserAccount implements Serializable {
         return this.pfpUrl;
     }
 
-    public void setSpinnerIndex(int[] spinnerIndex) {
-        this.spinnerIndex = spinnerIndex;
-    }
-
-    public int[] getSpinnerIndex() {
-        return this.spinnerIndex;
-    }
 }

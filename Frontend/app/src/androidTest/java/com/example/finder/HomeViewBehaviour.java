@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -15,8 +14,6 @@ import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
 import com.example.finder.views.MatchView;
 import com.example.finder.views.ProfileView;
-
-import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -35,13 +32,9 @@ public class HomeViewBehaviour {
     public IntentsTestRule<HomeView> activityRule
             = new IntentsTestRule<>(HomeView.class, false, false);
 
-    Intent createIntent() {
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), HomeView.class);
-        UserAccount user = new UserAccount("0", "Bob", "Smith");
-        ArrayList<UserAccount> friends = new ArrayList<>();
-        friends.add(new UserAccount("1", "Jack", "Lantern"));
-        user.setFriendMatches(friends);
-        user.setMatches(new ArrayList<UserAccount>());
+    private Intent createIntent() {
+        Intent intent = new Intent();
+        UserAccount user = UserAccGenerator.createFullAcc();
         intent.putExtra("profile", user);
         return intent;
     }

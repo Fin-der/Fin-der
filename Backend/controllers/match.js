@@ -1,6 +1,6 @@
 import { MatchVertexModel, MatchEdgeModel } from "../models/Match.js";
 import UserModel from "../models/User.js";
-import admin from "../config/firebase-config.js";
+import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 
 export default {
     getPotentialMatches: async (req, res) => {
@@ -15,7 +15,7 @@ export default {
             let matchesId = new Set();
             matches.forEach((match) => {
                 matchesId.add(match.to._id);
-            })
+            });
             
             var potentialMatches = []; 
             const curInterests = new Set(curUser.interests); 
@@ -36,19 +36,11 @@ export default {
                     if (sameInterests > 0) { 
                         // notify other user of potential match
                         const FCMToken = await UserModel.getTokensByIds([user._id]);
-                        if (FCMToken?.length) {
-                            var msg = {
-                                "notification": {
-                                    "title": "Fin-der",
-                                    "body": "You have a new potential match. Someone else on Fin-der seems to be a good match"
-                                },
-                                "token": FCMToken[0]
-                            };
-                            admin.messaging().sendToDevice(msg)
-                        }
+                        const msgBody = "You have a new potential match. Someone else on Fin-der seems to be a good match";
+                        FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
                         
                         potentialMatches.push(user); 
-                        await MatchVertexModel.addPotentialMatches(user._id, [curUser])
+                        await MatchVertexModel.addPotentialMatches(user._id, [curUser]);
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 
                     } 
                 } 
@@ -58,6 +50,7 @@ export default {
             
             return res.status(200).json({ success: true, matches: updatedMatches });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -68,19 +61,12 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "approved");
             if (match.status === "approved") {
                 const FCMToken = await UserModel.getTokensByIds([match.to._id]);
-                if (FCMToken?.length) {
-                    var msg = {
-                        "notification": {
-                            "title": "Fin-der",
-                            "body": "You have a new friend! Open Fin-der to find out who"
-                        },
-                        "token": FCMToken[0]
-                    };
-                    admin.messaging().sendToDevice(msg)
-                }
+                const msgBody = "You have a new friend! Open Fin-der to find out who";
+                FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
             }
             return res.status(200).json({ success: true, match });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -100,6 +86,7 @@ export default {
             const friends = await MatchEdgeModel.getFriendMatches(userId);
             return res.status(200).json({ success: true, friends });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     }

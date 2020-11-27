@@ -4,10 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -46,6 +42,7 @@ public class MatchView extends AppCompatActivity {
      * and next wizard steps.
      */
     private ViewPager2 mPager;
+
     private final String err = "Huh... Doesn't look like there are any available matches right now... Please Come Back Later";
     private UserAccount user;
     private ArrayList<UserAccount> matches;
@@ -58,8 +55,8 @@ public class MatchView extends AppCompatActivity {
         setContentView(R.layout.activity_match_view);
 
         Intent intent = getIntent();
-        user = (UserAccount) intent.getSerializableExtra("profile");
-        matches = user.getMatches();
+        UserAccount user = (UserAccount) intent.getSerializableExtra("profile");
+        ArrayList<UserAccount> matches = user.getMatches();
         NUM_PAGES = matches.size();
 
         if (NUM_PAGES == 0) {
@@ -74,7 +71,7 @@ public class MatchView extends AppCompatActivity {
          * The pager adapter, which provides the pages to the view pager widget.
          */
         MatchViewFragmentAdapter pagerAdapter = new MatchViewFragmentAdapter(MatchView.this,
-                                                                    matches, user.getId());
+                matches, user.getId());
         mPager.setAdapter(pagerAdapter);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override

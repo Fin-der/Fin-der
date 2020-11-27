@@ -36,7 +36,7 @@ describe("test matchs models", () => {
         },
         description : "plz",
     };
-    const user2 = {
+    const noPreferenceUser = {
         _id : "30",
         preferences : {
         },
@@ -66,7 +66,7 @@ describe("test matchs models", () => {
         user,
         matches: [user, user]
     };
-    const snoopUser = {
+    const simpleUser = {
         interests : [ 
             "smoking", 
             "skating"
@@ -74,7 +74,7 @@ describe("test matchs models", () => {
         _id : "420",
         firstName : "SNOOOP",
         lastName : "DOOOOOG",
-    }
+    };
     const match1 = {
         _id : "27e817beabf241aa915ff84be81ac182",
         status : "potential",
@@ -184,11 +184,11 @@ describe("test matchs models", () => {
 
     it("createMatchVertex default", async (done) => {
         var vertex = {
-            user: snoopUser,
+            user: simpleUser,
             matches: []
         };
         const potentialMatches = [];
-        const vert = await MatchVertexModel.createMatchVertex(snoopUser, potentialMatches);
+        const vert = await MatchVertexModel.createMatchVertex(simpleUser, potentialMatches);
         vertex._id = vert._id;
         delete vert._doc.createdAt;
         delete vert._doc.updatedAt;
@@ -270,10 +270,10 @@ describe("test matchs models", () => {
         const options = {
             skip: 0,
             limit: 0
-        }
+        };
         const aggregate = {
             mutuals: [user, user, user]
-        }
+        };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
         UserModel.find = jest.fn().mockImplementationOnce(() => (
@@ -286,7 +286,7 @@ describe("test matchs models", () => {
             }
         ));
 
-        const users = await MatchVertexModel.getUsersForMatching(user._id, options)
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual(aggregate.mutuals);
         done();
     });
@@ -296,7 +296,7 @@ describe("test matchs models", () => {
             skip: 0,
             limit: 10
         };
-        UserModel.getUserById = jest.fn(() => {return snoopUser;});
+        UserModel.getUserById = jest.fn(() => {return simpleUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
         UserModel.find = jest.fn().mockImplementationOnce(() => (
             { 
@@ -308,7 +308,7 @@ describe("test matchs models", () => {
             }
         ));
 
-        const users = await MatchVertexModel.getUsersForMatching(user._id, options)
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
         done();
     });
@@ -318,7 +318,7 @@ describe("test matchs models", () => {
             skip: 0,
             limit: 10
         };
-        UserModel.getUserById = jest.fn(() => {return user2;});
+        UserModel.getUserById = jest.fn(() => {return noPreferenceUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
         UserModel.find = jest.fn().mockImplementationOnce(() => (
             { 
@@ -402,9 +402,9 @@ describe("test matchs models", () => {
     });
 
     it("createBidirectionalEdge test default", async (done) => {
-        UserModel.getUserById = jest.fn(() => {return snoopUser;});
+        UserModel.getUserById = jest.fn(() => {return simpleUser;});
 
-        let [ edge1, edge2 ] = await MatchEdgeModel.createBidirectionalEdge("1", snoopUser._id, snoopUser._id);
+        let [ edge1, edge2 ] = await MatchEdgeModel.createBidirectionalEdge("1", simpleUser._id, simpleUser._id);
         match3._id = edge1._id;
         delete edge1._doc.createdAt;
         delete edge1._doc.updatedAt;
@@ -502,7 +502,7 @@ describe("test matchs models", () => {
     it("checkApprovedStatus 1 approve 1 decline", async (done) => {
         var match = JSON.parse( JSON.stringify(match1));
         // we use error here to determine that it hit the if statement
-        MatchEdgeModel.updateOne = jest.fn(() => {throw error});
+        MatchEdgeModel.updateOne = jest.fn(() => {throw error;});
         match.toStatus = "approved";
         match.fromStatus = "declined";
         
@@ -518,13 +518,12 @@ describe("test matchs models", () => {
     it("checkDeclinedStatus 2 approves", async (done) => {
         var match = JSON.parse( JSON.stringify(match1));
         // we use error here to determine that it hit the if statement
-        MatchEdgeModel.updateOne = jest.fn(() => {throw error});
+        MatchEdgeModel.updateOne = jest.fn(() => {throw error;});
         match.toStatus = "approved";
         match.fromStatus = "approved";
 
         try {
-            await MatchEdgeModel.checkDeclinedStatus(match, match1, options);
-            
+            await MatchEdgeModel.checkDeclinedStatus(match, match1, options); 
         } catch (err) {
             done.fail(new Error("checkDeclined shouldnt have thrown an error"));
         }

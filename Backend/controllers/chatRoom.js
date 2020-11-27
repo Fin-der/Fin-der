@@ -1,7 +1,7 @@
 import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
 import UserModel from "../models/User.js";
-import admin from "../config/firebase-config.js";
+import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 
 let generateOptions = (req, skip) => {
     try {
@@ -22,10 +22,9 @@ export default {
             const { userId: chatInitiator } = req;
             const allUserIds = [...userIds, chatInitiator];
             const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
-            //console.log(chatRoom);
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
-           // console.log(error);
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -43,20 +42,13 @@ export default {
             }
             // get token of other users
             const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
-            const registrationTokens = await UserModel.getTokensByIds(userIds);
-            var notifMessage = {
-                "notification": {
-                    "title": "Fin-der",
-                    "body": "You have a new message from " + user.firstName + " " + messagePayload.messageText
-                },
-                "tokens": registrationTokens
-            };
-            if (registrationTokens.length !== 0) {
-                admin.messaging().sendMulticast(notifMessage);
-            }
+            const FCMTokens = await UserModel.getTokensByIds(userIds);
+            const msgBody = "You have a new message from " + user.firstName + " " + messagePayload.messageText;
+            FirebaseMessaging.sendMultiNotifMsg(FCMTokens, msgBody);
             
             return res.status(200).json({ success: true, post });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -67,17 +59,14 @@ export default {
                 page: parseInt(req.query.page, 10) || 0,
                 limit: parseInt(req.query.limit, 10) || 10,
             };
-            console.log("1");
             const rooms = await ChatRoomModel.getChatRoomsByUserId(currentLoggedUser);
-            console.log("2");
             const roomIds = rooms.map((room) => room._id);
-            console.log("3");
             const recentConversation = await ChatMessageModel.getRecentConversation(
                 roomIds, options, currentLoggedUser
             );
-            console.log("4");
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -94,7 +83,7 @@ export default {
                 users,
             });
         } catch (error) {
-            console.log(error)
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -113,6 +102,7 @@ export default {
             const result = await ChatMessageModel.markMessageRead(roomId, currentLoggedUser);
             return res.status(200).json({ success: true, data: result });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
