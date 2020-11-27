@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.finder.MainActivity;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.material.textfield.TextInputEditText;
@@ -147,6 +149,7 @@ public class CreateAccView extends AppCompatActivity {
                             packUserAccount();
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
                             home.putExtra("profile", user);
+                            Toast.makeText(CreateAccView.this, "Account Creation Successful", Toast.LENGTH_SHORT).show();
                             startActivity(home);
                         }
                     }, new Response.ErrorListener() {
@@ -156,6 +159,8 @@ public class CreateAccView extends AppCompatActivity {
                         }
                     });
                     reqQueue.add(jsonReq);
+                } else {
+                    Toast.makeText(CreateAccView.this, "Something is Wrong with your Information", Toast.LENGTH_SHORT).show();
                 }
             }
         });
