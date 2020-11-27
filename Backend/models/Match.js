@@ -80,30 +80,28 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     // Generate query using user preferences
     const generateQuery = (user) => {
         let query = {};
-        if (typeof user.preferences !== "undefined") {
-            if (typeof user.preferences.gender !== "undefined") {
-                query.gender = user.preferences.gender;
-            }
-            if (typeof user.preferences.ageRange !== "undefined") {
-                query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
-            }
-            if (typeof user.preferences.proximity !== "undefined") {
-                // Numbers and Formulae from 
-                // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
-                const latKmPerDeg = 110.574;
-                const lngKmPerDeg = 111.32;
-                const latProximityDeg = user.preferences.proximity / latKmPerDeg;
-                const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
-                query.location = new Object();
-                query.location.lng = { 
-                    $gt: user.location.lng - lngProximityDeg,
-                    $lt: user.location.lng + lngProximityDeg
-                };
-                query.location.lat = {
-                    $gt: user.location.lat - latProximityDeg,
-                    $lt: user.location.lat + latProximityDeg
-                };
-            }
+        if (typeof user.preferences !== "undefined" && typeof user.preferences.gender !== "undefined") {
+            query.gender = user.preferences.gender;
+        }
+        if (typeof user.preferences !== "undefined" && typeof user.preferences.ageRange !== "undefined") {
+            query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
+        }
+        if (typeof user.preferences !== "undefined" && typeof user.preferences.proximity !== "undefined") {
+            // Numbers and Formulae from 
+            // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
+            const latKmPerDeg = 110.574;
+            const lngKmPerDeg = 111.32;
+            const latProximityDeg = user.preferences.proximity / latKmPerDeg;
+            const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
+            query.location = new Object();
+            query.location.lng = { 
+                $gt: user.location.lng - lngProximityDeg,
+                $lt: user.location.lng + lngProximityDeg
+            };
+            query.location.lat = {
+                $gt: user.location.lat - latProximityDeg,
+                $lt: user.location.lat + latProximityDeg
+            };
         }
         return query;
     };
