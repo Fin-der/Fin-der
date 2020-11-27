@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".views.MatchView" />
+        <activity android:name=".views.MatchView"
+                    android:parentActivityName=".views.HomeView"/>
         <activity android:name=".views.ProfileView" />
         <activity
             android:name=".views.ChatView"

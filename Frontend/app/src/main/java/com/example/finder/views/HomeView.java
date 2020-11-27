@@ -40,6 +40,7 @@ public class HomeView extends AppCompatActivity {
     private final static String TAG = "HomeView";
     public static String id;
     public final static String HOST_URL = "http://ec2-3-88-159-19.compute-1.amazonaws.com:3000";
+    public final static String MATCH_LIMIT = "&limit=25";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,31 +170,14 @@ public class HomeView extends AppCompatActivity {
     }
 
     private void findMatches() {
-        final String HOST_MATCH = HOST_URL + "/match/";
+        final String HOST_MATCH = HOST_URL + "/match/" + user.getId() + "/?page=0" + HomeView.MATCH_LIMIT;
         RequestQueue que = Volley.newRequestQueue(this);
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH + user.getId(), null,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try { //String id, String firstName, String lastName, String email) {
-                            JSONArray matches = (JSONArray) response.get("matches");
-                            for (int i = 0; i < matches.length(); i++) {
-                                JSONObject acc = matches.getJSONObject(i).getJSONObject("to");
-                                String firstName = acc.getString("firstName");
-                                String lastName = acc.getString("lastName");
-                                String email = acc.getString("email");
-                                String id = acc.getString("_id");
-                                String biography = acc.getString("description");
-                                String matchId = matches.getJSONObject(i).getString("_id");
-                                int age = acc.getInt("age");
-                                UserAccount match = new UserAccount(id, firstName, lastName, email);
-                                match.setBiography(biography);
-                                match.setAge(age);
-                                match.setMatchId(matchId);
-                                toBeMatched.add(match);
-                            }
-                            Log.d("HomeView", "Done finding matches");
-                            Log.d("HomeView", "Matches" + matches.toString());
+                            MatchView.parseMatches(response, toBeMatched);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
