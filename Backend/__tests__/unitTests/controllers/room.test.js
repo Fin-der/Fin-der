@@ -3,6 +3,7 @@ import supertest from "supertest";
 import ChatRoomModel from "../../../models/ChatRoom.js";
 import ChatMessageModel from "../../../models/ChatMessage.js";
 import UserModel from "../../../models/User.js";
+import ChatRoomController from "../../../controllers/chatRoom.js";
 
 
 const request = supertest(app);
