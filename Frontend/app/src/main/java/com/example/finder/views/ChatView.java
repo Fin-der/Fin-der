@@ -25,8 +25,8 @@ public class ChatView extends AppCompatActivity {
         this.receiver = intent.getStringExtra("chatterName");
         setTitle(this.receiver);
         UserAccount user = (UserAccount) intent.getSerializableExtra("user");
-        String rId = intent.getStringExtra("rId");
-        controller = new ChatController(this, user, rId);
+        UserAccount friend = (UserAccount) intent.getSerializableExtra("friend");
+        controller = new ChatController(this, user, friend);
 
         init();
     }
@@ -50,6 +50,9 @@ public class ChatView extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         controller.cleanUp();
+/*        Intent intent = new Intent(this, HomeView.class);
+        intent.putExtra("profile", getIntent().getSerializableExtra("user"));
+        startActivity(intent);*/
         Log.d("ChatView", "Closed Socket");
         finish();
     }

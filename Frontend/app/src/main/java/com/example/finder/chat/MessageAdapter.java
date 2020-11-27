@@ -1,16 +1,20 @@
 package com.example.finder.chat;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finder.R;
+import com.example.finder.controller.GProfileImageLoader;
 import com.example.finder.models.Message;
+import com.example.finder.models.UserAccount;
 
 import java.util.List;
 
@@ -18,10 +22,12 @@ public class MessageAdapter extends RecyclerView.Adapter {
     public static final int MSG_TYPE_SENT = 1;
     public static final int MSG_TYPE_RECEIVED = 2;
 
-    private List<Message> messages;
+    private final List<Message> messages;
+    private final UserAccount friend;
 
-    public MessageAdapter(List<Message> messageList) {
+    public MessageAdapter(List<Message> messageList, UserAccount friend) {
         this.messages = messageList;
+        this.friend = friend;
     }
 
     @NonNull
@@ -36,7 +42,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
         } else if (viewType == MSG_TYPE_RECEIVED) {
             view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.received_chat_msg, parent, false);
-            return new ReceivedMessageHolder(view);
+            return new ReceivedMessageHolder(view, parent.getContext());
         }
 
         return null;
@@ -51,7 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
                 ((SentMessageHolder) holder).bind(message);
                 break;
             case MSG_TYPE_RECEIVED:
-                ((ReceivedMessageHolder) holder).bind(message);
+                ((ReceivedMessageHolder) holder).bind(message, friend.getpfpUrl());
                 break;
             default:
                 Log.d("MessageAdapter", "Failed to bind");
@@ -70,30 +76,32 @@ public class MessageAdapter extends RecyclerView.Adapter {
     }
 
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
-        private TextView messageText;
-        private TextView timeText;
-        private TextView nameText;
-        //private ImageView profileImage;
+        private final TextView messageText;
+        private final TextView timeText;
+        private final TextView nameText;
+        private final ImageView profileImage;
+        private final Context context;
 
-        public ReceivedMessageHolder(View itemView) {
+        public ReceivedMessageHolder(View itemView, Context context) {
             super(itemView);
             messageText = itemView.findViewById(R.id.text_message_body);
             timeText = itemView.findViewById(R.id.text_message_time);
             nameText = itemView.findViewById(R.id.text_message_name);
-            //profileImage = itemView.findViewById(R.id.image_message_profile);
+            profileImage = itemView.findViewById(R.id.image_message_profile);
+            this.context = context;
         }
 
-        public void bind(Message message) {
+        public void bind(Message message, String profilePic) {
             messageText.setText(message.getMessage());
             timeText.setText(message.getPostAt());
             nameText.setText(message.getSenderName());
-
+            GProfileImageLoader.loadProfilePic(context, profileImage, profilePic, 32, 32);
         }
     }
 
     private class SentMessageHolder extends RecyclerView.ViewHolder {
-        private TextView messageText;
-        private TextView timeText;
+        private final TextView messageText;
+        private final TextView timeText;
 
         public SentMessageHolder(View itemView) {
             super(itemView);

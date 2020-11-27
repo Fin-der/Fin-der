@@ -261,6 +261,7 @@ public class CreateAccView extends AppCompatActivity {
             userJson.put("interests", interests);
             userJson.put("description", biography.getEditText().getText().toString());
             userJson.put("FCMToken", this.FCM_token);
+            userJson.put("profileURL", user.getpfpUrl());
             Log.d(TAG, userJson.toString());
         } catch (JSONException e) {
             Log.d(TAG, "failed to create user json");

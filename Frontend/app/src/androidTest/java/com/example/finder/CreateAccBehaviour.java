@@ -24,7 +24,6 @@ import androidx.test.filters.LargeTest;
 
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.CreateAccView;
-import com.example.finder.views.HomeView;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
@@ -32,8 +31,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.intent.Intents.intended;
-import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -587,98 +584,6 @@ public class CreateAccBehaviour {
         onView(withId(R.id.bioInput)).perform(replaceText("Hi! This is a valid biography"));
         try {
             onView(allOf(withId(R.id.bioInput), isDisplayed())).check(matches(hasNoErrorText()));
-        } catch(AssertionError err) {
-            fail();
-        }
-    }
-
-    @Test
-    public void validCreateAccount() {
-        Intent intent = createIntent();
-        mActivityTestRule.launchActivity(intent);
-        onView(withId(R.id.ageInput)).perform(replaceText("20"));
-        ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.genderSpinner1),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        appCompatSpinner.perform(scrollTo(), click());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
-        appCompatCheckedTextView.perform(click());
-        onView(withId(R.id.locationInput)).perform(replaceText("Vancouver"));
-        ViewInteraction appCompatSpinner2 = onView(
-                allOf(withId(R.id.genderSpinner2),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                7)));
-        appCompatSpinner2.perform(scrollTo(), click());
-
-        DataInteraction appCompatCheckedTextView2 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(3);
-        appCompatCheckedTextView2.perform(click());
-
-        ViewInteraction appCompatSpinner3 = onView(
-                allOf(withId(R.id.interest1Spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                12)));
-        appCompatSpinner3.perform(scrollTo(), click());
-
-        DataInteraction appCompatCheckedTextView3 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(3);
-        appCompatCheckedTextView3.perform(click());
-
-        ViewInteraction appCompatSpinner4 = onView(
-                allOf(withId(R.id.interest2Spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                13)));
-        appCompatSpinner4.perform(scrollTo(), click());
-
-        DataInteraction appCompatCheckedTextView4 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(2);
-        appCompatCheckedTextView4.perform(click());
-
-        ViewInteraction appCompatSpinner5 = onView(
-                allOf(withId(R.id.interest3Spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                14)));
-        appCompatSpinner5.perform(scrollTo(), click());
-
-        DataInteraction appCompatCheckedTextView5 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(3);
-        appCompatCheckedTextView5.perform(click());
-        onView(withId(R.id.create_button)).perform(scrollTo(), click());
-        try {
-            intended(hasComponent(HomeView.class.getName()));
         } catch(AssertionError err) {
             fail();
         }

@@ -9,7 +9,7 @@ public class UserAccGenerator {
          String id = "0";
          String firstName = "Jacky";
          String lastName = "Smith";
-         String email = "Email";
+         String email = "Email@email.com";
          int age = 5;
          String gender = "Male";
          String location = "Vancouver";
@@ -17,7 +17,7 @@ public class UserAccGenerator {
          int minAge = 0;
          int maxAge = age + 5;
          int prox = 5;
-         String[] interest = new String[]{"a", "b", "c"};
+         String[] interest = new String[]{"Hockey", "Cook", "Read"};
          String bio = "hello";
          ArrayList<UserAccount> friend = new ArrayList<>();
          friend.add(new UserAccount("1", "Jack", "Frost"));

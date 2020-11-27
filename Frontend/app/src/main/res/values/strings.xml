@@ -7,9 +7,6 @@
     <string name="home_MessagesTitle">Messages</string>
     <string name="msg_token_fmt" translatable="false">FCM Registration Token: %s</string>
 
-    <!-- Login View Strings -->
-    <string name="create_acc_btn_caption">Create Account</string>
-
     <!-- Match view Strings -->
     <string name="match_name">match_name</string>
     <string name="match_desc">Biography</string>
@@ -66,5 +63,4 @@
     <string name="interest3_caption">Interest 3</string>
     <string name="match_err_text">Maybe Next Time?</string>
 
-    <!-- Profile View Strings -->
 </resources>

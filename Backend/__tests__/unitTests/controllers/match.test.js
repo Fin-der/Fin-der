@@ -2,7 +2,7 @@ import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
 import UserModel from "../../../models/User.js";
 import {MatchEdgeModel, MatchVertexModel} from "../../../models/Match.js";
-import admin from "firebase-admin";
+import FirebaseMessaging from "../../../utils/FirebaseMessaging.js";
 
 const request = supertest(app);
 
@@ -80,7 +80,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -97,7 +97,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -114,7 +114,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -131,7 +131,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return [];});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -148,7 +148,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken;});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {throw error; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 

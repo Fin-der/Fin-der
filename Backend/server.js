@@ -3,8 +3,11 @@ import socketio from "socket.io";
 import http from "http";
 import WebSockets from "./utils/WebSockets.js";
 import "./config/mongo.js";
+import admin from "./utils/FirebaseMessaging.js";
 
 const server = http.createServer(app);
+
+admin.initFCM;
 
 global.io = socketio.listen(server);
 global.io.on("connection", (socket) => WebSockets.connection(socket));
