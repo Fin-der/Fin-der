@@ -2,7 +2,7 @@ import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
 import UserModel from "../../../models/User.js";
 import {MatchEdgeModel, MatchVertexModel} from "../../../models/Match.js";
-import admin from "firebase-admin";
+import FirebaseMessaging from "../../../utils/FirebaseMessaging.js";
 
 const request = supertest(app);
 
@@ -16,7 +16,7 @@ describe("test match controller", () => {
         lastName: "Bar",
         interests: ["music", "coding"]
     };
-    const user1 = {
+    const noInterestUser = {
         _id: "420",
         firstName: "Foo",
         lastName: "Bar",
@@ -74,12 +74,13 @@ describe("test match controller", () => {
     };
     const exampleFCMToken = "e9f2be1868bab8fd";
     const matches = [match1, match2];
+    
     it("getPotentialMatches pass fcm token not registered", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -96,7 +97,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -111,13 +112,13 @@ describe("test match controller", () => {
     it("getPotentialMatches matches already created", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches});
-        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, user1];});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
-        const resp = {success:true, matches: matches};
+        const resp = {success:true, matches};
         const response = await request.get("/match/" + 420);
 
         expect(response.status).toBe(200);
@@ -126,11 +127,11 @@ describe("test match controller", () => {
     }); 
 
     it("getPotentialMatches no shared interest", async (done) => {
-        UserModel.getUserById = jest.fn(() => {return user1;});
+        UserModel.getUserById = jest.fn(() => {return noInterestUser;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return [];});
-        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, user1];});
+        MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -147,7 +148,7 @@ describe("test match controller", () => {
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken;});
-        admin.messaging().sendToDevice = jest.fn(() => {return; });
+        FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {throw error; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
 
@@ -182,8 +183,8 @@ describe("test match controller", () => {
     }); 
 
     it("approveMatch pass fcm token registered", async (done) => {
-        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1});
-        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken]});
+        MatchEdgeModel.changeMatchStatus = jest.fn(() => {return match1;});
+        UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
         const resp = {success:true, match: match1};
         const response = await request.put("/match/approve/" + match1._id + "/" + userId);
 

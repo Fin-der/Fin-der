@@ -1,6 +1,6 @@
 import { app, port } from "../../app.js"; // Link to your server file
 import http from "http";
-import supertest from 'supertest';
+import supertest from "supertest";
 import mongoose from "mongoose";
 
 const request = supertest(app);
@@ -105,7 +105,7 @@ describe("user creation integration test", () => {
                        .send(user5);
         expect(response.status).toBe(500);
         // get all users
-        response = await request.get("/users")
+        response = await request.get("/users");
         expect(response.status).toBe(200);
         expect(response.body.users = [user1, user2, user3, user4]);
         // get users by id

@@ -79,14 +79,14 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     const user = UserModel.getUserById(userId);
     let query = {};
     // Generate query using user preferences
-    if (user.preferences !== undefined) {
-        if (user.preferences.gender !== undefined) {
+    if (typeof user.preferences !== "undefined") {
+        if (typeof user.preferences.gender !== "undefined") {
             query.gender = user.preferences.gender;
         }
-        if (user.preferences.ageRange !== undefined) {
+        if (typeof user.preferences.ageRange !== "undefined") {
             query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
         }
-        if (user.preferences.proximity !== undefined) {
+        if (typeof user.preferences.proximity !== "undefined") {
             // Numbers and Formulae from 
             // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
             const latKmPerDeg = 110.574;
@@ -97,11 +97,11 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
             query.location.lng = { 
                 $gt: user.location.lng - lngProximityDeg,
                 $lt: user.location.lng + lngProximityDeg
-            }
+            };
             query.location.lat = {
                 $gt: user.location.lat - latProximityDeg,
                 $lt: user.location.lat + latProximityDeg
-            }
+            };
         }
     }
 
@@ -117,7 +117,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         restrictSearchWithMatch: { query }
       }
     }]);
-    if (aggregate.mutuals !== undefined && aggregate.mutuals.length >= options.limit / 2) {
+    if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length >= options.limit / 2) {
         return aggregate.mutuals;
     } else {
         return UserModel.find().skip(options.page * options.limit).limit(options.limit);
