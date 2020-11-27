@@ -25,7 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.finder.MainActivity;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.material.textfield.TextInputEditText;
