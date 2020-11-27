@@ -2,6 +2,7 @@ import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
 import UserModel from "../models/User.js";
 import FirebaseMessaging from "../utils/FirebaseMessaging.js";
+import {logger} from "../app.js";
 
 let generateOptions = (req, skip) => {
     try {
@@ -24,7 +25,7 @@ export default {
             const chatRoom = await ChatRoomModel.initiateChat(allUserIds, chatInitiator);
             return res.status(200).json({ success: true, chatRoom });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -48,7 +49,7 @@ export default {
             
             return res.status(200).json({ success: true, post });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -66,7 +67,7 @@ export default {
             );
             return res.status(200).json({ success: true, conversation: recentConversation });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -83,7 +84,7 @@ export default {
                 users,
             });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -102,7 +103,7 @@ export default {
             const result = await ChatMessageModel.markMessageRead(roomId, currentLoggedUser);
             return res.status(200).json({ success: true, data: result });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },

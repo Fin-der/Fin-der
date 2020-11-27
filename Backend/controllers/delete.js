@@ -1,5 +1,6 @@
 import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
+import {logger} from "../app.js";
 
 export default {
     deleteRoomById: async (req, res) => {
@@ -14,7 +15,7 @@ export default {
                 deletedMessagesCount: messages.deletedCount,
             });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -27,7 +28,7 @@ export default {
                 deletedMessagesCount: message.deletedCount,
             });
         } catch (error) {
-            console.error(error);
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },

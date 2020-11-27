@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 import UserModel from "../../../models/User.js";
 import {MatchVertexModel, MatchEdgeModel} from "../../../models/Match.js";
 import mongoose from "mongoose";

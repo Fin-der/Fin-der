@@ -1,4 +1,4 @@
-import { app, port } from "./app.js";
+import { app, port, logger} from "./app.js";
 import socketio from "socket.io";
 import http from "http";
 import WebSockets from "./utils/WebSockets.js";
@@ -16,5 +16,5 @@ global.io.on("join-room", (socket) => WebSockets.subscribeOtherUser(socket));
 server.listen(port);
 
 server.on("listening", () => {
-    console.info(`Listening on port:: http://localhost:${port}/`);
+    logger.info(`Listening on port:: http://localhost:${port}/`);
 });

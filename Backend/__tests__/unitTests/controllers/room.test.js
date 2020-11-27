@@ -1,4 +1,5 @@
-import { app, port } from "../../../app.js"; // Link to your server file
+process.env.NODE_ENV = "test";
+import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
 import ChatRoomModel from "../../../models/ChatRoom.js";
 import ChatMessageModel from "../../../models/ChatMessage.js";

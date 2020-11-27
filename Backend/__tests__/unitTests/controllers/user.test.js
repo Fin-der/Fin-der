@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
 import UserModel from "../../../models/User.js";

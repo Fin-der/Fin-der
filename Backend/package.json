@@ -6,7 +6,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest --detectOpenHandles --runInBand",
-    "start": "nodemon --experimental-json-modules server.js",
+    "start": "nodemon --experimental-json-modules server.js | pino-pretty",
     "server": "nohup node --experimental-json-modules server.js &",
     "coverage": "jest --runInBand --coverage"
   },
@@ -31,7 +31,8 @@
     "express": "^4.17.1",
     "firebase-admin": "^9.3.0",
     "mongodb": "^3.6.2",
-    "mongoose": "^5.10.11"
+    "mongoose": "^5.10.11",
+    "pino": "^6.7.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.12.1",

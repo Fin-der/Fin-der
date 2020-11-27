@@ -1,3 +1,4 @@
+process.env.NODE_ENV = "test";
 import { app, port } from "../../../app.js"; // Link to your server file
 import http from "http";
 import mongoose, {ValidationError} from "mongoose";
