@@ -297,6 +297,7 @@ public class ProfileView extends AppCompatActivity {
                         Intent home = new Intent(ProfileView.this, HomeView.class);
                         packUserAccount();
                         home.putExtra("profile", user);
+                        Toast.makeText(ProfileView.this, "Update Successful", Toast.LENGTH_SHORT).show();
                         startActivity(home);
                     }
                 }, new Response.ErrorListener() {
