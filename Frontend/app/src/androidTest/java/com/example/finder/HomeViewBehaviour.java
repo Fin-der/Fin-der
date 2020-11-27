@@ -35,13 +35,9 @@ public class HomeViewBehaviour {
     public IntentsTestRule<HomeView> activityRule
             = new IntentsTestRule<>(HomeView.class, false, false);
 
-    Intent createIntent() {
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), HomeView.class);
-        UserAccount user = new UserAccount("0", "Bob", "Smith");
-        ArrayList<UserAccount> friends = new ArrayList<>();
-        friends.add(new UserAccount("1", "Jack", "Lantern"));
-        user.setFriendMatches(friends);
-        user.setMatches(new ArrayList<UserAccount>());
+    private Intent createIntent() {
+        Intent intent = new Intent();
+        UserAccount user = UserAccGenerator.createFullAcc();
         intent.putExtra("profile", user);
         return intent;
     }

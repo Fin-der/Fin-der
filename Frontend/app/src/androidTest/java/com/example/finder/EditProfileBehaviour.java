@@ -23,7 +23,7 @@ public class EditProfileBehaviour {
     public IntentsTestRule<ProfileView> activityRule
             = new IntentsTestRule<>(ProfileView.class, false, false);
 
-    Intent createFullAcc() {
+    private Intent createFullAcc() {
         Intent intent = new Intent();
         UserAccount user = UserAccGenerator.createFullAcc();
         intent.putExtra("profile", user);

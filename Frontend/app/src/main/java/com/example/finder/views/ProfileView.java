@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,11 +35,27 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProfileView extends AppCompatActivity {
     private final static String TAG = "ProfileView";
+
+    TextInputLayout firstName;
+    TextInputLayout lastName;
+    TextInputLayout age;
+    TextInputLayout email;
+    TextView numMatches;
+    TextInputLayout location;
+    TextInputLayout minAge;
+    TextInputLayout maxAge;
+    TextInputLayout proximity;
+    TextInputLayout biography;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -53,16 +71,16 @@ public class ProfileView extends AppCompatActivity {
         setContentView(R.layout.activity_profile_view);
 
         TextView fullName = findViewById(R.id.fullNameText);
-        TextInputLayout firstName = findViewById(R.id.first_name_profile);
-        TextInputLayout lastName = findViewById(R.id.last_name_profile);
-        TextInputLayout age = findViewById(R.id.age_profile);
-        TextInputLayout email = findViewById(R.id.email_profile);
+        firstName = findViewById(R.id.first_name_profile);
+        lastName = findViewById(R.id.last_name_profile);
+        age = findViewById(R.id.age_profile);
+        email = findViewById(R.id.email_profile);
         TextView numMatches = findViewById(R.id.number_matches);
-        TextInputLayout location = findViewById(R.id.location_profile);
-        TextInputLayout minAge = findViewById(R.id.min_age_profile);
-        TextInputLayout maxAge = findViewById(R.id.max_age_profile);
-        TextInputLayout proximity = findViewById(R.id.proximity_profile);
-        TextInputLayout biography = findViewById(R.id.bio_profile);
+        location = findViewById(R.id.location_profile);
+        minAge = findViewById(R.id.min_age_profile);
+        maxAge = findViewById(R.id.max_age_profile);
+        proximity = findViewById(R.id.proximity_profile);
+        biography = findViewById(R.id.bio_profile);
         ImageView profilePic = findViewById(R.id.profile_image);
 
         user = (UserAccount) getIntent().getSerializableExtra("profile");
@@ -116,23 +134,8 @@ public class ProfileView extends AppCompatActivity {
         findViewById(R.id.update_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileView.this);
-                alertDialogBuilder.setTitle("CONFIRM ACCOUNT CHANGE");
-                alertDialogBuilder.setMessage("Are you sure you want to update your account?");
-                alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // http request delete account
-                    }
-                });
-                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-//                empty since staying on the same page
-                    }
-                });
-                alertDialogBuilder.create();
-                alertDialogBuilder.show();
+                AlertDialog alertDialog = createUpdateAlertDialog();
+                alertDialog.show();
             }
         });
     }
@@ -166,9 +169,9 @@ public class ProfileView extends AppCompatActivity {
         }
         if (user.getPrefGender().equals("Male")) {
             spinnerIndex[1] = 1;
-        } else if (user.getGender().equals("Female")) {
+        } else if (user.getPrefGender().equals("Female")) {
             spinnerIndex[1] = 2;
-        } else if (user.getGender().equals("All")) {
+        } else if (user.getPrefGender().equals("All")) {
             spinnerIndex[1] = 3;
         } else {
             spinnerIndex[1] = 4;
@@ -227,7 +230,6 @@ public class ProfileView extends AppCompatActivity {
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                // http request delete account
                 JSONObject idInfo = new JSONObject();
                 try {
                     idInfo.put("_id", user.getId());
@@ -260,6 +262,147 @@ public class ProfileView extends AppCompatActivity {
             }
         });
         return alertDialogBuilder.create();
+    }
+
+    private AlertDialog createUpdateAlertDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileView.this);
+        alertDialogBuilder.setTitle("CONFIRM ACCOUNT CHANGE");
+        alertDialogBuilder.setMessage("Are you sure you want to update your account?");
+        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                JSONObject updateJson = packJson();
+                RequestQueue reqQueue = Volley.newRequestQueue(ProfileView.this);
+                JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + user.getId(), updateJson, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Intent home = new Intent(ProfileView.this, HomeView.class);
+                        packUserAccount();
+                        home.putExtra("profile", user);
+                        startActivity(home);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                });
+                reqQueue.add(jsonReq);
+            }
+        });
+        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+//                empty since staying on the same page
+            }
+        });
+        return alertDialogBuilder.create();
+    }
+
+    private void packUserAccount() {
+        user.setFirstName(firstName.getEditText().getText().toString());
+        user.setLastName(lastName.getEditText().getText().toString());
+        user.setAge(Integer.parseInt(age.getEditText().getText().toString()));
+        user.setGender(genderResult[0]);
+        user.setEmail(email.getEditText().getText().toString());
+        user.setLocation(location.getEditText().getText().toString());
+        user.setPrefGender(genderResult[1]);
+        if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+            user.setMinAge(Integer.parseInt(age.getEditText().getText().toString()) - 2);
+        } else {
+            user.setMinAge(Integer.parseInt(minAge.getEditText().getText().toString()));
+        }
+        if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+            user.setMaxAge(Integer.parseInt(age.getEditText().getText().toString()) + 2);
+        } else {
+            user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
+        }
+        if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+            user.setProximity(15);
+        } else {
+            user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
+        }
+        user.setInterest(interestResult);
+        user.setBiography(biography.getEditText().getText().toString());
+    }
+
+    private JSONObject packJson() {
+        JSONArray interests = new JSONArray();
+        interests.put(interestResult[0]);
+        interests.put(interestResult[1]);
+        interests.put(interestResult[2]);
+        JSONObject locationJson = new JSONObject();
+        Geocoder geocoder = new Geocoder(ProfileView.this);
+        List<Address> list = new ArrayList<>();
+        double longitude = 0;
+        double latitude = 0;
+        try {
+            list = geocoder.getFromLocationName(user.getLocation(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "something wrong finding location");
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            longitude = address.getLongitude();
+            latitude = address.getLatitude();
+        }
+        try {
+            locationJson.put("lng", longitude);
+            locationJson.put("lat", latitude);
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create location json");
+            e.printStackTrace();
+        }
+        JSONObject ageRangeJson = new JSONObject();
+        try {
+            if (minAge.getEditText().getText().toString().trim().isEmpty()) {
+                ageRangeJson.put("min", Integer.parseInt(age.getEditText().getText().toString()) - 2);
+            } else {
+                ageRangeJson.put("min", Integer.parseInt(minAge.getEditText().getText().toString()));
+            }
+            if (maxAge.getEditText().getText().toString().trim().isEmpty()) {
+                ageRangeJson.put("max", Integer.parseInt(age.getEditText().getText().toString()) + 2);
+            } else {
+                ageRangeJson.put("max", Integer.parseInt(maxAge.getEditText().getText().toString()));
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create age range json");
+            e.printStackTrace();
+        }
+        JSONObject preferenceJson = new JSONObject();
+        try {
+            preferenceJson.put("gender", genderResult[1]);
+            preferenceJson.put("ageRange", ageRangeJson);
+            if (proximity.getEditText().getText().toString().trim().isEmpty()) {
+                preferenceJson.put("proximity", 15);
+            } else {
+                preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
+            }
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create preference json");
+            e.printStackTrace();
+        }
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("_id", user.getId());
+            userJson.put("firstName", firstName.getEditText().getText().toString());
+            userJson.put("lastName", lastName.getEditText().getText().toString());
+            userJson.put("age", age.getEditText().getText().toString());
+            userJson.put("gender", genderResult[0]);
+            userJson.put("email", email.getEditText().getText().toString());
+            userJson.put("location", locationJson);
+            userJson.put("preferences", preferenceJson);
+            userJson.put("interests", interests);
+            userJson.put("description", biography.getEditText().getText().toString());
+            userJson.put("profileURL", user.getpfpUrl());
+            Log.d(TAG, userJson.toString());
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create user json");
+            e.printStackTrace();
+        }
+        Log.d(TAG, userJson.toString());
+        return userJson;
     }
 
     private void signOut() {

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -168,17 +170,35 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
-            RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
-            String url = HomeView.HOST_URL;
+            final RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
+            final String url = HomeView.HOST_URL;
             JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
                     profile = parseAccount(response);
-                    profile.setpfpUrl(account.getPhotoUrl());
-                    Intent home = new Intent(MainActivity.this, HomeView.class);
-                    home.putExtra("profile", profile);
-                    startActivity(home);
+                    if (!String.valueOf(account.getPhotoUrl()).equals(profile.getpfpUrl())) {
+                        profile.setpfpUrl(account.getPhotoUrl());
+                        JSONObject accountJson = packJson(profile);
+                        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + account.getId(), accountJson, new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                Intent home = new Intent(MainActivity.this, HomeView.class);
+                                home.putExtra("profile", profile);
+                                startActivity(home);
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                error.printStackTrace();
+                            }
+                        });
+                        reqQueue.add(jsonRequest);
+                    } else {
+                        Intent home = new Intent(MainActivity.this, HomeView.class);
+                        home.putExtra("profile", profile);
+                        startActivity(home);
+                    }
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -187,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
                     error.printStackTrace();
                     if (error instanceof ServerError) {
                         UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
+                        profile.setpfpUrl(account.getPhotoUrl());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
                         create.putExtra("FCMToken", FCM_token);
@@ -228,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
                 interest[i] = interestArr.getString(i);
             }
             String biography = account.getString("description");
+            Uri pfp = Uri.parse(account.getString("profileURL"));
             profile = new UserAccount(id, firstName, lastName, email);
             profile.setAge(age);
             profile.setGender(gender);
@@ -238,10 +260,77 @@ public class MainActivity extends AppCompatActivity {
             profile.setProximity(proximity);
             profile.setInterest(interest);
             profile.setBiography(biography);
+            profile.setpfpUrl(pfp);
         } catch (JSONException e) {
             Log.d(TAG, "failed to parse json");
             e.printStackTrace();
         }
         return profile;
+    }
+
+    private JSONObject packJson(UserAccount user) {
+        JSONArray interests = new JSONArray();
+        interests.put(user.getInterest()[0]);
+        interests.put(user.getInterest()[1]);
+        interests.put(user.getInterest()[2]);
+        JSONObject locationJson = new JSONObject();
+        Geocoder geocoder = new Geocoder(MainActivity.this);
+        List<Address> list = new ArrayList<>();
+        double longitude = 0;
+        double latitude = 0;
+        try {
+            list = geocoder.getFromLocationName(user.getLocation(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "something wrong finding location");
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            longitude = address.getLongitude();
+            latitude = address.getLatitude();
+        }
+        try {
+            locationJson.put("lng", longitude);
+            locationJson.put("lat", latitude);
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create location json");
+            e.printStackTrace();
+        }
+        JSONObject ageRangeJson = new JSONObject();
+        try {
+            ageRangeJson.put("min", user.getMinAge());
+            ageRangeJson.put("max", user.getMaxAge());
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create age range json");
+            e.printStackTrace();
+        }
+        JSONObject preferenceJson = new JSONObject();
+        try {
+            preferenceJson.put("gender", user.getPrefGender());
+            preferenceJson.put("ageRange", ageRangeJson);
+            preferenceJson.put("proximity", user.getProximity());
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create preference json");
+            e.printStackTrace();
+        }
+        JSONObject userJson = new JSONObject();
+        try {
+            userJson.put("_id", user.getId());
+            userJson.put("firstName", user.getFirstName());
+            userJson.put("lastName", user.getLastName());
+            userJson.put("age", user.getAge());
+            userJson.put("gender", user.getGender());
+            userJson.put("email", user.getEmail());
+            userJson.put("location", locationJson);
+            userJson.put("preferences", preferenceJson);
+            userJson.put("interests", interests);
+            userJson.put("description", user.getBiography());
+            userJson.put("profileURL", user.getpfpUrl());
+        } catch (JSONException e) {
+            Log.d(TAG, "failed to create user json");
+            e.printStackTrace();
+        }
+        Log.d(TAG, userJson.toString());
+        return userJson;
     }
 }

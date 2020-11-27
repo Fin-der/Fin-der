@@ -182,11 +182,4 @@ public class UserAccount implements Serializable {
         return this.pfpUrl;
     }
 
-    public void setSpinnerIndex(int[] spinnerIndex) {
-        this.spinnerIndex = spinnerIndex;
-    }
-
-    public int[] getSpinnerIndex() {
-        return this.spinnerIndex;
-    }
 }
