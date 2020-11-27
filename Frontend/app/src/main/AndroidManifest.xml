@@ -13,7 +13,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".views.MatchView"
-                    android:parentActivityName=".views.HomeView"/>
+                    android:parentActivityName=".views.HomeView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.finder.views.HomeView"/>
+            </activity>
         <activity android:name=".views.ProfileView" />
         <activity
             android:name=".views.ChatView"

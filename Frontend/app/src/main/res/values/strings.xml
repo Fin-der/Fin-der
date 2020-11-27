@@ -10,6 +10,7 @@
     <!-- Match view Strings -->
     <string name="match_name">match_name</string>
     <string name="match_desc">Biography</string>
+    <string name="match_back">Back</string>
 
     <!-- Create Account View Strings -->
     <string name="first_name_caption">First Name</string>

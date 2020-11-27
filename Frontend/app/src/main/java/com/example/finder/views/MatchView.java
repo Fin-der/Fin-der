@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -45,7 +46,6 @@ public class MatchView extends AppCompatActivity {
 
     private final String err = "Huh... Doesn't look like there are any available matches right now... Please Come Back Later";
     private UserAccount user;
-    private ArrayList<UserAccount> matches;
     private RequestQueue que;
     private int page;
 
@@ -55,8 +55,8 @@ public class MatchView extends AppCompatActivity {
         setContentView(R.layout.activity_match_view);
 
         Intent intent = getIntent();
-        UserAccount user = (UserAccount) intent.getSerializableExtra("profile");
-        ArrayList<UserAccount> matches = user.getMatches();
+        this.user = (UserAccount) intent.getSerializableExtra("profile");
+        final ArrayList<UserAccount> matches = user.getMatches();
         NUM_PAGES = matches.size();
 
         if (NUM_PAGES == 0) {
@@ -70,12 +70,12 @@ public class MatchView extends AppCompatActivity {
         /**
          * The pager adapter, which provides the pages to the view pager widget.
          */
-        MatchViewFragmentAdapter pagerAdapter = new MatchViewFragmentAdapter(MatchView.this,
+        final MatchViewFragmentAdapter pagerAdapter = new MatchViewFragmentAdapter(MatchView.this,
                 matches, user.getId());
         mPager.setAdapter(pagerAdapter);
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(final int position) {
                 super.onPageSelected(position);
                 if (position == NUM_PAGES - 1) {
                     final String URI = HomeView.HOST_URL + "/match/" + user.getId() + "/?page=" + page + HomeView.MATCH_LIMIT;
@@ -89,11 +89,10 @@ public class MatchView extends AppCompatActivity {
                                     Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
                                 } else {
                                     page++;
+                                    Log.d("MatchView", "Page: " + page);
                                     matches.addAll(newMatches);
                                     NUM_PAGES = matches.size();
-                                    synchronized (mPager) {
-                                        mPager.notify();
-                                    }
+                                    pagerAdapter.notifyItemRangeInserted(position + 1, NUM_PAGES - 1);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -111,6 +110,19 @@ public class MatchView extends AppCompatActivity {
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(MatchView.this, HomeView.class);
+                intent.putExtra("profile", user);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -126,17 +138,6 @@ public class MatchView extends AppCompatActivity {
             // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, HomeView.class);
-            intent.putExtra("profile", this.user);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     public static void parseMatches(JSONObject response, ArrayList<UserAccount> toBeMatched) throws JSONException {
@@ -156,11 +157,9 @@ public class MatchView extends AppCompatActivity {
             match.setMatchId(matchId);
             toBeMatched.add(match);
         }
-        Log.d("HomeView", "Done finding matches");
-        Log.d("HomeView", "Matches" + matches.toString());
+        Log.d("Matches", "Done finding matches");
+        Log.d("Matches", "Matches" + matches.toString());
     }
-
-
 
     private class MatchViewFragmentAdapter extends FragmentStateAdapter {
         private ArrayList<UserAccount> matches;
