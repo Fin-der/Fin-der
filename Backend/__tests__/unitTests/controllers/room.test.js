@@ -70,20 +70,20 @@ describe("test chat room controller", () => {
     }); 
 
         
-    it("test postMessage success", async (done) => {
-        UserModel.getUserById = jest.fn((currentLoggedUser) => {return exampleUser;})
-        ChatMessageModel.createPostInChatRoom = jest.fn((roomId, messagePayload, currentLoggedUser) => {return examplePost;});
-        ChatRoomModel.getUserIdsFromRoomId = jest.fn((roomId) => {return exampleRoom1.userIds})
-        UserModel.getTokensByIds = jest.fn((userIds) => {return ["asdfasfd"];})
+    // it("test postMessage success", async (done) => {
+    //     UserModel.getUserById = jest.fn((currentLoggedUser) => {return exampleUser;})
+    //     ChatMessageModel.createPostInChatRoom = jest.fn((roomId, messagePayload, currentLoggedUser) => {return examplePost;});
+    //     ChatRoomModel.getUserIdsFromRoomId = jest.fn((roomId) => {return exampleRoom1.userIds})
+    //     UserModel.getTokensByIds = jest.fn((userIds) => {return ["asdfasfd"];})
         
-        const resp = {success:true, post: examplePost};
+    //     const resp = {success:true, post: examplePost};
         
-        const response = await request.post("/room/" + exampleRoom1._id + "/" + examplePost.postedByUser + "/message");
+    //     const response = await request.post("/room/" + exampleRoom1._id + "/" + examplePost.postedByUser + "/message");
 
-        expect(response.status).toBe(200);
-        expect(response.body).toMatchObject(resp);
-        done();
-    }); 
+    //     expect(response.status).toBe(200);
+    //     expect(response.body).toMatchObject(resp);
+    //     done();
+    // }); 
 
 
     it("test postMessage fail", async (done) => {
