@@ -16,5 +16,5 @@ global.io.on("join-room", (socket) => WebSockets.subscribeOtherUser(socket));
 server.listen(port);
 
 server.on("listening", () => {
-    console.log(`Listening on port:: http://localhost:${port}/`);
+    console.info(`Listening on port:: http://localhost:${port}/`);
 });

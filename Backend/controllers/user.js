@@ -7,6 +7,7 @@ export default {
             const users = await UserModel.getUsers();
             return res.status(200).json({ success: true, users });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -16,6 +17,7 @@ export default {
             const user = await UserModel.getUserById(id);
             return res.status(200).json({ success: true, user });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -31,6 +33,7 @@ export default {
             
             return res.status(200).json({ success: true, user });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -50,6 +53,7 @@ export default {
             await MatchEdgeModel.updateEdgesWithId(id, updateInfo);
             return res.status(200).json({ success: true, user: updatedUser});
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -64,6 +68,7 @@ export default {
                 message: `Deleted a count of ${user.deletedCount} user.` 
             });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -76,6 +81,7 @@ export default {
                 message: `Token: ${req.params.token} successfully registed with User(ID): ${id}` 
             });
         } catch(error) {
+            console.error(error);
             return res.status(500).json({ success:false, error });
         }
     }

@@ -50,6 +50,7 @@ export default {
             
             return res.status(200).json({ success: true, matches: updatedMatches });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -65,6 +66,7 @@ export default {
             }
             return res.status(200).json({ success: true, match });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
@@ -84,6 +86,7 @@ export default {
             const friends = await MatchEdgeModel.getFriendMatches(userId);
             return res.status(200).json({ success: true, friends });
         } catch (error) {
+            console.error(error);
             return res.status(500).json({ success: false, error });
         }
     }
