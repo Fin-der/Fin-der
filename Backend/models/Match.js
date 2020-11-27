@@ -78,15 +78,14 @@ MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
 MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
     const user = UserModel.getUserById(userId);
     // Generate query using user preferences
-    const generateQuery = (user) => {
-        let query = {};
-        if (typeof user.preferences !== "undefined" && typeof user.preferences.gender !== "undefined") {
+    const calcQuery = (user, query) => {
+        if (typeof user.preferences.gender !== "undefined") {
             query.gender = user.preferences.gender;
         }
-        if (typeof user.preferences !== "undefined" && typeof user.preferences.ageRange !== "undefined") {
+        if (typeof user.preferences.ageRange !== "undefined") {
             query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
         }
-        if (typeof user.preferences !== "undefined" && typeof user.preferences.proximity !== "undefined") {
+        if (typeof user.preferences.proximity !== "undefined") {
             // Numbers and Formulae from 
             // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
             const latKmPerDeg = 110.574;
@@ -102,6 +101,12 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
                 $gt: user.location.lat - latProximityDeg,
                 $lt: user.location.lat + latProximityDeg
             };
+        }
+    };
+    const generateQuery = (user) => {
+        let query = {};
+        if (typeof user.preferences !== "undefined") {
+            calcQuery(user, query);
         }
         return query;
     };
