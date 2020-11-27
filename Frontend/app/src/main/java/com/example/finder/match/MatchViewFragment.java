@@ -1,8 +1,6 @@
 package com.example.finder.match;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.service.autofill.FieldClassification;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,16 +20,13 @@ import com.example.finder.R;
 import com.example.finder.controller.GProfileImageLoader;
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
-import com.example.finder.views.MatchView;
 
 import org.json.JSONObject;
-
-import static com.example.finder.views.HomeView.HOST_URL;
 
 public class MatchViewFragment extends Fragment {
     private UserAccount match;
     private String userId;
-    final String HOST_URL = HomeView.HOST_URL + "/match/";
+    private final String HOST_URL = HomeView.HOST_URL + "/match/";
 
     public static MatchViewFragment createInstance(UserAccount match, String userId) {
         MatchViewFragment inst = new MatchViewFragment();

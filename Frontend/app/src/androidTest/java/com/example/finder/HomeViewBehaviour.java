@@ -6,7 +6,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -15,8 +14,6 @@ import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
 import com.example.finder.views.MatchView;
 import com.example.finder.views.ProfileView;
-
-import java.util.ArrayList;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
