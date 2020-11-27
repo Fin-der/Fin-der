@@ -46,16 +46,15 @@ import java.util.List;
 public class ProfileView extends AppCompatActivity {
     private final static String TAG = "ProfileView";
 
-    TextInputLayout firstName;
-    TextInputLayout lastName;
-    TextInputLayout age;
-    TextInputLayout email;
-    TextView numMatches;
-    TextInputLayout location;
-    TextInputLayout minAge;
-    TextInputLayout maxAge;
-    TextInputLayout proximity;
-    TextInputLayout biography;
+    private TextInputLayout firstName;
+    private TextInputLayout lastName;
+    private TextInputLayout age;
+    private TextInputLayout email;
+    private TextInputLayout location;
+    private TextInputLayout minAge;
+    private TextInputLayout maxAge;
+    private TextInputLayout proximity;
+    private TextInputLayout biography;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -64,6 +63,7 @@ public class ProfileView extends AppCompatActivity {
     private String[] genderResult = new String[2];
     private String[] interestResult = new String[3];
     private int[] spinnerIndex = new int[5];
+    private double[] longLat = {200, 100};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,7 @@ public class ProfileView extends AppCompatActivity {
         lastName = findViewById(R.id.last_name_profile);
         age = findViewById(R.id.age_profile);
         email = findViewById(R.id.email_profile);
-        TextView numMatches = findViewById(R.id.number_matches);
+        TextView numFriends = findViewById(R.id.number_matches);
         location = findViewById(R.id.location_profile);
         minAge = findViewById(R.id.min_age_profile);
         maxAge = findViewById(R.id.max_age_profile);
@@ -91,7 +91,7 @@ public class ProfileView extends AppCompatActivity {
         lastName.getEditText().setText(user.getLastName());
         age.getEditText().setText(user.getAge());
         email.getEditText().setText(user.getEmail());
-        numMatches.setText(user.getNumMatches());
+        numFriends.setText(user.getNumFriends());
         location.getEditText().setText(user.getLocation());
         minAge.getEditText().setText(user.getMinAge());
         maxAge.getEditText().setText(user.getMaxAge());
@@ -167,14 +167,19 @@ public class ProfileView extends AppCompatActivity {
         } else {
             spinnerIndex[0] = 3;
         }
-        if (user.getPrefGender().equals("Male")) {
-            spinnerIndex[1] = 1;
-        } else if (user.getPrefGender().equals("Female")) {
-            spinnerIndex[1] = 2;
-        } else if (user.getPrefGender().equals("All")) {
-            spinnerIndex[1] = 3;
-        } else {
-            spinnerIndex[1] = 4;
+        switch (user.getPrefGender()) {
+            case "Male":
+                spinnerIndex[1] = 1;
+                break;
+            case "Female":
+                spinnerIndex[1] = 2;
+                break;
+            case "All":
+                spinnerIndex[1] = 3;
+                break;
+            default:
+                spinnerIndex[1] = 4;
+                break;
         }
     }
 
@@ -271,6 +276,19 @@ public class ProfileView extends AppCompatActivity {
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+                Geocoder geocoder = new Geocoder(ProfileView.this);
+                List<Address> list = new ArrayList<>();
+                try {
+                    list = geocoder.getFromLocationName(user.getLocation(), 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.d(TAG, "something wrong finding location");
+                }
+                if (list.size() > 0) {
+                    Address address = list.get(0);
+                    longLat[0] = address.getLongitude();
+                    longLat[1] = address.getLatitude();
+                }
                 JSONObject updateJson = packJson();
                 RequestQueue reqQueue = Volley.newRequestQueue(ProfileView.this);
                 JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + user.getId(), updateJson, new Response.Listener<JSONObject>() {
@@ -332,24 +350,9 @@ public class ProfileView extends AppCompatActivity {
         interests.put(interestResult[1]);
         interests.put(interestResult[2]);
         JSONObject locationJson = new JSONObject();
-        Geocoder geocoder = new Geocoder(ProfileView.this);
-        List<Address> list = new ArrayList<>();
-        double longitude = 0;
-        double latitude = 0;
         try {
-            list = geocoder.getFromLocationName(user.getLocation(), 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.d(TAG, "something wrong finding location");
-        }
-        if (list.size() > 0) {
-            Address address = list.get(0);
-            longitude = address.getLongitude();
-            latitude = address.getLatitude();
-        }
-        try {
-            locationJson.put("lng", longitude);
-            locationJson.put("lat", latitude);
+            locationJson.put("lng", longLat[0]);
+            locationJson.put("lat", longLat[1]);
         } catch (JSONException e) {
             Log.d(TAG, "failed to create location json");
             e.printStackTrace();
