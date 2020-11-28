@@ -134,7 +134,7 @@ userSchema.statics.registerFCMToken = async function (id, token) {
 
 userSchema.statics.getTokensByIds = async function (ids) {
     const tokens = await this.find({ _id: { $in: ids } },"FCMToken -_id", {lean: true});
-    return tokens.filter(value => Object.keys(value).length !== 0);
+    return tokens.filter((value) => Object.keys(value).length !== 0);
 };
 
 export default mongoose.model("User", userSchema);
