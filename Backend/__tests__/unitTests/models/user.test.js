@@ -94,13 +94,7 @@ describe("test user models", () => {
     const noUsers = [];
 
     beforeEach(async () => {
-        const { collections } = mongoose.connection;
-
-        for (const key in collections) {
-            if (Object.prototype.hasOwnProperty.call(collections, key)) {
-                await collections[key].deleteMany();
-            }
-        }
+        await mongoose.connection.db.dropDatabase();
     });
     
     beforeAll(async () => {
