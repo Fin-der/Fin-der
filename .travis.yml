@@ -1,3 +1,4 @@
+dist: trusty
 matrix:
   include:
     language: node_js
@@ -15,7 +16,6 @@ matrix:
     - tar xvf keys.tar
 
   - language: android
-  dist: trusty
   env:
     global:
       - ANDROID_API_LEVEL=29
