@@ -32,6 +32,7 @@
     "firebase-admin": "^9.3.0",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.11",
+    "mongoose-encryption": "^2.0.2",
     "pino": "^6.7.0"
   },
   "devDependencies": {

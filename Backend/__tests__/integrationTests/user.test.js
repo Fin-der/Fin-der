@@ -101,17 +101,17 @@ describe("user creation integration test", () => {
         // get all users
         response = await request.get("/users");
         expect(response.status).toBe(200);
-        expect(response.body.users = [user1, user2, user3, user4]);
+        expect(response.body.users).toMatchObject([user1, user2, user3, user4]);
         // get users by id
         response = await request.get("/users/" + user1._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user1);
+        expect(response.body.user).toMatchObject(user1);
         response = await request.get("/users/" + user2._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user2);
+        expect(response.body.user).toMatchObject(user2);
         response = await request.get("/users/" + user3._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user3);
+        expect(response.body.user).toMatchObject(user3);
         response = await request.get("/users/" + "2394078");
         expect(response.status).toBe(500);
         // delete user
@@ -122,7 +122,7 @@ describe("user creation integration test", () => {
         // register FCM tokens
         response = await request.put("/users/" + user3._id + "/" + FCMToken);
         expect(response.status).toBe(200);
-        expect(response.body.message === " Token: " + FCMToken + " successfully registed with User(ID): " + user3._id);
+        expect(response.body.message).toBe("Token: " + FCMToken + " successfully registed with User(ID): " + user3._id);
         done();
     });
 

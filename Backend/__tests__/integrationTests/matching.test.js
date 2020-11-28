@@ -70,7 +70,6 @@ describe("matching integration", () => {
         const matchId = response.body.matches[0]._id;
         response = await request.get("/match/" + user2._id);
         expect(response.status).toBe(200);
-        expect(response.body.matches[0]._id === matchId);
         // approve match from user1 side
         response = await request.put("/match/approve/" + matchId + "/" + user1._id);
         expect(response.status).toBe(200);
@@ -83,20 +82,20 @@ describe("matching integration", () => {
         // check for mutual friendship
         response = await request.get("/match/friend/" + user1._id);
         expect(response.status).toBe(200);
-        expect(response.body.friends.status === "approved");
+        expect(response.body.friends[0].status).toBe("approved");
         response = await request.get("/match/friend/" + user2._id);
         expect(response.status).toBe(200);
-        expect(response.body.friends.status === "approved");
+        expect(response.body.friends[0].status).toBe("approved");
         // one user thinks the friendship is bad and unfriends
         response = await request.put("/match/decline/" + matchId + "/" + user2._id);
         expect(response.status).toBe(200);
         // check successful unfriend
         response = await request.get("/match/friend/" + user1._id);
         expect(response.status).toBe(200);
-        expect(response.body.friends === []);
+        expect(response.body.friends).toMatchObject([]);
         response = await request.get("/match/friend/" + user2._id);
         expect(response.status).toBe(200);
-        expect(response.body.friends === []);
+        expect(response.body.friends).toMatchObject([]);
 
 
 

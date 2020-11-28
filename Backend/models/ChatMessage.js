@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
+import encrypt from "mongoose-encryption";
+import keys from "../config/mongoose-encrpytion.json";
 
 const MESSAGE_TYPES = {
     TYPE_TEXT: "text",
@@ -39,6 +41,8 @@ const chatMessageSchema = new mongoose.Schema(
         collection: "chatmessages",
     }
 );
+
+chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
 
 /**
  * This method will create a post in chat

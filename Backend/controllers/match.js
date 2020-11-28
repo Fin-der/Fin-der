@@ -15,7 +15,7 @@ export default {
             const matches = await MatchEdgeModel.getPotentialMatches(userId);
             let matchesId = new Set();
             matches.forEach((match) => {
-                matchesId.add(match.to._id);
+                matchesId.add(match.toId);
             });
             
             var potentialMatches = []; 
@@ -41,12 +41,12 @@ export default {
                         FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
                         
                         potentialMatches.push(user); 
-                        await MatchVertexModel.addPotentialMatches(user._id, [curUser]);
+                        await MatchVertexModel.addPotentialMatches(user._id, [curUser._id]);
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 
                     } 
                 } 
             }));
-            await MatchVertexModel.addPotentialMatches(userId, potentialMatches);
+            await MatchVertexModel.addPotentialMatches(userId, potentialMatches.map((user) => {return user._id;}));
             const updatedMatches = await MatchEdgeModel.getPotentialMatches(userId);
             
             return res.status(200).json({ success: true, matches: updatedMatches });
@@ -61,7 +61,7 @@ export default {
             const matchId = req.params.matchId;
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "approved");
             if (match.status === "approved") {
-                const FCMToken = await UserModel.getTokensByIds([match.to._id]);
+                const FCMToken = await UserModel.getTokensByIds([match.toId]);
                 const msgBody = "You have a new friend! Open Fin-der to find out who";
                 FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
             }

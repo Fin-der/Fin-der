@@ -169,7 +169,8 @@ describe("test user models", () => {
     });
 
     it("updateUser id exist", async (done) => {
-        UserModel.findOneAndUpdate = jest.fn(() => {return user;});
+        UserModel.findOne = jest.fn(() => {return user;});
+        user.save = jest.fn(() => {return;});
         const actualUser = await UserModel.updateUser(user._id, {});
     
         await expect(actualUser).toBe(user);
@@ -177,7 +178,8 @@ describe("test user models", () => {
     });
 
     it("updateUser id doesnt exist", async (done) => {
-        UserModel.findOneAndUpdate = jest.fn(() => {return null;});
+        UserModel.findOne = jest.fn(() => {return null;});
+        user.save = jest.fn(() => {return;});
         const error = {
             "error": "No user with this id found"
         };

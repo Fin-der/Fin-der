@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import encrypt from "mongoose-encryption";
+import keys from "../config/mongoose-encrpytion.json";
 
 const userSchema = new mongoose.Schema(
     {
@@ -61,6 +63,8 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+userSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
+
 /**
  * @param {String} firstName
  * @param {String} lastName
@@ -92,10 +96,12 @@ userSchema.statics.getUserById = async function (id) {
 };
 
 userSchema.statics.updateUser = async function (id, updateInfo) {
-    const updatedUser = await this.findOneAndUpdate({_id: id}, updateInfo, {new: true});
+    var updatedUser = await this.findOne({_id: id});
     if (!updatedUser) { 
         throw ({ error: "No user with this id found" }); 
     }
+    Object.keys(updateInfo).forEach(key => key in updatedUser? updatedUser[key] = updateInfo[key] : null);
+    await updatedUser.save();
     return updatedUser;
 };
 

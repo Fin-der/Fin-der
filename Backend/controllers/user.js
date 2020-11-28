@@ -30,7 +30,7 @@ export default {
             const user = await UserModel.createUser(_id, firstName, lastName, 
                 age, gender, email, location, preferences,
                 interests, description, FCMToken, profileURL);
-            await MatchVertexModel.createMatchVertex(user, []);
+            await MatchVertexModel.createMatchVertex(_id, []);
             
             return res.status(200).json({ success: true, user });
         } catch (error) {
@@ -50,8 +50,6 @@ export default {
                 interests, description, FCMToken, profileURL
             };    
             const updatedUser = await UserModel.updateUser(id, updateInfo);
-            await MatchVertexModel.updateMatchVertex(id, updateInfo);
-            await MatchEdgeModel.updateEdgesWithId(id, updateInfo);
             return res.status(200).json({ success: true, user: updatedUser});
         } catch (error) {
             logger.error(error);
