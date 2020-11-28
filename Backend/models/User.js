@@ -4,7 +4,6 @@ import keys from "../config/mongoose-encrpytion.json";
 
 const userSchema = new mongoose.Schema(
     {
-        // TODO: Fuzzy matching
         _id: {
             // By default this is unique and required
             type: String,
@@ -23,7 +22,7 @@ const userSchema = new mongoose.Schema(
         location: {
             lng: mongoose.Types.Decimal128, 
             lat: mongoose.Types.Decimal128,
-        }, // lng, lat TODO: VALIDATE THIS VALUE
+        }, 
         preferences: {
             gender: String,
             ageRange: {
@@ -100,7 +99,7 @@ userSchema.statics.updateUser = async function (id, updateInfo) {
     if (!updatedUser) { 
         throw ({ error: "No user with this id found" }); 
     }
-    Object.keys(updateInfo).forEach(key => key in updatedUser? updatedUser[key] = updateInfo[key] : null);
+    updatedUser = Object.assign(updatedUser, updateInfo);
     await updatedUser.save();
     return updatedUser;
 };

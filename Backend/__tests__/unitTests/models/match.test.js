@@ -189,11 +189,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -214,11 +214,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -236,11 +236,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return simpleUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -258,11 +258,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return noPreferenceUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }

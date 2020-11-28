@@ -60,8 +60,26 @@ MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
 };
 
 MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
+    
     const user = UserModel.getUserById(userId);
     // Generate query using user preferences
+    const wrapLng = (lng) => {
+        var result = lng;
+        if (lng > 180) {
+            result = lng - 360;
+        } else if (lng < -180) {
+            result = lng + 360;
+        }
+    };
+    const wrapLat = (lat) => {
+        var result = lat;
+        if (lat > 90) {
+            result = 180 - lat;
+        } else if (lat < -90) {
+            result = lat + 180;
+        }
+        return result;
+    };
     const calcQuery = (user, query) => {
         if (typeof user.preferences.gender !== "undefined") {
             query.gender = user.preferences.gender;
@@ -78,12 +96,12 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
             const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
             query.location = new Object();
             query.location.lng = { 
-                $gt: user.location.lng - lngProximityDeg,
-                $lt: user.location.lng + lngProximityDeg
+                $gt: wrapLng(user.location.lng - lngProximityDeg),
+                $lt: wrapLng(user.location.lng + lngProximityDeg)
             };
             query.location.lat = {
-                $gt: user.location.lat - latProximityDeg,
-                $lt: user.location.lat + latProximityDeg
+                $gt: wrapLat(user.location.lat - latProximityDeg),
+                $lt: wrapLat(user.location.lat + latProximityDeg)
             };
         }
     };
@@ -91,13 +109,14 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         let query = {};
         if (typeof user.preferences !== "undefined") {
             calcQuery(user, query);
+            query.interests = {$in: user.interests};
         }
         return query;
     };
     const query = generateQuery(user);
 
     const aggregate = await this.aggregate( [
-    { $match: { "userId": userId }},
+    { $match: {userId} },
     { $graphLookup: { 
         from: "MatchVertices",
         startWith: "$matches",
@@ -105,18 +124,26 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         connectToField: "userId",
         maxDepth: 2,
         as: "mutuals",
-        restrictSearchWithMatch: { query }
+        restrictSearchWithMatch: query
       }
     }]);
-    if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length >= options.limit / 2) {
-        return UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
+    let mutualCount = 0;
+    if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length >= 0) {
+        // if they have mutual connection we show them first then random users after that
+        const mutuals = UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
+        if (mutuals?.length) {
+            mutualCount++;
+            return mutuals
+        } else {
+            return UserModel.find({_id: {$nin: aggregate.mutuals}}).skip(options.page * options.limit - mutualCount).limit(options.limit);
+        }
     } else {
         return UserModel.find().skip(options.page * options.limit).limit(options.limit);
     }
 };
 
 MatchVertexSchema.statics.addPotentialMatches = async function (userId, userIds) {
-    const userVertex = await this.updateOne({userId: userId}, {$push: {matches: { $each: userIds }}}, {multi: true});
+    const userVertex = await this.updateOne({userId}, {$push: {matches: { $each: userIds }}}, {multi: true});
     return userVertex;
 };
 
