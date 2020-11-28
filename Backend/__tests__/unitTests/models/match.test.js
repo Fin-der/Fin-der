@@ -161,13 +161,7 @@ describe("test matchs models", () => {
     };
 
     beforeEach(async () => {
-        const { collections } = mongoose.connection;
-
-        for (const key in collections) {
-            if (Object.prototype.hasOwnProperty.call(collections, key)) {
-                await collections[key].deleteMany();
-            }
-        }
+        await mongoose.connection.db.dropDatabase();
     });
     
     beforeAll(async () => {
@@ -331,7 +325,7 @@ describe("test matchs models", () => {
             }
         ));
 
-        const users = await MatchVertexModel.getUsersForMatching(user._id, options)
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
         done();
     });
@@ -535,7 +529,7 @@ describe("test matchs models", () => {
     it("checkDeclinedStatus 1 approve 1 decline", async (done) => {
         var match = JSON.parse( JSON.stringify(match1));
         // we use error here to determine that it hit the if statement
-        MatchEdgeModel.updateOne = jest.fn(() => {throw error});
+        MatchEdgeModel.updateOne = jest.fn(() => {throw error;});
         match.toStatus = "approved";
         match.fromStatus = "declined";
         try {
