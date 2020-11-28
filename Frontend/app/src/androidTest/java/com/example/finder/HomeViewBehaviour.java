@@ -34,7 +34,7 @@ public class HomeViewBehaviour {
 
     private Intent createIntent() {
         Intent intent = new Intent();
-        UserAccount user = UserAccGenerator.createFullAcc();
+        UserAccount user = UserAccGenerator.createFullAcc("0");
         intent.putExtra("profile", user);
         return intent;
     }

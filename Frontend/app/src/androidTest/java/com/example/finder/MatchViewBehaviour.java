@@ -26,7 +26,7 @@ public class MatchViewBehaviour {
 
     public void startActivity() {
         Intent intent = new Intent();
-        UserAccount user = UserAccGenerator.createFullAcc();
+        UserAccount user = UserAccGenerator.createFullAcc("0");
         user.getMatches().add(new UserAccount("0", "Danny", "Phantom"));
         user.getMatches().get(0).setBiography("Biography");
         user.getMatches().add(new UserAccount("1", "Nick", "Ng"));
