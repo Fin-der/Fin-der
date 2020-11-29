@@ -106,7 +106,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         if (typeof user.preferences.ageRange !== "undefined") {
             query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
         }
-        calcProxQuery;
+        calcProxQuery(user, query);
     };
     const generateQuery = (user) => {
         let query = {};
