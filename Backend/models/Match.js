@@ -98,7 +98,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
                 $lt: wrapLat(user.geoLocation.lat + latProximityDeg)
             };
         }
-    }
+    };
     const calcQuery = (user, query) => {
         if (typeof user.preferences.gender !== "undefined" && user.preferences.gender !== "All") {
             query.gender = user.preferences.gender;
