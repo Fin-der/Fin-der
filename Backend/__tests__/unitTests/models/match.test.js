@@ -27,7 +27,7 @@ describe("test matchs models", () => {
         age : 20,
         gender : "Female",
         email : "yo@gmail.com",
-        location : {
+        geoLocation : {
             "lat" : {
                 "$numberDecimal": "0",
             },
@@ -51,7 +51,7 @@ describe("test matchs models", () => {
         age : 20,
         gender : "Female",
         email : "yo@gmail.com",
-        location : {
+        geoLocation : {
             "lat" : {
                 "$numberDecimal": "0",
             },

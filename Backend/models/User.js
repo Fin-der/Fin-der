@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema(
         age: Number,
         gender: String,
         email: String, 
-        location: {
+        geoLocation: {
             lng: mongoose.Types.Decimal128, 
             lat: mongoose.Types.Decimal128,
         }, 
@@ -74,10 +74,10 @@ userSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey}
  * @returns {Object} new user object created
  */
 userSchema.statics.createUser = async function (_id, firstName, lastName, 
-                                age, gender, email, location, preferences,
+                                age, gender, email, geoLocation, preferences,
                                 interests, description, FCMToken, profileURL) {
     const user = await this.create({ _id, firstName, lastName, 
-        age, gender, email, location, preferences,
+        age, gender, email, geoLocation, preferences,
         interests, description, FCMToken, profileURL});
     return user;
 };

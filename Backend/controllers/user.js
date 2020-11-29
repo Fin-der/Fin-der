@@ -25,10 +25,10 @@ export default {
     onCreateUser: async (req, res) => {
         try {
             const {_id, firstName, lastName, 
-                age, gender, email, location, preferences,
+                age, gender, email, geoLocation, preferences,
                 interests, description, FCMToken, profileURL} = req.body;
             const user = await UserModel.createUser(_id, firstName, lastName, 
-                age, gender, email, location, preferences,
+                age, gender, email, geoLocation, preferences,
                 interests, description, FCMToken, profileURL);
             await MatchVertexModel.createMatchVertex(_id, []);
             
@@ -42,11 +42,11 @@ export default {
         try {
             const id = req.params.id;
             const {firstName, lastName, 
-                age, gender, email, location, preferences,
+                age, gender, email, geoLocation, preferences,
                 interests, description, FCMToken, profileURL} = req.body;
             var updateInfo = {
                 firstName, lastName, 
-                age, gender, email, location, preferences,
+                age, gender, email, geoLocation, preferences,
                 interests, description, FCMToken, profileURL
             };    
             const updatedUser = await UserModel.updateUser(id, updateInfo);

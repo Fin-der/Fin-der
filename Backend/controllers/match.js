@@ -78,6 +78,7 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "declined");
             return res.status(200).json({ success: true, match });
         } catch (error) {
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },

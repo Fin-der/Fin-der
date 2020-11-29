@@ -53,7 +53,7 @@ describe("test user models", () => {
         age : 20,
         gender : "Female",
         email : "yo@gmail.com",
-        location : {
+        geoLocation : {
             "lat": {
                 "$numberDecimal": "0",
             },
@@ -113,7 +113,7 @@ describe("test user models", () => {
     it("test min max validation functions", async (done) => {
         const func = async () => {
             return UserModel.createUser(badUser._id, badUser.firstName, badUser.lastName, badUser.age,
-            badUser.gender, badUser.email, badUser.location, badUser.preferences, badUser.interests, 
+            badUser.gender, badUser.email, badUser.geoLocation, badUser.preferences, badUser.interests, 
             badUser.description, badUser.FCMToken, badUser.profileURL);
         };
         await expect(func).rejects.toThrow(ValidationError);
@@ -123,7 +123,7 @@ describe("test user models", () => {
 
     it("test createUser creates without max", async (done) => {
         var actualUser = await UserModel.createUser(user._id, user.firstName, user.lastName, user.age,
-            user.gender, user.email, user.location, user.preferences, user.interests, 
+            user.gender, user.email, user.geoLocation, user.preferences, user.interests, 
             user.description, user.FCMToken, user.profileURL);
         delete actualUser._doc.createdAt;
         delete actualUser._doc.updatedAt;
@@ -136,7 +136,7 @@ describe("test user models", () => {
 
     it("test createUser creates without min", async (done) => {
         var actualUser = await UserModel.createUser(badUser2._id, badUser2.firstName, badUser2.lastName, badUser2.age,
-            badUser2.gender, badUser2.email, badUser2.location, badUser2.preferences, badUser2.interests, 
+            badUser2.gender, badUser2.email, badUser2.geoLocation, badUser2.preferences, badUser2.interests, 
             badUser2.description, badUser2.FCMToken, badUser2.profileURL);
         delete actualUser._doc.createdAt;
         delete actualUser._doc.updatedAt;

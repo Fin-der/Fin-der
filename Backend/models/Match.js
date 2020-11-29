@@ -93,15 +93,15 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
             const latKmPerDeg = 110.574;
             const lngKmPerDeg = 111.32;
             const latProximityDeg = user.preferences.proximity / latKmPerDeg;
-            const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.location.lat * Math.PI / 180));
-            query.location = new Object();
-            query.location.lng = { 
-                $gt: wrapLng(user.location.lng - lngProximityDeg),
-                $lt: wrapLng(user.location.lng + lngProximityDeg)
+            const lngProximityDeg = user.preferences.proximity / (lngKmPerDeg * Math.cos(user.geoLocation.lat * Math.PI / 180));
+            query.geoLocation = new Object();
+            query.geoLocation.lng = { 
+                $gt: wrapLng(user.geoLocation.lng - lngProximityDeg),
+                $lt: wrapLng(user.geoLocation.lng + lngProximityDeg)
             };
-            query.location.lat = {
-                $gt: wrapLat(user.location.lat - latProximityDeg),
-                $lt: wrapLat(user.location.lat + latProximityDeg)
+            query.geoLocation.lat = {
+                $gt: wrapLat(user.geoLocation.lat - latProximityDeg),
+                $lt: wrapLat(user.geoLocation.lat + latProximityDeg)
             };
         }
     };
@@ -133,7 +133,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         const mutuals = UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
         if (mutuals?.length) {
             mutualCount++;
-            return mutuals
+            return mutuals;
         } else {
             return UserModel.find({_id: {$nin: aggregate.mutuals}}).skip(options.page * options.limit - mutualCount).limit(options.limit);
         }
