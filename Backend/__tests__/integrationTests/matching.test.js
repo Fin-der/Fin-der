@@ -49,8 +49,26 @@ describe("matching integration", () => {
         lastName: "Borne",
         interests: ["music", "masonry"]
     };
+    const pickyUser = {
+        _id: "1093",
+        firstName: "Mike",
+        lastName: "Hawk",
+        interests: ["skating", "music"],
+        location: {
+            lat: 0,
+            lng: 0
+        },
+        preferences: {
+            gender: "Male",
+            ageRange: {
+                min: 0,
+                max: 99
+            },
+            proximity: 1000
+        }
+    }
 
-    it("IntegrationTest Matching", async (done) => {
+    it("IntegrationTest Matching ", async (done) => {
         // populate users
         let response = await request.post("/users")
                         .send(user1);
@@ -63,6 +81,9 @@ describe("matching integration", () => {
         expect(response.status).toBe(200);
         response = await request.post("/users")
                        .send(user4);
+        expect(response.status).toBe(200);
+        response = await request.post("/users")
+                       .send(pickyUser);
         expect(response.status).toBe(200);
         // check for match between user1 and user2
         response = await request.get("/match/" + user1._id);
@@ -96,9 +117,10 @@ describe("matching integration", () => {
         response = await request.get("/match/friend/" + user2._id);
         expect(response.status).toBe(200);
         expect(response.body.friends).toMatchObject([]);
-
-
-
+        // check that picky user and match with people
+        response = await request.get("/match/" + pickyUser._id);
+        expect(response.status).toBe(200);
+        expect(response.body.matches.length).toBe(3);
         done();
     });
 

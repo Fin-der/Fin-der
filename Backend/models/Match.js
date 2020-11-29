@@ -61,7 +61,7 @@ MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
 
 MatchVertexSchema.statics.getUsersForMatching = async function (userId, options) {
     
-    const user = UserModel.getUserById(userId);
+    const user = await UserModel.getUserById(userId);
     // Generate query using user preferences
     const wrapLng = (lng) => {
         var result = lng;
@@ -81,7 +81,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         return result;
     };
     const calcQuery = (user, query) => {
-        if (typeof user.preferences.gender !== "undefined") {
+        if (typeof user.preferences.gender !== "undefined" && user.preferences.gender != "All") {
             query.gender = user.preferences.gender;
         }
         if (typeof user.preferences.ageRange !== "undefined") {
@@ -119,7 +119,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     { $match: {userId} },
     { $graphLookup: { 
         from: "MatchVertices",
-        startWith: "$matches",
+        startWith: "$matchesId",
         connectFromField: "matchesId",
         connectToField: "userId",
         maxDepth: 2,
@@ -130,15 +130,15 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     let mutualCount = 0;
     if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length >= 0) {
         // if they have mutual connection we show them first then random users after that
-        const mutuals = UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
+        const mutuals = await UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
         if (mutuals?.length) {
             mutualCount++;
             return mutuals;
         } else {
-            return UserModel.find({_id: {$nin: aggregate.mutuals}}).skip(options.page * options.limit - mutualCount).limit(options.limit);
+            return await UserModel.find({_id: {$nin: aggregate.mutuals}}).skip(options.page * options.limit - mutualCount).limit(options.limit);
         }
     } else {
-        return UserModel.find().skip(options.page * options.limit).limit(options.limit);
+        return await UserModel.find().skip(options.page * options.limit).limit(options.limit);
     }
 };
 

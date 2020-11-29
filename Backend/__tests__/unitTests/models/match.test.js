@@ -229,6 +229,31 @@ describe("test matchs models", () => {
         done();
     });
 
+    it("getUsersForMatching using graphlookup no mutuals", async (done) => {
+        const options = {
+            skip: 0,
+            limit: 0
+        };
+        const aggregate = {
+            mutuals: []
+        };
+        UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
+                    }
+                ))
+            }
+        ));
+
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
+        done();
+    });
+
     it("getUsersForMatching no preferences", async (done) => {
         const options = {
             skip: 0,
@@ -270,6 +295,53 @@ describe("test matchs models", () => {
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
+        done();
+    });
+
+    it("getUsersForMatching wraplong/wraplat tests", async (done) => {
+        const options = {
+            skip: 0,
+            limit: 0
+        };
+        const aggregate = {
+            mutuals: []
+        };
+        let testUser = JSON.parse(JSON.stringify(user));
+        testUser.geoLocation.lat = 90;
+        testUser.geoLocation.lng = 180;
+        testUser.preferences.proximity = 10000000000; 
+        UserModel.getUserById = jest.fn(() => {return testUser;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
+                    }
+                ))
+            }
+        ));
+
+        let users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
+
+        testUser.geoLocation.lat = -90;
+        testUser.geoLocation.lng = -180;
+        testUser.preferences.proximity = 10000000000; 
+        UserModel.getUserById = jest.fn(() => {return testUser;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
+                    }
+                ))
+            }
+        ));
+
+        users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
         done();
     });
 
