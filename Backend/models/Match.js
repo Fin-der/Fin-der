@@ -80,13 +80,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         }
         return result;
     };
-    const calcQuery = (user, query) => {
-        if (typeof user.preferences.gender !== "undefined" && user.preferences.gender !== "All") {
-            query.gender = user.preferences.gender;
-        }
-        if (typeof user.preferences.ageRange !== "undefined") {
-            query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
-        }
+    const calcProxQuery = (user, query) => {
         if (typeof user.preferences.proximity !== "undefined") {
             // Numbers and Formulae from 
             // https://stackoverflow.com/questions/1253499/simple-calculations-for-working-with-lat-lon-and-km-distance
@@ -104,6 +98,15 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
                 $lt: wrapLat(user.geoLocation.lat + latProximityDeg)
             };
         }
+    }
+    const calcQuery = (user, query) => {
+        if (typeof user.preferences.gender !== "undefined" && user.preferences.gender !== "All") {
+            query.gender = user.preferences.gender;
+        }
+        if (typeof user.preferences.ageRange !== "undefined") {
+            query.age = {$gt: user.preferences.ageRange.min, $lt: user.preferences.ageRange.max};
+        }
+        calcProxQuery;
     };
     const generateQuery = (user) => {
         let query = {};
