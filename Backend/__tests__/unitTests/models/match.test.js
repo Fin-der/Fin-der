@@ -308,8 +308,8 @@ describe("test matchs models", () => {
         };
         let testUser = JSON.parse(JSON.stringify(user));
         testUser.geoLocation.lat = 90;
-        testUser.geoLocation.lng = 180;
-        testUser.preferences.proximity = 10000000000; 
+        testUser.geoLocation.lng = 180;  
+        testUser.preferences.proximity = 100000000; 
         UserModel.getUserById = jest.fn(() => {return testUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
         UserModel.find = jest.fn().mockImplementation(() => (

@@ -81,7 +81,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         return result;
     };
     const calcQuery = (user, query) => {
-        if (typeof user.preferences.gender !== "undefined" && user.preferences.gender != "All") {
+        if (typeof user.preferences.gender !== "undefined" && user.preferences.gender !== "All") {
             query.gender = user.preferences.gender;
         }
         if (typeof user.preferences.ageRange !== "undefined") {

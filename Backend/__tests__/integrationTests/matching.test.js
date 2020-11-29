@@ -66,7 +66,7 @@ describe("matching integration", () => {
             },
             proximity: 1000
         }
-    }
+    };
 
     it("IntegrationTest Matching ", async (done) => {
         // populate users
