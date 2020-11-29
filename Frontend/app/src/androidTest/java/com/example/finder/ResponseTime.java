@@ -107,7 +107,7 @@ public class ResponseTime {
     }
 
     @Test
-    public void callGetMatchesx3() {
+    public void callGetMatches3x() {
         try {
             callGetMatches();
             callGetMatches();
