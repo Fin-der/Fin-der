@@ -88,7 +88,13 @@ describe("matching integration", () => {
         // check for match between user1 and user2
         response = await request.get("/match/" + user1._id);
         expect(response.status).toBe(200);
-        const matchId = response.body.matches[0]._id;
+        var matchId;
+        for (const match of response.body.matches) {
+            if (match.fromId === user1._id &&
+                match.toId   === user2._id) {
+                matchId = match._id;
+            }
+        }
         response = await request.get("/match/" + user2._id);
         expect(response.status).toBe(200);
         // approve match from user1 side
