@@ -1,3 +1,6 @@
+/**
+ * @module model/ChatMessage
+ */
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 import encrypt from "mongoose-encryption";
@@ -7,6 +10,9 @@ const MESSAGE_TYPES = {
     TYPE_TEXT: "text",
 };
 
+/**
+ * Representation of reading a message
+ */
 const readByRecipientSchema = new mongoose.Schema(
     {
         _id: false,
@@ -21,6 +27,11 @@ const readByRecipientSchema = new mongoose.Schema(
     }
 );
 
+/**
+ * Representation of chatMessage
+ * 
+ * @class ChatMessageModel
+ */
 const chatMessageSchema = new mongoose.Schema(
     {
         _id: {
@@ -50,6 +61,7 @@ chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.
  * @param {String} chatRoomId - id of chat room
  * @param {Object} message - message you want to post in the chat room
  * @param {String} postedByUser - user who is posting the message
+ * @returns {String} the newly created post
  */
 chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
     const post = await this.create({
@@ -114,7 +126,10 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
 };
 
 /**
+ * Retrieves the messages/conversation of a chatRoom
+ * 
  * @param {String} chatRoomId - chat room id
+ * @returns the Conversation with RoomId
  */
 chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, options = {}) {
     return this.aggregate([
@@ -139,8 +154,11 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
 };
 
 /**
+ * Marks a message as read
+ * 
  * @param {String} chatRoomId - chat room id
  * @param {String} currentUserOnlineId - user id
+ * @returns {Object} info of what changed
  */
 chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentUserOnlineId) {
     return this.updateMany(
@@ -162,6 +180,8 @@ chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentU
 };
 
 /**
+ * Retrieves messages from given chatRoomIds
+ * 
  * @param {Array} chatRoomIds - chat room ids
  * @param {{ page, limit }} options - pagination options
  */

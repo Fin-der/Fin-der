@@ -1,3 +1,6 @@
+/**
+ * @module controller/delete
+ */
 import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
 import {logger} from "../app.js";

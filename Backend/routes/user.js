@@ -5,23 +5,54 @@ import user from "../controllers/user.js";
 const router = express.Router();
 // route: ip:port/users
 router
-    // params: nothing
-    // returns: list of user objects contain user id, timestamps
+    /**
+     * Route serving getting the info of all users
+     * @module route/user
+     * @name get/
+     * @returns {Array} An array of user objects 
+     */
     .get("/", user.onGetAllUsers)
-    // params: json all info defined in user schema (models/User.js)
-    // returns: user info of newly generated user
+    /**
+     * Route serving creating a user
+     * @module route/user
+     * @name post/
+     * @param {Object} body A Object representing necessary info for user creation
+     * @returns {Object} A User object representing the data given
+     */
     .post("/", user.onCreateUser)
-    // params: :id the id of the user to get
-    // returns: user info
+    /**
+     * Route serving getting user info
+     * @module route/user
+     * @name get/:id
+     * @param {String} id - id of the user you would like the info of 
+     * @returns {Object} A User object representing the user selected
+     */
     .get("/:id", user.onGetUserById)
-    // params: :id the id of the user to get
-    // returns: updated user info
+    /**
+     * Route serving updating a user
+     * @module route/user
+     * @name put/:id
+     * @param {Object} body - object representing field you would like to update
+     * @param {String} id - id of the user you would like to update
+     * @returns {Object} A User object representing the updated user
+     */
     .put("/:id", user.onUpdateUserById)
-    // params: :id the id of the user to get
-    // returns: deletion info
+    /**
+     * Route serving deleting a user
+     * @module route/user
+     * @name delete/:id
+     * @param {String} id - id of the user you would like to delete
+     * @returns {String} A Message specifying the how many users were deleted
+     */
     .delete("/:id", user.onDeleteUserById)
-    // params: FCM token, user id
-    // returns: message containing token and user id
+    /**
+     * Route serving updating a users FCMToken
+     * @module route/user
+     * @name put/:id/:token
+     * @param {String} id - id of the user you would like to update the FCMToken of
+     * @param {String} token - the new FCMToken for the user of given id
+     * @returns {String} A Message specifying that the token was successfully updated
+     */
     .put("/:id/:token", user.onRegisterFCMToken);
 
 export default router;

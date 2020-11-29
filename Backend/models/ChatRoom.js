@@ -1,3 +1,6 @@
+/**
+ * @module model/ChatRoom
+ */
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
 
@@ -6,6 +9,11 @@ export const CHAT_ROOM_TYPES = {
     CONSUMER_TO_MULTI_CONSUMERS: "consumer-to-multiple-consumers",
 };
 
+/**
+ * Representation of a change room between users
+ * 
+ * @class ChatRoomModel
+ */
 const chatRoomSchema = new mongoose.Schema(
     {
         _id: {
@@ -22,6 +30,8 @@ const chatRoomSchema = new mongoose.Schema(
 );
 
 /**
+ * Retrieves an Array of ChatRooms with given userId
+ * 
  * @param {String} userId - id of user
  * @return {Array} array of all chatroom that the user belongs to
  */
@@ -31,8 +41,11 @@ chatRoomSchema.statics.getChatRoomsByUserId = async function (userId) {
 };
   
 /**
+ * Retrieves a chatRoom with given roomId
+ * 
  * @param {String} roomId - id of chatroom
- * @return {Object} chatroom
+ * @return {Object} chatroom Object
+ * @throws will throw an error if there is no room with given roomId
  */
 chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     const room = await this.findOne({ _id: roomId });
@@ -40,6 +53,13 @@ chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
     return room;
 };
 
+/**
+ * Creates a new chatroom
+ * 
+ * @param {Array} userIds - array of strings of userIds
+ * @param {String} chatInitiator - the id of the person who created the chat
+ * @returns {Object} - a status, message and the roomId
+ */
 chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
     const availableRoom = await this.findOne({
         userIds: {
@@ -63,6 +83,12 @@ chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
     };
 };
 
+/**
+ * Retrieves the users that belong to a certain room
+ * 
+ * @param {String} roomId - the room id 
+ * @returns {Array} an array of user ids
+ */
 chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
     const userIds = await this.findOne({ _id: roomId }, "userIds");
     return userIds;
