@@ -1,7 +1,6 @@
 /**
  * @module models/User
  */
-import { Decimal128 } from "mongodb";
 import mongoose from "mongoose";
 import encrypt from "mongoose-encryption";
 import keys from "../config/mongoose-encrpytion.json";
