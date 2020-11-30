@@ -83,6 +83,10 @@ MatchVertexSchema.statics.createMatchVertex = async function (userId, potentialM
  * @returns {Object} details of the action performed
  */
 MatchVertexSchema.statics.deleteMatchVertex = async function (id) {
+    const vertex = await this.findOne({"userId": id});
+    await Promise.all(vertex.matchesId.map(async (userId) => {
+        await this.findOneAndUpdate({userId},{ $pull: { matches: id}},{multi: true})
+    }));
     const result = await this.deleteOne({"userId": id});
     return result;
 };
