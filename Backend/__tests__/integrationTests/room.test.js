@@ -2,7 +2,6 @@ import { app, port } from "../../app.js"; // Link to your server file
 import http from "http";
 import supertest from "supertest";
 import mongoose from "mongoose";
-import user from "../../controllers/user.js";
 
 const request = supertest(app);
 
@@ -80,15 +79,6 @@ describe("room creation integration test", () => {
         }
     };
 
-    const exampleUser1Message = {
-        _id: "asdfasdfasdf",
-        chatRoomId: "DEADBEEF",
-        message: "Hello, Gamer",
-        type: "text",
-        postedByUser: user1._id,
-        readByRecipients: [],
-    }
-
     const room1UserIds = [user1._id, user2._id, user3._id, user4._id];
     
     const user1Message = "Hello, Gamer";
@@ -97,16 +87,8 @@ describe("room creation integration test", () => {
     const user4Message = "Hello Hello Hello";
 
     const room1Messages = [user1Message, user2Message, user3Message, user4Message];
-
-    const exampleRoom1 = {
-        _id: "DEADBEEF",
-        userIds: ["2","4","6"],
-        chatInitiator: "4"
-    };
-
-    const FCMToken = "234878239487";
     
-    it("IntegrationTest Matching", async (done) => {
+    it("IntegrationTest Chatting", async (done) => {
         // populate users
         let response = await request.post("/users")
                         .send(user1);
@@ -153,25 +135,25 @@ describe("room creation integration test", () => {
             .send({"messageText": user1Message});
         expect(response.status).toBe(200);
         expect(response.body.post.message.messageText).toEqual(user1Message);
-        expect(response.body.post.postedByUser._id).toEqual(user1._id);
+        expect(response.body.post.postedByUser).toEqual(user1._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user2._id + "/message")
             .send({"messageText": user2Message});
         expect(response.status).toBe(200);
         expect(response.body.post.message.messageText).toEqual(user2Message);
-        expect(response.body.post.postedByUser._id).toEqual(user2._id);
+        expect(response.body.post.postedByUser).toEqual(user2._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user3._id + "/message")
             .send({"messageText": user3Message});
         expect(response.status).toBe(200);
         expect(response.body.post.message.messageText).toEqual(user3Message);
-        expect(response.body.post.postedByUser._id).toEqual(user3._id);
+        expect(response.body.post.postedByUser).toEqual(user3._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user4._id + "/message")
             .send({"messageText": user4Message});
         expect(response.status).toBe(200);
         expect(response.body.post.message.messageText).toEqual(user4Message);
-        expect(response.body.post.postedByUser._id).toEqual(user4._id);
+        expect(response.body.post.postedByUser).toEqual(user4._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
 
         // postMessage fail
@@ -183,7 +165,7 @@ describe("room creation integration test", () => {
         expect(response.status).toBe(200);
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
         expect(response.body.conversation[0].message.messageText).toEqual(user4Message);
-        expect(response.body.conversation[0].postedByUser._id).toEqual(user4._id);
+        expect(response.body.conversation[0].postedByUser).toEqual(user4._id);
 
         // getConversationByRoomId success
         response = await request.get("/room/" + roomId + "/" + "0");
@@ -192,7 +174,7 @@ describe("room creation integration test", () => {
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
         for (var i = 0; i < 4; i++){
             expect(response.body.conversation[i].message.messageText).toEqual(room1Messages[i]);
-            expect(response.body.conversation[i].postedByUser._id).toEqual(room1UserIds[i]);
+            expect(response.body.conversation[i].postedByUser).toEqual(room1UserIds[i]);
         }
 
         // getConversationByRoomId fail

@@ -38,7 +38,7 @@ const chatMessageSchema = new mongoose.Schema(
             type: String,
             default: () => uuidv4().replace(/\-/g, ""),
         },
-        chatRoomId: {type: String, default: "why"},
+        chatRoomId: {type: String},
         message: mongoose.Schema.Types.Mixed,
         type: {
             type: String,
@@ -53,104 +53,40 @@ const chatMessageSchema = new mongoose.Schema(
     }
 );
 
-//chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
+chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey, encryptedFields: ["message"]});
 
 /**
  * This method will create a post in chat
  * 
  * @param {String} chatRoomId - id of chat room
  * @param {Object} message - message you want to post in the chat room
- * @param {String} postedByUser - user who is posting the message
+ * @param {String} postedByUserId - user id who is posting the message
  * @returns {String} the newly created post
  */
-chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUser) {
+chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, message, postedByUserId) {
     const post = await this.create({
         chatRoomId,
         message,
-        postedByUser,
-        readByRecipients: { readByUserId: postedByUser }
+        postedByUser: postedByUserId,
+        readByRecipients: { readByUserId: postedByUserId }
     });
-    const aggregate = await this.aggregate([
-    // get post where _id = post._id
-    {   $match: { _id: post._id } },
-    // do a join on another table called users, and 
-    // get me a user whose _id = postedByUser
-    {
-        $lookup: {
-            from: "users",
-            localField: "postedByUser",
-            foreignField: "_id",
-            as: "postedByUser",
-        }
-    },
-    {   $unwind: "$postedByUser" },
-    // do a join on another table called chatrooms, and 
-    // get me a chatroom whose _id = chatRoomId
-    {
-        $lookup: {
-            from: "chatrooms",
-            localField: "chatRoomId",
-            foreignField: "_id",
-            as: "chatRoomInfo",
-        }
-    },
-    {   $unwind: "$chatRoomInfo" },
-    {   $unwind: "$chatRoomInfo.userIds" },
-    // do a join on another table called users, and 
-    // get me a user whose _id = userIds
-    {
-        $lookup: {
-            from: "users",
-            localField: "chatRoomInfo.userIds",
-            foreignField: "_id",
-            as: "chatRoomInfo.userProfile",
-        }
-    },
-    {   $unwind: "$chatRoomInfo.userProfile" },
-    // group data
-    {
-        $group: {
-            _id: "$chatRoomInfo._id",
-            postId: { $last: "$_id" },
-            chatRoomId: { $last: "$chatRoomInfo._id" },
-            message: { $last: "$message" },
-            type: { $last: "$type" },
-            postedByUser: { $last: "$postedByUser" },
-            readByRecipients: { $last: "$readByRecipients" },
-            chatRoomInfo: { $addToSet: "$chatRoomInfo.userProfile" },
-            createdAt: { $last: "$createdAt" },
-            updatedAt: { $last: "$updatedAt" },
-        }
-    }]);
-    return aggregate[0];
+    return post;
 };
 
 /**
  * Retrieves the messages/conversation of a chatRoom
+ * sorts by oldest first
  * 
  * @param {String} chatRoomId - chat room id
  * @returns the Conversation with RoomId
  */
 chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, options = {}) {
-    return this.aggregate([
-        { $match: { chatRoomId } },
-        { $sort: { createdAt: -1 } },
-        // do a join on another table called users, and 
-        // get me a user whose _id = postedByUser
-        {
-            $lookup: {
-            from: "users",
-            localField: "postedByUser",
-            foreignField: "_id",
-            as: "postedByUser",
-            }
-        },
-        { $unwind: "$postedByUser" },
-        // apply pagination
-        { $skip: options.skip },
-        { $limit: options.limit },
-        { $sort: { createdAt: 1 } },
-    ]);
+    const room = await this.find({chatRoomId})
+                           .sort({createdAt: -1})
+                           .skip(options.page * options.limit)
+                           .limit(options.limit)
+                           .sort({createdAt: 1});
+    return room;
 };
 
 /**
@@ -161,22 +97,22 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
  * @returns {Object} info of what changed
  */
 chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentUserOnlineId) {
-    return this.updateMany(
-        {
-            chatRoomId,
-            "readByRecipients.readByUserId": { $ne: currentUserOnlineId }
-        },
-        {
-            $addToSet: {
-                readByRecipients: { 
-                    readByUserId: currentUserOnlineId 
-                }
-            }
-        },
-        {
-            multi: true
-        }
-    );
+    var messages = await this.find({
+        chatRoomId,
+        "readByRecipients.readByUserId": { $ne: currentUserOnlineId }
+    });
+    await Promise.all(messages.map(async (message) => {
+        message.readByRecipients.push({
+            readAt: new Date(),
+            readByUserId: currentUserOnlineId
+        });
+        message.save();
+    }));
+
+    return await this.find({
+        chatRoomId,
+        "readByRecipients.readByUserId": { $ne: currentUserOnlineId }
+    });
 };
 
 /**
@@ -186,81 +122,17 @@ chatMessageSchema.statics.markMessageRead = async function (chatRoomId, currentU
  * @param {{ page, limit }} options - pagination options
  */
 chatMessageSchema.statics.getRecentConversation = async function (chatRoomIds, options) {
-    return this.aggregate([
-        { $match: { chatRoomId: { $in: chatRoomIds } } },
-        {
-            $group: {
-                _id: "$chatRoomId",
-                messageId: { $last: "$_id" },
-                chatRoomId: { $last: "$chatRoomId" },
-                message: { $last: "$message" },
-                type: { $last: "$type" },
-                postedByUser: { $last: "$postedByUser" },
-                createdAt: { $last: "$createdAt" },
-                readByRecipients: { $last: "$readByRecipients" },
-            }
-        },
-        { $sort: { createdAt: -1 } },
-        // do a join on another table called users, and 
-        // get me a user whose _id = postedByUser
-        {
-            $lookup: {
-            from: "users",
-            localField: "postedByUser",
-            foreignField: "_id",
-            as: "postedByUser",
-            }
-        },
-        { $unwind: "$postedByUser" },
-        // do a join on another table called chatrooms, and 
-        // get me room details
-        {
-            $lookup: {
-            from: "chatrooms",
-            localField: "_id",
-            foreignField: "_id",
-            as: "roomInfo",
-            }
-        },
-        { $unwind: "$roomInfo" },
-        { $unwind: "$roomInfo.userIds" },
-        // do a join on another table called users 
-        {
-            $lookup: {
-            from: "users",
-            localField: "roomInfo.userIds",
-            foreignField: "_id",
-            as: "roomInfo.userProfile",
-            }
-        },
-        { $unwind: "$readByRecipients" },
-        // do a join on another table called users 
-        {
-            $lookup: {
-            from: "users",
-            localField: "readByRecipients.readByUserId",
-            foreignField: "_id",
-            as: "readByRecipients.readByUser",
-            }
-        },
-
-        {
-            $group: {
-            _id: "$roomInfo._id",
-            messageId: { $last: "$messageId" },
-            chatRoomId: { $last: "$chatRoomId" },
-            message: { $last: "$message" },
-            type: { $last: "$type" },
-            postedByUser: { $last: "$postedByUser" },
-            readByRecipients: { $addToSet: "$readByRecipients" },
-            roomInfo: { $addToSet: "$roomInfo.userProfile" },
-            createdAt: { $last: "$createdAt" },
-            },
-        },
-        // apply pagination
-        { $skip: options.page * options.limit },
-        { $limit: options.limit },
-    ]);
+    
+    var messagesInChatRooms = [];
+    await Promise.all(chatRoomIds.map(async (chatRoomId) => {
+        const mostRecentMessage = await this.findOne({chatRoomId}).sort({createdAt: -1});
+        var conversation = Object.assign({chatRoomId}, mostRecentMessage.toObject());
+        messagesInChatRooms.push(conversation);
+    }));
+    // sort by most recent
+    messagesInChatRooms.sort((a, b) => a.createdAt - b.createdAt);
+    // apply pagination
+    return messagesInChatRooms.slice(options.page * page.limit, (options.page + 1) * page.limit);
 };
 
 export default mongoose.model("ChatMessage", chatMessageSchema);

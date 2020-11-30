@@ -102,7 +102,7 @@ chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
 chatRoomSchema.statics.deleteUserFromChatRooms = async function (userId) {
     const rooms = await this.getChatRoomsByUserId(userId);
     await Promise.all(rooms.map(async (room) => {
-        const updatedRoom = await this.findOneAndUpdate({_id: room._id},{ $pull: { userIds : UserId}},{multi: true, new: true})
+        const updatedRoom = await this.findOneAndUpdate({_id: room._id},{ $pull: { userIds : UserId}},{multi: true, new: true});
         // delete userless chatrooms
         if (updatedRoom.userIds.length <= 1) {
             await this.deleteOne({_id: room._id});
