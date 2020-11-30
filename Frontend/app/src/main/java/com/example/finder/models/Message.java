@@ -2,6 +2,8 @@ package com.example.finder.models;
 
 import android.annotation.SuppressLint;
 
+import androidx.annotation.Nullable;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
@@ -64,5 +66,24 @@ public class Message {
 
     public int getMsgType() {
         return msgType;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Message))
+            return false;
+
+        Message compare = (Message) obj;
+
+        if (!compare.getId().equals(this.id))
+            return false;
+        if (!compare.getMessage().equals(this.text))
+            return false;
+        if (!compare.getSenderName().equals(this.senderName))
+            return false;
+
+        return compare.getSender().equals(this.getSender());
     }
 }
