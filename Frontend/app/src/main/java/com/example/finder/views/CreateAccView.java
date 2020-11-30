@@ -135,20 +135,7 @@ public class CreateAccView extends AppCompatActivity {
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Based on the location inputted, Geocoder gets the longitude and latitude if the location is real*/
-                Geocoder geocoder = new Geocoder(CreateAccView.this);
-                List<Address> list = new ArrayList<>();
-                try {
-                    list = geocoder.getFromLocationName(location.getEditText().getText().toString(), 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "something wrong finding location");
-                }
-                if (list.size() > 0) {
-                    Address address = list.get(0);
-                    longLat[0] = address.getLongitude();
-                    longLat[1] = address.getLatitude();
-                }
+                geocode();
                 if (checkTests()) {
                     JSONObject userJson = packJson();
                     reqQueue = Volley.newRequestQueue(CreateAccView.this);
@@ -176,6 +163,25 @@ public class CreateAccView extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * This function gets the longitude and latitude if the location is real
+     */
+    private void geocode() {
+        Geocoder geocoder = new Geocoder(CreateAccView.this);
+        List<Address> list = new ArrayList<>();
+        try {
+            list = geocoder.getFromLocationName(location.getEditText().getText().toString(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "something wrong finding location");
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            longLat[0] = address.getLongitude();
+            longLat[1] = address.getLatitude();
+        }
     }
 
     /**
@@ -226,7 +232,7 @@ public class CreateAccView extends AppCompatActivity {
             user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
         }
         if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-            user.setProximity(15);
+            user.setProximity(20);
         } else {
             user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
         }
@@ -272,7 +278,7 @@ public class CreateAccView extends AppCompatActivity {
             preferenceJson.put("gender", genderResult[1]);
             preferenceJson.put("ageRange", ageRangeJson);
             if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-                preferenceJson.put("proximity", 15);
+                preferenceJson.put("proximity", 20);
             } else {
                 preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
             }

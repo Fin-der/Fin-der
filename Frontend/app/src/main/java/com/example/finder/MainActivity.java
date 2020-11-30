@@ -50,10 +50,6 @@ public class MainActivity extends AppCompatActivity {
     private String FCM_token;
     private UserAccount profile;
 
-    /*Volley request variables*/
-    private RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
-    private String url = HomeView.HOST_URL;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,12 +155,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
+            final RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
+            final String url = HomeView.HOST_URL;
             JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
                     profile = parseAccount(response);   // parse response information if user is registered
-                    if (!String.valueOf(account.getPhotoUrl()).equals(profile.getpfpUrl())) { // update the user photo if changed in google
+                    if ((account.getPhotoUrl() == null && profile.getpfpUrl() != null)
+                            || (account.getPhotoUrl() != null && profile.getpfpUrl() == null)
+                            || !String.valueOf(account.getPhotoUrl()).equals(profile.getpfpUrl())) { // update the user photo if changed in google
                         profile.setpfpUrl(account.getPhotoUrl());
                         JSONObject accountJson = packJson(profile);
                         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + account.getId(), accountJson, new Response.Listener<JSONObject>() {
