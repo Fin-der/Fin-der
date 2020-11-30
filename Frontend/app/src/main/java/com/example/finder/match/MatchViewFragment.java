@@ -17,7 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.R;
-import com.example.finder.controller.GProfileImageLoader;
+import com.example.finder.controller.ImageLoaderHelper;
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
 
@@ -54,7 +54,7 @@ public class MatchViewFragment extends Fragment {
         TextView bio = rootView.findViewById(R.id.match_bio);
         bio.setText(match.getBiography());
         ImageView profilePic = rootView.findViewById(R.id.match_profilePic);
-        GProfileImageLoader.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
+        ImageLoaderHelper.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
                                         profilePic.getWidth(), profilePic.getHeight());
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +95,7 @@ public class MatchViewFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Could not approve?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.match_approve_err, Toast.LENGTH_SHORT).show();
             }
         });
         que.add(req);
@@ -114,7 +114,7 @@ public class MatchViewFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Could not decline?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.match_deny_err, Toast.LENGTH_SHORT).show();
             }
         });
         que.add(req);
