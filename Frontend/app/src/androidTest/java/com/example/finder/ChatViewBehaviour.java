@@ -63,53 +63,43 @@ public class ChatViewBehaviour {
 
     private void user2SendMsg(final RequestQueue que, final UserAccount user, final String message) {
         JSONObject obj = new JSONObject();
-        final int check[] = {0};
+        final int[] check = {0};
         try {
             obj.put("userId", user.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         final String URI = HomeView.HOST_URL + "/room/";
+        final String roomId = "6b30126e2cc047a3858f547cc1ca1dde";
         System.out.println(URI);
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, URI, obj, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String roomId = response.getJSONArray("conversation").getJSONObject(0).getString("chatRoomId");
-                    JSONObject msg = new JSONObject();
-                    msg.put("messageText", message);
-                    msg.put("userId", user.getId());
-                    msg.put("roomId", roomId);
-                    JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
-                            URI + roomId + "/" + user.getId() + "/message",
-                            msg,
-                            new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    System.out.println("Response" + response.toString());
-                                    check[0] = 1;
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            System.out.println("PostMessage: " + error.toString());
-                            error.printStackTrace();
-                            check[0] = 2;
-                        }
-                    });
-                    que.add(req);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    check[0] = 3;
-                }
-            }
-        }, new Response.ErrorListener() {
+        JSONObject msg = new JSONObject();
+        try {
+            msg.put("messageText", message);
+            msg.put("userId", user.getId());
+            msg.put("roomId", roomId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
+                URI + roomId + "/" + user.getId() + "/message",
+                msg,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println("Response" + response.toString());
+                        check[0] = 1;
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                System.out.println("PostMessage: " + error.toString());
                 error.printStackTrace();
-                check[0] = 4;
+                check[0] = 2;
             }
         });
+
+        que.add(req);
         que.add(req);
         while (check[0] == 0)
             Thread.yield();

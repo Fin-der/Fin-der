@@ -40,7 +40,7 @@ public class HomeViewBehaviour {
     }
 
     @Test
-    public void countMessageBoard() {
+    public void checkMessageBoard() {
         Intent intent = createIntent();
         activityRule.launchActivity(intent);
         try {
