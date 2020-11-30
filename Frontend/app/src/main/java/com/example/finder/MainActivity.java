@@ -41,12 +41,18 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+    /*Tag for checking Logcat*/
     private final static String TAG = "MainActivity";
+
     private GoogleSignInClient mGoogleSignInClient;
     private int RC_SIGN_IN = 1;
-    private String FCM_token;
 
+    private String FCM_token;
     private UserAccount profile;
+
+    /*Volley request variables*/
+    private RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
+    private String url = HomeView.HOST_URL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * This function creates the google sign in pop up
+     */
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -142,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "Family Name: " + account.getFamilyName());
             Log.d(TAG, "Display URI: " + account.getPhotoUrl());
 
-            JSONObject loginInfo = new JSONObject();
+            JSONObject loginInfo = new JSONObject();        // json object for id to check if user is registered
             try {
                 loginInfo.put("_id", account.getId());
                 Log.d(TAG, loginInfo.toString());
@@ -150,14 +159,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "failed to create json");
                 e.printStackTrace();
             }
-            final RequestQueue reqQueue = Volley.newRequestQueue(MainActivity.this);
-            final String url = HomeView.HOST_URL;
             JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + "/users/" + account.getId(), loginInfo, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, response.toString());
-                    profile = parseAccount(response);
-                    if (!String.valueOf(account.getPhotoUrl()).equals(profile.getpfpUrl())) {
+                    profile = parseAccount(response);   // parse response information if user is registered
+                    if (!String.valueOf(account.getPhotoUrl()).equals(profile.getpfpUrl())) { // update the user photo if changed in google
                         profile.setpfpUrl(account.getPhotoUrl());
                         JSONObject accountJson = packJson(profile);
                         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + account.getId(), accountJson, new Response.Listener<JSONObject>() {
@@ -166,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                 Intent home = new Intent(MainActivity.this, HomeView.class);
                                 home.putExtra("profile", profile);
                                 Toast.makeText(MainActivity.this, "Sign in Successful", Toast.LENGTH_SHORT).show();
-                                startActivity(home);
+                                startActivity(home);    // sign in upon successful photo change
                             }
                         }, new Response.ErrorListener() {
                             @Override
@@ -180,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
                         Intent home = new Intent(MainActivity.this, HomeView.class);
                         home.putExtra("profile", profile);
                         Toast.makeText(MainActivity.this, "Sign in Successful", Toast.LENGTH_SHORT).show();
-                        startActivity(home);
+                        startActivity(home);    // sign in upon if response received and no change in photo
                     }
                 }
             }, new Response.ErrorListener() {
@@ -188,13 +195,13 @@ public class MainActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "Error: " + error.getMessage());
                     error.printStackTrace();
-                    if (error instanceof ServerError) {
+                    if (error instanceof ServerError) { // this server error is thrown if user is not registered
                         UserAccount profile = new UserAccount(account.getId(), account.getGivenName(), account.getFamilyName(), account.getEmail());
                         profile.setpfpUrl(account.getPhotoUrl());
                         Intent create = new Intent(MainActivity.this, CreateAccView.class);
                         create.putExtra("profile", profile);
                         create.putExtra("FCMToken", FCM_token);
-                        startActivity(create);
+                        startActivity(create);  // go to the create account screen
                     }
                 }
             });
@@ -202,6 +209,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function parses the json response from the backend
+     * @param response the JSONObject returned from the backend
+     * @return the UserAccount associated with the current google account
+     */
     private UserAccount parseAccount(JSONObject response) {
         UserAccount profile = null;
         try {
@@ -215,13 +227,14 @@ public class MainActivity extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> address = null;
             try {
+                // get a list of addresses based on the longitude and latitude
                 address = geocoder.getFromLocation(Double.parseDouble(account.getJSONObject("geoLocation").getJSONObject("lat").getString("$numberDecimal")),
                         Double.parseDouble(account.getJSONObject("geoLocation").getJSONObject("lng").getString("$numberDecimal")), 1);
             } catch (IOException e) {
                 Log.d(TAG, "failed to get location");
                 e.printStackTrace();
             }
-            String location = address.get(0).getLocality();
+            String location = address.get(0).getLocality(); // get the locality (city)
             String prefGender = account.getJSONObject("preferences").getString("gender");
             int minAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("min");
             int maxAge = account.getJSONObject("preferences").getJSONObject("ageRange").getInt("max");
@@ -251,6 +264,11 @@ public class MainActivity extends AppCompatActivity {
         return profile;
     }
 
+    /**
+     * This function packs the json to send to the backend to update the photo
+     * @param user the UserAccount to pack into a json
+     * @return JSONObject to send to the backend
+     */
     private JSONObject packJson(UserAccount user) {
         JSONArray interests = new JSONArray();
         interests.put(user.getInterest()[0]);
