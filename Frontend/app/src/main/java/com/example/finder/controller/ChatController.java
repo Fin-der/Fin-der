@@ -51,7 +51,9 @@ public class ChatController {
     private final String rId;
     private final UserAccount friend;
     private String roomId;
+    // Position in the conversation used to ensure the correct range of past messages will be received
     private int chatPos;
+    // Semaphore to help manage multiple calls for retrieving past messages from the backend
     private final Semaphore queLock = new Semaphore(0);
 
     public ChatController(ChatView context, UserAccount user, UserAccount friend) {
@@ -108,6 +110,8 @@ public class ChatController {
         });
         /*
          * Retrieves older messages if ChatView has reached the top RecyclerView
+         * Uses queLock to ensure only 1 request will happen at a time, so chatPos will be
+         * incremented correctly and only the required messages will be receieved
          */
         msgRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
