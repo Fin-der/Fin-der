@@ -46,6 +46,10 @@ public class Message {
         return id;
     }
 
+    public String getSender() {
+        return sender;
+    }
+
     public String getPostAt() {
         return postAt;
     }

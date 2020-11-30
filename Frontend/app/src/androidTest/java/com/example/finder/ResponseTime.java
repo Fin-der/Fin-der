@@ -1,6 +1,5 @@
 package com.example.finder;
 
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -13,20 +12,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.views.HomeView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class ResponseTime {
