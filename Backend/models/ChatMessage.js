@@ -132,7 +132,7 @@ chatMessageSchema.statics.getRecentConversation = async function (chatRoomIds, o
     // sort by most recent
     messagesInChatRooms.sort((a, b) => a.createdAt - b.createdAt);
     // apply pagination
-    return messagesInChatRooms.slice(options.page * page.limit, (options.page + 1) * page.limit);
+    return messagesInChatRooms.slice(options.page * options.limit, (options.page + 1) * options.limit);
 };
 
 export default mongoose.model("ChatMessage", chatMessageSchema);

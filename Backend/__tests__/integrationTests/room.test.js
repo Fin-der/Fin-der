@@ -173,8 +173,9 @@ describe("room creation integration test", () => {
         expect(response.body.conversation.length).toEqual(4);
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
         for (var i = 0; i < 4; i++){
-            expect(response.body.conversation[i].message.messageText).toEqual(room1Messages[i]);
-            expect(response.body.conversation[i].postedByUser).toEqual(room1UserIds[i]);
+            const converse = response.body.conversation[i];
+            expect(converse.message.messageText).toEqual(room1Messages[i]);
+            expect(converse.postedByUser).toEqual(room1UserIds[i]);
         }
 
         // getConversationByRoomId fail
