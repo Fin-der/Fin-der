@@ -35,7 +35,6 @@ import static org.junit.Assert.fail;
 
 
 public class ChatViewBehaviour {
-    private UserAccount user;
     private UserAccount user2;
     private String chatterName;
     private Context context;
@@ -49,7 +48,7 @@ public class ChatViewBehaviour {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         UserAccGenerator.deleteAcc("1", context);
         UserAccGenerator.deleteAcc("2", context);
-        user = UserAccGenerator.createFullAcc("1");
+        UserAccount user = UserAccGenerator.createFullAcc("1");
         user2 = UserAccGenerator.createFullAcc("2");
         UserAccGenerator.createAccBackend(user, context);
         UserAccGenerator.createAccBackend(user2, context);
@@ -146,7 +145,11 @@ public class ChatViewBehaviour {
                 allOf(withId(R.id.text_message_body), withText(testText),
                         withParent(withParent(withId(R.id.reyclerview_message_list))),
                         isDisplayed()));
-        assert(textView != null);
+        try {
+            assert(textView != null);
+        } catch (AssertionError error) {
+            fail(error.toString());
+        }
     }
 
     @Test
@@ -164,7 +167,11 @@ public class ChatViewBehaviour {
                 allOf(withId(R.id.text_message_body), withText(testText),
                         withParent(withParent(withId(R.id.reyclerview_message_list))),
                         isDisplayed()));
-        assert(textView != null);
+        try {
+            assert(textView != null);
+        } catch (AssertionError err) {
+            fail(err.toString());
+        }
     }
 
     @Test
@@ -175,7 +182,11 @@ public class ChatViewBehaviour {
                 allOf(withId(R.id.text_message_body),
                         withParent(withParent(withId(R.id.reyclerview_message_list))),
                         isDisplayed()));
-        assert(textView != null);
+        try {
+            assert(textView != null);
+        } catch (AssertionError err) {
+            fail(err.toString());
+        }
     }
 
     private void create25Msgs() throws InterruptedException {
@@ -189,7 +200,7 @@ public class ChatViewBehaviour {
     }
 
     @Test
-    public void checkolderMsgs() throws InterruptedException {
+    public void checkoldMsgs() throws InterruptedException {
         create25Msgs();
     }
 
