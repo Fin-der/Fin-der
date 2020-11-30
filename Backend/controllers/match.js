@@ -5,6 +5,7 @@ import { MatchVertexModel, MatchEdgeModel } from "../models/Match.js";
 import UserModel from "../models/User.js";
 import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 import {logger} from "../app.js";
+import User from "../models/User.js";
 
 export default {
     /**
@@ -61,8 +62,12 @@ export default {
                 } 
             }));
             await MatchVertexModel.addPotentialMatches(userId, potentialMatches.map((user) => {return user._id;}));
-            const updatedMatches = await MatchEdgeModel.getPotentialMatches(userId);
-            
+            var updatedMatches = await MatchEdgeModel.getPotentialMatches(userId);
+            // populate field with user
+            await Promise.all(updatedMatches.map(async (match) => {
+                match.to = await UserModel.getUserById(match.toId);
+                match.from = await UserModel.getUserById(match.fromId);
+            }));
             return res.status(200).json({ success: true, matches: updatedMatches });
         } catch (error) {
             logger.error(error);

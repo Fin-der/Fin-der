@@ -184,12 +184,7 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
  */
 MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
     // we use fromId and fromStatus so that we don't return duplicate edges
-    const edges = await this.find({"fromId": userId, fromStatus: "potential"});
-    await Promise.all(edges.map(async (edge) => {
-        edge.toId = await UserModel.findOne({_id: edge.toId});
-        edge.fromId = await UserModel.findOne({_id: edge.fromId});
-    }));
-    
+    const edges = await this.find({"fromId": userId, fromStatus: "potential"}).lean();
     return edges;
 };
 
@@ -203,11 +198,6 @@ MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
  */
 MatchEdgeSchema.statics.getFriendMatches = async function (userId) {
     const edges = await this.find({"fromId": userId, status: "approved"});
-    await Promise.all(edges.map(async (edge) => {
-        edge.toId = await UserModel.findOne({_id: edge.toId});
-        edge.fromId = await UserModel.findOne({_id: edge.fromId});
-    }));
-
     return edges;
 };
 
