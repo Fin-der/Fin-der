@@ -11,12 +11,15 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.swipeLeft;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.withDecorView;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.fail;
 
 
@@ -50,7 +53,7 @@ public class MatchViewBehaviour {
     @Test
     public void twoMatches() {
         startActivity();
-        onView(withId(R.id.match_pager)).perform(swipeLeft());
+        onView(withId(R.id.match_pager)).perform(swipeUp());
         try {
             onView(allOf(withId(R.id.match_name), isDisplayed())).check(matches(withText("Nick Ng")));
             onView(allOf(withId(R.id.match_bio), isDisplayed())).check(matches(withText("Balrog")));
@@ -58,4 +61,24 @@ public class MatchViewBehaviour {
             fail();
         }
     }
+
+    @Test
+    public void clickApprove() throws InterruptedException {
+        startActivity();
+        onView(withId(R.id.match_accept)).perform(click());
+        Thread.sleep(500);
+        onView(withText(R.string.match_approve_err))
+                .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void clickDecline() {
+        startActivity();
+        onView(withId(R.id.match_deny)).perform(click());
+        onView(withText(R.string.match_deny_err))
+                .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
+                .check(matches(isDisplayed()));
+    }
+
 }

@@ -95,7 +95,7 @@ public class MatchViewFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Could not approve?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.match_approve_err, Toast.LENGTH_SHORT).show();
             }
         });
         que.add(req);
@@ -114,7 +114,7 @@ public class MatchViewFragment extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Could not decline?", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), R.string.match_deny_err, Toast.LENGTH_SHORT).show();
             }
         });
         que.add(req);

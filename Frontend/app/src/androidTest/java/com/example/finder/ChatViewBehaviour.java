@@ -25,6 +25,8 @@ import org.junit.Test;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -202,6 +204,20 @@ public class ChatViewBehaviour {
     @Test
     public void checkoldMsgs() throws InterruptedException {
         create25Msgs();
+        final int SWIPES = 5;
+        for (int i = 0; i < SWIPES; i++) {
+            onView(withId(R.id.reyclerview_message_list))
+                    .perform(swipeDown());
+        }
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.text_message_body),
+                        withParent(withParent(withId(R.id.reyclerview_message_list))),
+                        isDisplayed()));
+        try {
+            assert(textView != null);
+        } catch (AssertionError err) {
+            fail(err.toString());
+        }
     }
 
 }
