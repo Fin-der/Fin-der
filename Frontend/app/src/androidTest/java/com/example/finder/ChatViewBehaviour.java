@@ -31,10 +31,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.junit.Assert.fail;
 
 
 public class ChatViewBehaviour {
-    private UserAccount user, user2;
+    private UserAccount user;
+    private UserAccount user2;
     private String chatterName;
     private Context context;
 
@@ -121,7 +123,12 @@ public class ChatViewBehaviour {
                         withParent(allOf(withId(R.id.action_bar),
                                 withParent(withId(R.id.action_bar_container)))),
                         isDisplayed()));
-        textView.check(matches(withText(chatterName)));
+        try {
+            textView.check(matches(withText(chatterName)));
+        } catch(Exception err) {
+            fail(err.toString());
+        }
+
     }
 
     @Test
