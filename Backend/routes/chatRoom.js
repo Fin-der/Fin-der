@@ -25,8 +25,6 @@ router
      * @returns {Object} The conversation with given roomId
      */
     .get("/:roomId/:skip", chatRoom.getConversationByRoomId)
-    // params: list of userids, type(for now)
-    // returns: room id of new room created
     /**
      * Routes serving creating conversations
      * @module route/chatRoom
