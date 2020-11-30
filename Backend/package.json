@@ -1,6 +1,6 @@
 {
   "name": "fin-der",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Connecting people in the covid-age",
   "type": "module",
   "main": "server.js",
