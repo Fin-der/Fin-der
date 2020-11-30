@@ -67,18 +67,26 @@ public class MatchViewBehaviour {
         startActivity();
         onView(withId(R.id.match_accept)).perform(click());
         Thread.sleep(500);
-        onView(withText(R.string.match_approve_err))
-                .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
+        try {
+            onView(withText(R.string.match_approve_err))
+                    .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
+                    .check(matches(isDisplayed()));
+        } catch (Exception err) {
+            fail(err.toString());
+        }
     }
 
     @Test
     public void clickDecline() {
         startActivity();
         onView(withId(R.id.match_deny)).perform(click());
-        onView(withText(R.string.match_deny_err))
-                .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
-                .check(matches(isDisplayed()));
+        try {
+            onView(withText(R.string.match_deny_err))
+                    .inRoot(withDecorView(not(activityRule.getActivity().getWindow().getDecorView())))
+                    .check(matches(isDisplayed()));
+        } catch (Exception err) {
+            fail(err.toString());
+        }
     }
 
 }
