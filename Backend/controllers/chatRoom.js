@@ -54,7 +54,7 @@ export default {
             // const currentLoggedUser = req.body.userId;
             const currentLoggedUser = req.params.id;
             const user = await UserModel.getUserById(currentLoggedUser);
-            const roomId = req.body.roomId;
+            const roomId = req.params.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             if (global.io){
                 global.io.sockets.in(roomId).emit("new message", { message: post });
