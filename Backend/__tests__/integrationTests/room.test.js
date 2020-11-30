@@ -172,10 +172,11 @@ describe("room creation integration test", () => {
         expect(response.status).toBe(200);
         expect(response.body.conversation.length).toEqual(4);
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
-        for (var i = 0; i < 4; i++){
-            const converse = response.body.conversation[i];
+        var i = 0;
+        for (const converse of response.body.conversation) {
             expect(converse.message.messageText).toEqual(room1Messages[i]);
             expect(converse.postedByUser).toEqual(room1UserIds[i]);
+            i++;
         }
 
         // getConversationByRoomId fail
