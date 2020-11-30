@@ -5,6 +5,9 @@ import android.net.Uri;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Model class storing all necessary information for a user
+ */
 public class UserAccount implements Serializable {
     private String firstName;
     private String lastName;
@@ -14,7 +17,7 @@ public class UserAccount implements Serializable {
     private String email;
     private ArrayList<UserAccount> matches;
     private ArrayList<UserAccount> friendMatches;
-    private String pfpUrl;
+    private String pfpUrl; // URI for profile picture, set to null in constructor for safety
 
     private String[] interest;
     private String location;
@@ -94,10 +97,6 @@ public class UserAccount implements Serializable {
 
     public ArrayList<UserAccount> getMatches() {
         return this.matches;
-    }
-
-    public String getNumMatches() {
-        return Integer.toString(matches.size());
     }
 
     public String getLocation() {

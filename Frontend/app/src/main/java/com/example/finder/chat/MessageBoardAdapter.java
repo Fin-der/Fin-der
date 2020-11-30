@@ -18,10 +18,15 @@ import com.example.finder.views.ChatView;
 
 import java.util.List;
 
+/**
+ * Adapter for HomeView
+ * Generates the contact/friend list that leads to ChatView
+ *
+ */
 public class MessageBoardAdapter extends RecyclerView.Adapter {
-    private List<UserAccount> contacts;
-    private Context context;
-    private UserAccount user;
+    private final List<UserAccount> contacts;
+    private final Context context;
+    private final UserAccount user;
 
     public MessageBoardAdapter(Context context, List<UserAccount> contacts, UserAccount user) {
         this.context = context;
@@ -48,10 +53,14 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
         return contacts.size();
     }
 
+    /**
+     * Holder for a single friend/contact
+     *
+     */
     private class MessageBoardContact extends RecyclerView.ViewHolder {
-        private TextView name;
-        private ImageView profilePic;
-        private View itemView;
+        private final TextView name;
+        private final ImageView profilePic;
+        private final View itemView;
 
         public MessageBoardContact(@NonNull View itemView) {
             super(itemView);

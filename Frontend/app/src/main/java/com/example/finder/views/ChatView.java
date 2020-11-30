@@ -12,6 +12,10 @@ import com.example.finder.controller.ChatController;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 
+/**
+ * Activity view class for chatting functionality
+ *
+ */
 public class ChatView extends AppCompatActivity {
     private ChatController controller;
     private String receiver;
@@ -31,6 +35,10 @@ public class ChatView extends AppCompatActivity {
         init();
     }
 
+    /**
+     * Initiates the send button so the ChatController will know when to send a message to backend
+     *
+     */
     private void init() {
         findViewById(R.id.button_chatbox_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,9 +58,6 @@ public class ChatView extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         controller.cleanUp();
-/*        Intent intent = new Intent(this, HomeView.class);
-        intent.putExtra("profile", getIntent().getSerializableExtra("user"));
-        startActivity(intent);*/
         Log.d("ChatView", "Closed Socket");
         finish();
     }

@@ -18,6 +18,10 @@ import com.example.finder.models.UserAccount;
 
 import java.util.List;
 
+/**
+ * Used to create chat bubbles for ChatView
+ *
+ */
 public class MessageAdapter extends RecyclerView.Adapter {
     public static final int MSG_TYPE_SENT = 1;
     public static final int MSG_TYPE_RECEIVED = 2;
@@ -75,6 +79,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
         return messages.get(position).getMsgType();
     }
 
+    /**
+     * Holder for Received Messages
+     *
+     */
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         private final TextView messageText;
         private final TextView timeText;
@@ -99,6 +107,10 @@ public class MessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    /**
+     * Holder for sent messages
+     *
+     */
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         private final TextView messageText;
         private final TextView timeText;

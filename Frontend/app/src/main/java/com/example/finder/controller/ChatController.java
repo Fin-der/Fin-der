@@ -33,6 +33,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
+/**
+ * Controller for the ChatView
+ * Sends and receives messages to/from backend and controls MessageAdapter
+ * Connects to backend via socket and Volley REST calls
+ *
+ */
 public class ChatController {
     private Socket socket;
     private final String HOST_URL = HomeView.HOST_URL;
@@ -42,8 +48,8 @@ public class ChatController {
     private RecyclerView msgRecycler;
     private MessageAdapter msgAdapter;
     private final RequestQueue que;
-    private String rId;
-    private UserAccount friend;
+    private final String rId;
+    private final UserAccount friend;
     private String roomId;
     private int chatPos;
     private final Semaphore queLock = new Semaphore(0);
@@ -64,6 +70,11 @@ public class ChatController {
         initChatAdapters();
     }
 
+    /**
+     * Initiates the chatAdapters and sets screen to bottom of the screen
+     * Will grab and load old messages from the backend if those exist
+     *
+     */
     private void initChatAdapters() {
         this.msgRecycler = context.findViewById(R.id.reyclerview_message_list);
         this.msgAdapter = new MessageAdapter(this.messages, this.friend);
@@ -78,9 +89,13 @@ public class ChatController {
                 que.add(request);
             }
         }).start();
+        /*
+         * Move screen back to bottom when typing a message
+         */
         msgRecycler.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right, final int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+            public void onLayoutChange(View v, int left, int top, int right, final int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 if ( bottom < oldBottom) {
                     msgRecycler.postDelayed(new Runnable() {
                         @Override
@@ -91,6 +106,9 @@ public class ChatController {
                 }
             }
         });
+        /*
+         * Retrieves older messages if ChatView has reached the top RecyclerView
+         */
         msgRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -113,6 +131,12 @@ public class ChatController {
         });
     }
 
+    /**
+     * Creates a "room" and generates roomId in the backend if it does not already exist,
+     * otherwise, retrieve roomId from backend
+     *
+     * @throws JSONException if error parsing response message
+     */
     private void initChatRoom() throws JSONException {
         JSONObject obj = new JSONObject();
         JSONArray arr = new JSONArray();
@@ -121,11 +145,13 @@ public class ChatController {
         obj.put("userIds", arr);
         obj.put("type", "consumer-to-consumer");
         Log.d("ChatController", "Initiate: " + obj.toString());
-        final JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, HOST_URL + "/room/initiate", obj, new Response.Listener<JSONObject>() {
+        final JsonObjectRequest req = new JsonObjectRequest(
+                Request.Method.POST, HOST_URL + "/room/initiate", obj,
+            new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.d("REs", response.toString());
+                    Log.d("ChatController", response.toString());
                     JSONObject room = (JSONObject) response.get("chatRoom");
                     roomId = (String) room.get("chatRoomId");
                     Log.d("ChatController", "Room Id: " + roomId);
@@ -137,14 +163,20 @@ public class ChatController {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                // some sort of error handling code
+                Log.d("ChatController", error.toString());
             }
         });
         que.add(req);
     }
 
+    /**
+     * Generates the JsonObjectRequest or the Req.body for the getRecentConversationByRoomId API
+     * Call
+     *
+     * @return Request body for getRecentConversation call to retrieve old messages
+     */
     private JsonObjectRequest grabConversation() {
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,
+        return new JsonObjectRequest(Request.Method.GET,
                 HOST_URL + "/room/" + roomId + "/" + chatPos, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -159,6 +191,12 @@ public class ChatController {
                             chatPos += list.size();
                             Log.d("ChatController", "Messages Size: " + messages.size());
                             int oldSize = messages.size();
+                            /*
+                             * Add older messages to the current messages list and notify adapter
+                             *
+                             * If this is the first call to retrieve the conversation, will also
+                             * scroll to the bottom of the screen for the user
+                             */
                             messages.addAll(0, list);
                             msgAdapter.notifyItemRangeInserted(0, list.size());
                             if (oldSize == 0 && !messages.isEmpty())
@@ -176,12 +214,18 @@ public class ChatController {
                 queLock.release();
             }
         });
-        return request;
     }
 
+    /**
+     * Sets up the connection socket for message retrieval from the backend
+     *
+     */
     private void waitOnMessages() {
         try {
             this.socket = IO.socket(HOST_URL);
+            /*
+             * This handles messages sent by the friend and notifies the adapter
+             */
             socket.on("new message", new Emitter.Listener() {
                 @Override
                 public void call(final Object... args) {
@@ -214,6 +258,13 @@ public class ChatController {
         }
     }
 
+    /**
+     * Parses the JSON formatted message sent by their friend/contact
+     *
+     * @param message JSONObject containing information about the received message and sender
+     * @return Message Model containing information about the received message and sender
+     * @throws JSONException if error parsing through message JSONObject
+     */
     private Message parseMessage(JSONObject message) throws JSONException {
         String messageText = ((JSONObject) message.get("message")).getString("messageText");
         String userId = ((JSONObject) message.get("postedByUser")).getString("_id");
@@ -229,6 +280,11 @@ public class ChatController {
         return msg;
     }
 
+    /**
+     * Sends user's message to backend
+     *
+     * @param message User's message to their friend
+     */
     public void sendMessage(String message) {
         JSONObject data = new JSONObject();
         try {
@@ -258,6 +314,10 @@ public class ChatController {
         this.que.add(req);
     }
 
+    /**
+     * Ensure socket has been disconnected properly
+     *
+     */
     public void cleanUp() {
         this.socket.disconnect();
     }

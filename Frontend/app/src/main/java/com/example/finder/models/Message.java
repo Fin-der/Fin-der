@@ -6,16 +6,17 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+/**
+ * Model class used to store information of sent/received information
+ *
+ */
 public class Message {
-    private String id;
-    private String text;
-    private String sender;
-    private String senderName;
-    private int msgType;
+    private final String id;
+    private final String text;
+    private final String sender;
+    private final String senderName;
+    private final int msgType;
     private String postAt;
-    // Picture profilePic
-    // Picture[] sentPics
-    // Date date
 
     public Message(String id, String text, String sender, String senderName, int msgType, String postAt) {
         this.id = id;
@@ -23,7 +24,12 @@ public class Message {
         this.senderName = senderName;
         this.sender = sender;
         this.msgType = msgType;
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat parse = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        /*
+         * Messages retrieved from the backend will contain a timestamp formatted in the
+         * backend's timezone so it is necessary to convert timezones first for the user
+         */
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat parse =
+                                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         parse.setTimeZone(TimeZone.getTimeZone("UTC"));
         SimpleDateFormat date = new SimpleDateFormat("MMM dd, hh:mm a");
         date.setTimeZone(TimeZone.getDefault());
@@ -32,16 +38,12 @@ public class Message {
             this.postAt = date.format(parse.parse(postAt));
         } catch (ParseException e) {
             e.printStackTrace();
-            this.postAt = "sike";
+            this.postAt = "ERROR: COULD NOT CHANGE TIMEZONE";
         }
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getSender() {
-        return sender;
     }
 
     public String getPostAt() {
