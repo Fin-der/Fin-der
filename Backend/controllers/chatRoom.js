@@ -10,16 +10,12 @@ import {logger} from "../app.js";
  * Helper function for parsing query params
  */
 let generateOptions = (req, skip) => {
-    try {
-        const options = {
-            page: parseInt(req.query.page, 10),
-            limit: parseInt(req.query.limit, 10) || 25,
-            skip: parseInt(skip, 10),
-        };
-        return options;
-    } catch (error) {
-        throw error;
-    }
+    const options = {
+        page: parseInt(req.query.page, 10),
+        limit: parseInt(req.query.limit, 10) || 25,
+        skip: parseInt(skip, 10),
+    };
+    return options;
 };
 export default {
     /**
@@ -55,9 +51,10 @@ export default {
             const messagePayload = {
                 messageText: req.body.messageText,
             };
-            const currentLoggedUser = req.body.userId;
+            // const currentLoggedUser = req.body.userId;
+            const currentLoggedUser = req.params.id;
             const user = await UserModel.getUserById(currentLoggedUser);
-            const roomId = req.body.roomId;
+            const roomId = req.params.roomId;
             const post = await ChatMessageModel.createPostInChatRoom(roomId, messagePayload, currentLoggedUser);
             if (global.io){
                 global.io.sockets.in(roomId).emit("new message", { message: post });
@@ -138,13 +135,6 @@ export default {
         try {
             const { roomId, id } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
-            if (!room) {
-                return res.status(400).json({
-                    success: false,
-                    message: "No room exists for this id",
-                });
-            }
-
             const currentLoggedUser = id;
             const result = await ChatMessageModel.markMessageRead(roomId, currentLoggedUser);
             return res.status(200).json({ success: true, data: result });

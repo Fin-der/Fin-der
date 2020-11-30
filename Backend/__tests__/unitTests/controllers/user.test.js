@@ -3,6 +3,7 @@ import { app } from "../../../app.js"; // Link to your server file
 import supertest from "supertest";
 import UserModel from "../../../models/User.js";
 import {MatchVertexModel, MatchEdgeModel} from "../../../models/Match.js";
+import ChatRoomModel from "../../../models/ChatRoom.js";
 
 const request = supertest(app);
 
@@ -133,6 +134,7 @@ describe("test user controller", () => {
         UserModel.deleteUserById = jest.fn(() => {return user;});
         MatchVertexModel.deleteMatchVertex = jest.fn(() => {return;});
         MatchEdgeModel.deleteEdgesWithId = jest.fn(() => {return;});
+        ChatRoomModel.deleteUserFromChatRooms = jest.fn(() => {return;});
         
         const resp = {success:true, message: "Deleted a count of 1 user."};
         
@@ -147,6 +149,7 @@ describe("test user controller", () => {
         UserModel.deleteUserById = jest.fn(() => {throw error;});
         MatchVertexModel.deleteMatchVertex = jest.fn(() => {return;});
         MatchEdgeModel.deleteEdgesWithId = jest.fn(() => {return;});
+        ChatRoomModel.deleteUserFromChatRooms = jest.fn(() => {return;});
         
         const resp = {success:false};
         

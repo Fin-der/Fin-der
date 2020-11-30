@@ -94,5 +94,20 @@ chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
     return userIds;
 };
 
+/**
+ * Deletes the user from all chatrooms it is in
+ * 
+ * @param {String} userId - the userId of the user belonging to the chatrooms to delete
+ */
+chatRoomSchema.statics.deleteUserFromChatRooms = async function (userId) {
+    const rooms = await this.getChatRoomsByUserId(userId);
+    await Promise.all(rooms.map(async (room) => {
+        const updatedRoom = await this.findOneAndUpdate({_id: room._id},{ $pull: { userIds : UserId}},{multi: true, new: true})
+        // delete userless chatrooms
+        if (updatedRoom.userIds.length <= 1) {
+            await this.deleteOne({_id: room._id});
+        }
+    }));
+};
 
 export default mongoose.model("ChatRoom", chatRoomSchema);

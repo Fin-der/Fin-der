@@ -53,7 +53,7 @@ const chatMessageSchema = new mongoose.Schema(
     }
 );
 
-chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
+//chatMessageSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
 
 /**
  * This method will create a post in chat
