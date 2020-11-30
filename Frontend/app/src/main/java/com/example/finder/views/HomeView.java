@@ -129,7 +129,7 @@ public class HomeView extends AppCompatActivity {
     }
 
     /**
-     * Make backend call to get informatino of user's friends
+     * Make backend call to get information of user's friends
      *
      */
     private void getFriends() {
