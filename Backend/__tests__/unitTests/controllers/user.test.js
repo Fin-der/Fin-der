@@ -104,8 +104,6 @@ describe("test user controller", () => {
 
     it("test updateUser pass", async (done) => {
         UserModel.updateUser = jest.fn(() => {return exampleUser;});
-        MatchVertexModel.updateMatchVertex = jest.fn(() => {return;});
-        MatchEdgeModel.updateEdgesWithId = jest.fn(() => {return;});
         
         const resp = {success:true, user: exampleUser};
         
@@ -118,8 +116,6 @@ describe("test user controller", () => {
 
     it("test updateUser fail", async (done) => {
         UserModel.updateUser = jest.fn(() => {throw error;});
-        MatchVertexModel.updateMatchVertex = jest.fn(() => {return;});
-        MatchEdgeModel.updateEdgesWithId = jest.fn(() => {return;});
         
         const resp = {success:false};
         

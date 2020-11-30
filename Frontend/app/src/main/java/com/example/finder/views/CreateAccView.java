@@ -260,7 +260,7 @@ public class CreateAccView extends AppCompatActivity {
             userJson.put("age", age.getEditText().getText().toString());
             userJson.put("gender", genderResult[0]);
             userJson.put("email", email.getEditText().getText().toString());
-            userJson.put("location", locationJson);
+            userJson.put("geoLocation", locationJson);
             userJson.put("preferences", preferenceJson);
             userJson.put("interests", interests);
             userJson.put("description", biography.getEditText().getText().toString());

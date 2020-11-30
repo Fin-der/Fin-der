@@ -1,9 +1,14 @@
+/**
+ * @module controller/chatRoom
+ */
 import ChatRoomModel from "../models/ChatRoom.js";
 import ChatMessageModel from "../models/ChatMessage.js";
 import UserModel from "../models/User.js";
 import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 import {logger} from "../app.js";
-
+/**
+ * Helper function for parsing query params
+ */
 let generateOptions = (req, skip) => {
     try {
         const options = {
@@ -17,6 +22,13 @@ let generateOptions = (req, skip) => {
     }
 };
 export default {
+    /**
+     * Creates a chatRoom 
+     * 
+     * @function initiate
+     * @param {Array} userIds an array of userids belonging to the chatRoom
+     * @returns {Object} The status, message and roomId of the created conversation
+     */
     initiate: async (req, res) => {
         try {
             const { userIds } = req.body;
@@ -29,6 +41,15 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Sends a message in a chat
+     * 
+     * @function postMessage
+     * @param {String} messageText - the message body
+     * @param {String} roomId - the id of the room to send the messaging in
+     * @param {String} id - the id of the user sending the message
+     * @returns {Object} Object representing the sent message
+     */
     postMessage: async (req, res) => {
         try {
             const messagePayload = {
@@ -53,6 +74,15 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Retrieves the recent conversation for a user
+     * 
+     * @function getRecentConversation
+     * @param {String} userId - the user to find the recent conversation of
+     * @param {Number} query.page - for pagination
+     * @param {Number} query.limit - for pagination
+     * @returns {Object} A Object representing a recent conversation
+     */
     getRecentConversation: async (req, res) => {
         try {
             const currentLoggedUser = req.body.userId;
@@ -71,6 +101,14 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Retrieves the chat logs in a specific room
+     * 
+     * @function getConversationByRoomId
+     * @param {String} roomId - the id of the room to get
+     * @param {String} skip - the number of documents to skip for pagination
+     * @returns {Object} The conversation with given roomId
+     */
     getConversationByRoomId: async (req, res) => {
         try {
             const { roomId, skip } = req.params;
@@ -88,9 +126,17 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Marks messages as read
+     * 
+     * @function markConversationReadByRoomId
+     * @param {String} roomId - the id of the room the user is reading
+     * @param {String} id - the id of the user reading the conversation
+     * @returns {Object} The number of messages read
+     */
     markConversationReadByRoomId: async (req, res) => {
         try {
-            const { roomId } = req.params;
+            const { roomId, id } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
             if (!room) {
                 return res.status(400).json({
@@ -99,7 +145,7 @@ export default {
                 });
             }
 
-            const currentLoggedUser = req.userId;
+            const currentLoggedUser = id;
             const result = await ChatMessageModel.markMessageRead(roomId, currentLoggedUser);
             return res.status(200).json({ success: true, data: result });
         } catch (error) {

@@ -1,5 +1,6 @@
 package com.example.finder.views;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -100,7 +101,7 @@ public class MatchView extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
+                            error.printStackTrace();
                         }
                     });
                     que.add(req);

@@ -3,7 +3,6 @@ package com.example.finder;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -33,10 +32,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+
 public class ChatViewBehaviour {
     private UserAccount user, user2;
     private String chatterName;
     private Context context;
+
     @Rule
     public IntentsTestRule<ChatView> activityRule
             = new IntentsTestRule<>(ChatView.class, false, false);
@@ -183,9 +184,6 @@ public class ChatViewBehaviour {
     @Test
     public void checkolderMsgs() throws InterruptedException {
         create25Msgs();
-        
-
     }
-
 
 }

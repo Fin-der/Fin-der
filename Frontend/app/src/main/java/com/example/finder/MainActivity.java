@@ -215,8 +215,8 @@ public class MainActivity extends AppCompatActivity {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> address = null;
             try {
-                address = geocoder.getFromLocation(Double.parseDouble(account.getJSONObject("location").getJSONObject("lat").getString("$numberDecimal")),
-                        Double.parseDouble(account.getJSONObject("location").getJSONObject("lng").getString("$numberDecimal")), 1);
+                address = geocoder.getFromLocation(Double.parseDouble(account.getJSONObject("geoLocation").getJSONObject("lat").getString("$numberDecimal")),
+                        Double.parseDouble(account.getJSONObject("geoLocation").getJSONObject("lng").getString("$numberDecimal")), 1);
             } catch (IOException e) {
                 Log.d(TAG, "failed to get location");
                 e.printStackTrace();
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
             userJson.put("age", user.getAge());
             userJson.put("gender", user.getGender());
             userJson.put("email", user.getEmail());
-            userJson.put("location", locationJson);
+            userJson.put("geoLocation", locationJson);
             userJson.put("preferences", preferenceJson);
             userJson.put("interests", interests);
             userJson.put("description", user.getBiography());

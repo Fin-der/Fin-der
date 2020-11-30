@@ -107,9 +107,14 @@ public class ResponseTime {
     }
 
     @Test
-    public void callGetMatchesx3() {
-        callGetMatches();
-        callGetMatches();
-        callGetMatches();
+    public void callGetMatches3x() {
+        try {
+            callGetMatches();
+            callGetMatches();
+            callGetMatches();
+        } catch (AssertionError e) {
+            fail();
+        }
+
     }
 }

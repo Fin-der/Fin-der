@@ -83,35 +83,39 @@ describe("user creation integration test", () => {
         let response = await request.post("/users")
                         .send(user1);
         expect(response.status).toBe(200);
+        expect(response.body.user).toMatchObject(user1);
         response = await request.post("/users")
                         .send(user1);
         expect(response.status).toBe(500);
         response = await request.post("/users")
                        .send(user2);
         expect(response.status).toBe(200);
+        expect(response.body.user).toMatchObject(user2);
         response = await request.post("/users")
                        .send(user3);
         expect(response.status).toBe(200);
+        expect(response.body.user).toMatchObject(user3);
         response = await request.post("/users")
                        .send(user4);
         expect(response.status).toBe(200);
+        expect(response.body.user).toMatchObject(user4);
         response = await request.post("/users")
                        .send(user5);
         expect(response.status).toBe(500);
         // get all users
         response = await request.get("/users");
         expect(response.status).toBe(200);
-        expect(response.body.users = [user1, user2, user3, user4]);
+        expect(response.body.users).toMatchObject([user1, user2, user3, user4]);
         // get users by id
         response = await request.get("/users/" + user1._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user1);
+        expect(response.body.user).toMatchObject(user1);
         response = await request.get("/users/" + user2._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user2);
+        expect(response.body.user).toMatchObject(user2);
         response = await request.get("/users/" + user3._id);
         expect(response.status).toBe(200);
-        expect(response.body.user = user3);
+        expect(response.body.user).toMatchObject(user3);
         response = await request.get("/users/" + "2394078");
         expect(response.status).toBe(500);
         // delete user
@@ -119,10 +123,20 @@ describe("user creation integration test", () => {
         expect(response.status).toBe(200);
         response = await request.get("/users/" + user4._id);
         expect(response.status).toBe(500);
+        // update user
+        // user doesnt exist
+        response = await request.put("/users/" + user5._id);
+        expect(response.status).toBe(500);
+        response = await request.put("/users/" + user2._id)
+                                .send(user1);
+        expect(response.status).toBe(200);
+        let user = JSON.parse(JSON.stringify(user1));
+        user._id = user2._id; //user keeps their _id
+        expect(response.body.user).toMatchObject(user);
         // register FCM tokens
         response = await request.put("/users/" + user3._id + "/" + FCMToken);
         expect(response.status).toBe(200);
-        expect(response.body.message === " Token: " + FCMToken + " successfully registed with User(ID): " + user3._id);
+        expect(response.body.message).toBe("Token: " + FCMToken + " successfully registed with User(ID): " + user3._id);
         done();
     });
 

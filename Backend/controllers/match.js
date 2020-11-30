@@ -1,9 +1,23 @@
+/**
+ * @module controller/match
+ */
 import { MatchVertexModel, MatchEdgeModel } from "../models/Match.js";
 import UserModel from "../models/User.js";
 import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 import {logger} from "../app.js";
 
 export default {
+    /**
+     * Finds potential matches for given user
+     * will first find suitable users to match with using user defined preferences
+     * will then match based off of similar interests
+     * 
+     * @function getPotentialMatches
+     * @param {String} userId - the id of the user to get matches of
+     * @param {Number} query.page - used for pagination
+     * @param {Number} query.limit - used for pagination
+     * @returns {Array} An array of matches of the user
+     */
     getPotentialMatches: async (req, res) => {
         try {
             const userId = req.params.userId;
@@ -15,7 +29,7 @@ export default {
             const matches = await MatchEdgeModel.getPotentialMatches(userId);
             let matchesId = new Set();
             matches.forEach((match) => {
-                matchesId.add(match.to._id);
+                matchesId.add(match.toId);
             });
             
             var potentialMatches = []; 
@@ -41,12 +55,12 @@ export default {
                         FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
                         
                         potentialMatches.push(user); 
-                        await MatchVertexModel.addPotentialMatches(user._id, [curUser]);
+                        await MatchVertexModel.addPotentialMatches(user._id, [curUser._id]);
                         await MatchEdgeModel.createBidirectionalEdge(sameInterests, userId, user._id); 
                     } 
                 } 
             }));
-            await MatchVertexModel.addPotentialMatches(userId, potentialMatches);
+            await MatchVertexModel.addPotentialMatches(userId, potentialMatches.map((user) => {return user._id;}));
             const updatedMatches = await MatchEdgeModel.getPotentialMatches(userId);
             
             return res.status(200).json({ success: true, matches: updatedMatches });
@@ -55,13 +69,21 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Approves the per side status of match
+     * 
+     * @function approveMatch
+     * @param {String} matchId - the id of the match 
+     * @param {String} userId - the id of the side of the match you would like to change
+     * @returns {Object} An object representing the updated match
+     */
     approveMatch: async (req, res) => {
         try {
             const userId = req.params.userId;
             const matchId = req.params.matchId;
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "approved");
             if (match.status === "approved") {
-                const FCMToken = await UserModel.getTokensByIds([match.to._id]);
+                const FCMToken = await UserModel.getTokensByIds([match.toId]);
                 const msgBody = "You have a new friend! Open Fin-der to find out who";
                 FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
             }
@@ -71,6 +93,14 @@ export default {
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Declines the per side status of match
+     * 
+     * @function declineMatch
+     * @param {String} matchId - the id of the match 
+     * @param {String} userId - the id of the side of the match you would like to change
+     * @returns {Object} An object representing the updated match
+     */
     declineMatch: async (req, res) => {
         try {
             const userId = req.params.userId;
@@ -78,9 +108,17 @@ export default {
             const match = await MatchEdgeModel.changeMatchStatus(matchId, userId, "declined");
             return res.status(200).json({ success: true, match });
         } catch (error) {
+            logger.error(error);
             return res.status(500).json({ success: false, error });
         }
     },
+    /**
+     * Retrieves mutual approved or "friend" matches
+     * 
+     * @function getFriendMatches
+     * @param {String} userId - the id of the user to get friends of
+     * @returns {Array} An array of friends of the user
+     */
     getFriendMatches: async (req, res) => {
         try {
             const userId = req.params.userId;

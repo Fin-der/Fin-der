@@ -27,7 +27,7 @@ describe("test matchs models", () => {
         age : 20,
         gender : "Female",
         email : "yo@gmail.com",
-        location : {
+        geoLocation : {
             "lat" : {
                 "$numberDecimal": "0",
             },
@@ -51,7 +51,7 @@ describe("test matchs models", () => {
         age : 20,
         gender : "Female",
         email : "yo@gmail.com",
-        location : {
+        geoLocation : {
             "lat" : {
                 "$numberDecimal": "0",
             },
@@ -64,8 +64,8 @@ describe("test matchs models", () => {
 
     const vertex = {
         _id: "23409183674",
-        user,
-        matches: [user, user]
+        userId : user._id,
+        matchesId: [user._id, user._id]
     };
     const simpleUser = {
         interests : [ 
@@ -82,24 +82,9 @@ describe("test matchs models", () => {
         fromStatus : "potential",
         toStatus : "potential",
         score : 1,
-        from : {
-            interests : [ 
-                "smoking", 
-                "skating"
-            ],
-            _id : "420",
-            firstName : "SNOOOP",
-            lastName : "DOOOOOG",
-        },
-        to : {
-            interests : [ 
-                "board", 
-                "skating"
-            ],
-            _id : "69",
-            firstName : "Mike",
-            lastName : "Hawk",
-        }
+        fromId : "420",
+        toId : "69",
+            
     };
     const match2 = {
         _id : "27e817beabf241aa915ff84be81ac182",
@@ -107,24 +92,8 @@ describe("test matchs models", () => {
         fromStatus : "declined" ,
         toStatus : "potential",
         score : 1,
-        from : {
-            interests : [ 
-                "smoking", 
-                "skating"
-            ],
-            _id : "420",
-            firstName : "SNOOOP",
-            lastName : "DOOOOOG",
-        },
-        to : {
-            interests : [ 
-                "board", 
-            ],
-            _id : "30",
-            firstName : "marth",
-            lastName : "stewart",
-        }
-
+        fromId : "420",
+        toId : "30",
     };
     const match3 = {
         _id : "27e817beabf2",
@@ -132,24 +101,9 @@ describe("test matchs models", () => {
         fromStatus : "potential",
         toStatus : "potential",
         score : 1,
-        from : {
-            interests : [ 
-                "smoking", 
-                "skating"
-            ],
-            _id : "420",
-            firstName : "SNOOOP",
-            lastName : "DOOOOOG",
-        },
-        to : {
-            interests : [ 
-                "smoking", 
-                "skating"
-            ],
-            _id : "420",
-            firstName : "SNOOOP",
-            lastName : "DOOOOOG",
-        }
+        fromId : "420",
+        toId : "420",
+            
     };
     const matches = [match1, match2];
 
@@ -179,47 +133,36 @@ describe("test matchs models", () => {
 
     it("createMatchVertex default", async (done) => {
         var vertex = {
-            user: simpleUser,
-            matches: []
+            userId: simpleUser._id,
+            matchesId: []
         };
         const potentialMatches = [];
-        const vert = await MatchVertexModel.createMatchVertex(simpleUser, potentialMatches);
+        const vert = await MatchVertexModel.createMatchVertex(simpleUser._id, potentialMatches);
         vertex._id = vert._id;
         delete vert._doc.createdAt;
         delete vert._doc.updatedAt;
-        delete vert.user._doc.createdAt;
-        delete vert.user._doc.updatedAt;
         delete vert._doc.__v;
         expect(vert.toJSON()).toMatchObject(vertex);
         done();
     });
 
     it("createMatchVertex", async (done) => {
-        const potentialMatches = [user];
+        const potentialMatches = [user._id];
         MatchVertexModel.create = jest.fn(() => {return vertex;});
-        const vert = await MatchVertexModel.createMatchVertex(user, potentialMatches);
+        const vert = await MatchVertexModel.createMatchVertex(user._id, potentialMatches);
         expect(vert).toBe(vertex);
         done();
     });
 
     it("createMatchVertex already in db", async (done) => {
-        const potentialMatches = [user];
+        const potentialMatches = [user._id];
         MatchVertexModel.create = jest.fn(() => {throw error;});
         try {
-            await MatchVertexModel.createMatchVertex(user, potentialMatches);
+            await MatchVertexModel.createMatchVertex(user._id, potentialMatches);
             done.fail(new Error("createMatch should have thrown an error"));
         } catch (err) {
             expect(err).toMatchObject(error);
         }
-        done();
-    });
-
-    it("updateVertex", async (done) => {
-        MatchVertexModel.findOneAndUpdate = jest.fn(() => {return vertex;});
-        MatchVertexModel.updateOne = jest.fn(() => {return;});
-
-        const vert = await MatchVertexModel.updateMatchVertex(user._id, {});
-        expect(vert).toBe(vertex);
         done();
     });
 
@@ -246,11 +189,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -271,11 +214,36 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
+                    }
+                ))
+            }
+        ));
+
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
+        done();
+    });
+
+    it("getUsersForMatching using graphlookup no mutuals", async (done) => {
+        const options = {
+            skip: 0,
+            limit: 0
+        };
+        const aggregate = {
+            mutuals: []
+        };
+        UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
                     }
                 ))
             }
@@ -293,11 +261,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return simpleUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -315,11 +283,11 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return noPreferenceUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementationOnce(() => (
+        UserModel.find = jest.fn().mockImplementation(() => (
             { 
-                skip: jest.fn().mockImplementationOnce(() => (
+                skip: jest.fn().mockImplementation(() => (
                     { 
-                        limit: jest.fn().mockResolvedValueOnce([user, user, user])
+                        limit: jest.fn().mockResolvedValue([user, user, user])
                     }
                 ))
             }
@@ -327,6 +295,53 @@ describe("test matchs models", () => {
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
+        done();
+    });
+
+    it("getUsersForMatching wraplong/wraplat tests", async (done) => {
+        const options = {
+            skip: 0,
+            limit: 0
+        };
+        const aggregate = {
+            mutuals: []
+        };
+        let testUser = JSON.parse(JSON.stringify(user));
+        testUser.geoLocation.lat = 90;
+        testUser.geoLocation.lng = 180;  
+        testUser.preferences.proximity = 100000; 
+        UserModel.getUserById = jest.fn(() => {return testUser;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
+                    }
+                ))
+            }
+        ));
+
+        let users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
+
+        testUser.geoLocation.lat = -90;
+        testUser.geoLocation.lng = -180;
+        testUser.preferences.proximity = 100000; 
+        UserModel.getUserById = jest.fn(() => {return testUser;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => (
+            { 
+                skip: jest.fn().mockImplementation(() => (
+                    { 
+                        limit: jest.fn().mockResolvedValue([])
+                    }
+                ))
+            }
+        ));
+
+        users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual(aggregate.mutuals);
         done();
     });
 
@@ -343,7 +358,6 @@ describe("test matchs models", () => {
     it("addPotentialMatch error", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.updateOne = jest.fn(() => {throw error;});
-    
         try {
             await MatchVertexModel.addPotentialMatches(user._id, [user]);
             done.fail(new Error("addpotential should have thrown an error"));
@@ -355,15 +369,18 @@ describe("test matchs models", () => {
     });
 
     it("getPotentialMatch", async (done) => {
-        MatchEdgeModel.find = jest.fn(() => {return matches;});
-    
+        const matchesCopy = JSON.parse(JSON.stringify(matches));
+        MatchEdgeModel.find = jest.fn(() => {return matchesCopy;});
+        UserModel.findOne = jest.fn(() => {return;});
+
         const matchs = await MatchEdgeModel.getPotentialMatches(user._id);
-        expect(matchs).toBe(matches);
+        expect(matchs).toBe(matchesCopy);
         done();
     });
 
     it("getPotentialMatch error", async (done) => {
         MatchEdgeModel.find = jest.fn(() => {throw error;});
+        UserModel.findOne = jest.fn(() => {return;});
     
         try {
             await MatchEdgeModel.getPotentialMatches(user._id);
@@ -376,16 +393,19 @@ describe("test matchs models", () => {
     });
 
     it("getFriendMatch", async (done) => {
-        MatchEdgeModel.find = jest.fn(() => {return matches;});
-    
+        const matchesCopy = JSON.parse(JSON.stringify(matches));
+        MatchEdgeModel.find = jest.fn(() => {return matchesCopy;});
+        UserModel.findOne = jest.fn(() => {return;});
+
         const matchs = await MatchEdgeModel.getFriendMatches(user._id);
-        expect(matchs).toBe(matches);
+        expect(matchs).toBe(matchesCopy);
         done();
     });
 
     it("getFriendMatch error", async (done) => {
         MatchEdgeModel.find = jest.fn(() => {throw error;});
-    
+        UserModel.findOne = jest.fn(() => {return;});
+        
         try {
             await MatchEdgeModel.getFriendMatches(user._id);
             done.fail(new Error("getFriends should have thrown an error"));
@@ -403,10 +423,6 @@ describe("test matchs models", () => {
         match3._id = edge1._id;
         delete edge1._doc.createdAt;
         delete edge1._doc.updatedAt;
-        delete edge1.from._doc.createdAt;
-        delete edge1.from._doc.updatedAt;
-        delete edge1.to._doc.createdAt;
-        delete edge1.to._doc.updatedAt;
         delete edge1._doc.__v;
         expect(edge1.toJSON()).toMatchObject(match3);
         match3._id = edge2._id;
@@ -415,7 +431,6 @@ describe("test matchs models", () => {
     });
 
     it("createBidirectionalEdge", async (done) => {
-        UserModel.getUserById = jest.fn(() => {return user;});
         MatchEdgeModel.create = jest.fn(() => {return match1;});
 
         let [ edge1, edge2 ] = await MatchEdgeModel.createBidirectionalEdge("0", user._id, user._id);
@@ -425,8 +440,7 @@ describe("test matchs models", () => {
     });
 
     it("createBidirectionalEdge error", async (done) => {
-        UserModel.getUserById = jest.fn(() => {throw error;});
-        MatchEdgeModel.create = jest.fn(() => {return; });
+        MatchEdgeModel.create = jest.fn(() => {throw error; });
     
         try {
             await MatchEdgeModel.createBidirectionalEdge("0", user._id, user._id);
@@ -435,19 +449,6 @@ describe("test matchs models", () => {
         catch (err) {
             expect(err).toMatchObject(error);
         }
-        done();
-    });
-
-    it("updateEdgesWithId", async (done) => {
-        const updateMsg = {
-            "updatedCount": 1, 
-            "n": 0, 
-            "ok": 1
-        };
-        MatchEdgeModel.updateMany = jest.fn(() => {return updateMsg;});
-    
-        const result = await MatchEdgeModel.updateEdgesWithId(user._id, {});
-        expect(result).toBe(updateMsg);
         done();
     });
 
@@ -556,7 +557,6 @@ describe("test matchs models", () => {
 
     it("updateToFromMatchStatus user belongs to match (to field)", async (done) => {
         MatchEdgeModel.updateOne = jest.fn(() => {return;});
-
         try {
             await MatchEdgeModel.updateToFromMatchStatus(match2, match1, user._id, "approve", options);
         } catch (err) {
