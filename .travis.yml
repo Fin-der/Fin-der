@@ -6,6 +6,7 @@ services:
 before_script:
 - cd ${TRAVIS_BUILD_DIR}/Backend
 - npm ci --also=dev
+- npm ls
 script:
 - npm run test
 before_install:
