@@ -63,16 +63,21 @@ public class MatchView extends AppCompatActivity {
             Toast.makeText(this, err, Toast.LENGTH_LONG).show();
             findViewById(R.id.match_err).setVisibility(View.VISIBLE);
         }
+
         this.que = Volley.newRequestQueue(this);
         this.page = 1;
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = findViewById(R.id.match_pager);
-        /**
+        /*
          * The pager adapter, which provides the pages to the view pager widget.
          */
         final MatchViewFragmentAdapter pagerAdapter = new MatchViewFragmentAdapter(MatchView.this,
                 matches, user.getId());
         mPager.setAdapter(pagerAdapter);
+        /*
+         * This makes the backend call to get more potential matches if available
+         *
+         */
         mPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageSelected(final int position) {
@@ -112,10 +117,11 @@ public class MatchView extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
+            case android.R.id.home: // Sends user back to HomeView
                 Intent intent = new Intent(MatchView.this, HomeView.class);
                 intent.putExtra("profile", user);
                 startActivity(intent);
@@ -140,6 +146,14 @@ public class MatchView extends AppCompatActivity {
         }
     }
 
+    /**
+     * Parses a JSONObject response retrieved from the backend and places them in the given
+     * ArrayList
+     *
+     * @param response JSONObject containg the server response
+     * @param toBeMatched Arraylist to store the matches in
+     * @throws JSONException if error parsing through server response
+     */
     public static void parseMatches(JSONObject response, ArrayList<UserAccount> toBeMatched) throws JSONException {
         JSONArray matches = (JSONArray) response.get("matches");
         for (int i = 0; i < matches.length(); i++) {
@@ -161,6 +175,10 @@ public class MatchView extends AppCompatActivity {
         Log.d("Matches", "Matches" + matches.toString());
     }
 
+    /**
+     * Adapter to hold and show MatchViewFragments
+     *
+     */
     private class MatchViewFragmentAdapter extends FragmentStateAdapter {
         private ArrayList<UserAccount> matches;
         private String userId;

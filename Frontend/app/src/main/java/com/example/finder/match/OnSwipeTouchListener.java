@@ -7,6 +7,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+/**
+ * Helper class used to detect swipes from the user
+ * Used for MatchView approve/deny functionality
+ *
+ */
 public class OnSwipeTouchListener implements OnTouchListener {
 
     private final GestureDetector gestureDetector;

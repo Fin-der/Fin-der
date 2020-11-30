@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 public class HomeView extends AppCompatActivity {
     private UserAccount user;
-    private ArrayList<UserAccount> toBeMatched = new ArrayList<>();
+    private final ArrayList<UserAccount> toBeMatched = new ArrayList<>();
     private GoogleSignInClient mGoogleSignInClient;
     private final static String TAG = "HomeView";
     public static String id;
@@ -60,6 +60,11 @@ public class HomeView extends AppCompatActivity {
         initButtons();
     }
 
+    /**
+     * Retrieves friends for the message board
+     * Important if new friends were made during absence
+     *
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -72,9 +77,11 @@ public class HomeView extends AppCompatActivity {
         getFriends();
     }
 
+    /**
+     * Initializes buttons for HomeView
+     *
+     */
     private void initButtons() {
-        // adds more buttons & some way to get previous chats
-
         findViewById(R.id.home_profileBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +111,10 @@ public class HomeView extends AppCompatActivity {
         });
     }
 
+    /**
+     * Initializes message board of contants/friends
+     *
+     */
     private void initMessageBoard() {
         RecyclerView msgBoard = findViewById(R.id.home_MsgBoard);
         msgBoard.setLayoutManager(new LinearLayoutManager(this));
@@ -112,15 +123,21 @@ public class HomeView extends AppCompatActivity {
             user.setFriendMatches(temp);
             Log.e("HomeView", "friendMatches was null");
         }
-        MessageBoardAdapter msgBoardAdapter = new MessageBoardAdapter(this, user.getFriendMatches(), user);
+        MessageBoardAdapter msgBoardAdapter =
+                                new MessageBoardAdapter(this, user.getFriendMatches(), user);
         msgBoard.setAdapter(msgBoardAdapter);
     }
 
+    /**
+     * Make backend call to get informatino of user's friends
+     *
+     */
     private void getFriends() {
         final String url = HomeView.HOST_URL + "/match/friend/";
         RequestQueue que = Volley.newRequestQueue(this);
         user.setFriendMatches(new ArrayList<UserAccount>());
-        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, url + user.getId(), null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET,
+                url + user.getId(), null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -149,6 +166,10 @@ public class HomeView extends AppCompatActivity {
         que.add(jsonReq);
     }
 
+    /**
+     * Handles user sign out
+     *
+     */
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {
@@ -164,6 +185,10 @@ public class HomeView extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Makes backend call to get potential matches for user
+     *
+     */
     private void findMatches() {
         final String HOST_MATCH = HOST_URL + "/match/" + user.getId() + "/?page=0" + HomeView.MATCH_LIMIT;
         RequestQueue que = Volley.newRequestQueue(this);

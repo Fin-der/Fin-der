@@ -44,8 +44,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfileView extends AppCompatActivity {
+    /*Tag for checking Logcat*/
     private final static String TAG = "ProfileView";
 
+    /*Text input variables*/
     private TextInputLayout firstName;
     private TextInputLayout lastName;
     private TextInputLayout age;
@@ -60,6 +62,8 @@ public class ProfileView extends AppCompatActivity {
 
     private String url = HomeView.HOST_URL;
     private UserAccount user;
+
+    /*Temp variables to transfer to json and set initial spinner values*/
     private String[] genderResult = new String[2];
     private String[] interestResult = new String[3];
     private int[] spinnerIndex = new int[5];
@@ -70,34 +74,40 @@ public class ProfileView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_view);
 
+        /*Define element id in view for each view-only element*/
         TextView fullName = findViewById(R.id.fullNameText);
+        TextView numFriends = findViewById(R.id.number_matches);
+        ImageView profilePic = findViewById(R.id.profile_image);
+
+        /*Define element id in view for each text input variables*/
         firstName = findViewById(R.id.first_name_profile);
         lastName = findViewById(R.id.last_name_profile);
         age = findViewById(R.id.age_profile);
         email = findViewById(R.id.email_profile);
-        TextView numFriends = findViewById(R.id.number_matches);
         location = findViewById(R.id.location_profile);
         minAge = findViewById(R.id.min_age_profile);
         maxAge = findViewById(R.id.max_age_profile);
         proximity = findViewById(R.id.proximity_profile);
         biography = findViewById(R.id.bio_profile);
-        ImageView profilePic = findViewById(R.id.profile_image);
 
+        /*Obtain data passed through intents*/
         user = (UserAccount) getIntent().getSerializableExtra("profile");
 
+        /*Set the text input user information in the profile view*/
         String fullNameText = user.getFirstName() + " " + user.getLastName();
         fullName.setText(fullNameText);
+        numFriends.setText(user.getNumFriends());
+        ImageLoaderHelper.loadProfilePic(this, profilePic, user.getpfpUrl(), 100, 100);
+
         firstName.getEditText().setText(user.getFirstName());
         lastName.getEditText().setText(user.getLastName());
         age.getEditText().setText(user.getAge());
         email.getEditText().setText(user.getEmail());
-        numFriends.setText(user.getNumFriends());
         location.getEditText().setText(user.getLocation());
         minAge.getEditText().setText(user.getMinAge());
         maxAge.getEditText().setText(user.getMaxAge());
         proximity.getEditText().setText(user.getProximity());
         biography.getEditText().setText(user.getBiography());
-        ImageLoaderHelper.loadProfilePic(this, profilePic, user.getpfpUrl(), 100, 100);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -108,15 +118,18 @@ public class ProfileView extends AppCompatActivity {
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+        /*Define the element id in view for each drop down box*/
         Spinner genderSpinner1 = findViewById(R.id.genderSpinner1_profile);
         Spinner genderSpinner2 = findViewById(R.id.genderSpinner2_profile);
         Spinner interest1Spinner = findViewById(R.id.interest1Spinner_profile);
         Spinner interest2Spinner = findViewById(R.id.interest2Spinner_profile);
         Spinner interest3Spinner = findViewById(R.id.interest3Spinner_profile);
 
+        /*Get the initial drop down box choice index for initialization*/
         getGenderSpinnerIndex(user);
         getInterestSpinnerIndex(user);
 
+        /*Setup the spinner to the correct choice based on the user profile*/
         spinnerSetup(genderSpinner1, R.array.gender_choices, genderResult, 0, spinnerIndex[0]);
         spinnerSetup(genderSpinner2, R.array.gender_choices2, genderResult, 1, spinnerIndex[1]);
         spinnerSetup(interest1Spinner, R.array.sport_choices, interestResult, 0, spinnerIndex[2]);
@@ -140,6 +153,14 @@ public class ProfileView extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function initializes the adapter and initial values to line up with the user profile
+     * @param spinner the spinner variable being setup
+     * @param resource the res string array id
+     * @param output the array to set the chosen option to
+     * @param outputIndex the position in the output array to write to
+     * @param initialIndex the initial position to set the spinner to
+     */
     private void spinnerSetup(final Spinner spinner, int resource, final String[] output, final int outputIndex, int initialIndex) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(resource));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -159,6 +180,10 @@ public class ProfileView extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function finds the initial position of the gender spinners
+     * @param user the current user account
+     */
     private void getGenderSpinnerIndex(UserAccount user) {
         if (user.getGender().equals("Male")) {
             spinnerIndex[0] = 1;
@@ -183,6 +208,10 @@ public class ProfileView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function finds the initial position of the interest spinners
+     * @param user the current user account
+     */
     private void getInterestSpinnerIndex(UserAccount user) {
         switch (user.getInterest()[0]) {
             case "Soccer":
@@ -228,6 +257,11 @@ public class ProfileView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function creates an alert dialog with yes or no buttons for deleting the current account
+     * Contains a volley request to delete the account if yes
+     * @return the alert dialog to be shown
+     */
     private AlertDialog createDeleteAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileView.this);
         alertDialogBuilder.setTitle("CONFIRM ACCOUNT DELETION");
@@ -235,7 +269,7 @@ public class ProfileView extends AppCompatActivity {
         alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                JSONObject idInfo = new JSONObject();
+                JSONObject idInfo = new JSONObject();           // json containing the user id
                 try {
                     idInfo.put("_id", user.getId());
                     Log.d(TAG, idInfo.toString());
@@ -254,6 +288,7 @@ public class ProfileView extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ProfileView.this, "Server Error", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });
@@ -269,6 +304,11 @@ public class ProfileView extends AppCompatActivity {
         return alertDialogBuilder.create();
     }
 
+    /**
+     * This function creates an alert dialog with yes or no buttons for updating the current account
+     * Contains a volley request to update the account information if yes
+     * @return the alert dialog to be shown
+     */
     private AlertDialog createUpdateAlertDialog() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ProfileView.this);
         alertDialogBuilder.setTitle("CONFIRM ACCOUNT CHANGE");
@@ -289,13 +329,13 @@ public class ProfileView extends AppCompatActivity {
                     longLat[0] = address.getLongitude();
                     longLat[1] = address.getLatitude();
                 }
-                JSONObject updateJson = packJson();
+                JSONObject updateJson = packJson(); // json of the updated user account
                 RequestQueue reqQueue = Volley.newRequestQueue(ProfileView.this);
                 JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.PUT, url + "/users/" + user.getId(), updateJson, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Intent home = new Intent(ProfileView.this, HomeView.class);
-                        packUserAccount();
+                        packUserAccount();          // updated user account
                         home.putExtra("profile", user);
                         Toast.makeText(ProfileView.this, "Update Successful", Toast.LENGTH_SHORT).show();
                         startActivity(home);
@@ -303,6 +343,7 @@ public class ProfileView extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ProfileView.this, "Server Error", Toast.LENGTH_SHORT).show();
                         error.printStackTrace();
                     }
                 });
@@ -318,6 +359,10 @@ public class ProfileView extends AppCompatActivity {
         return alertDialogBuilder.create();
     }
 
+    /**
+     * This function packs user account information from text inputs
+     * and stores it in the existing UserAccount model
+     */
     private void packUserAccount() {
         user.setFirstName(firstName.getEditText().getText().toString());
         user.setLastName(lastName.getEditText().getText().toString());
@@ -345,6 +390,10 @@ public class ProfileView extends AppCompatActivity {
         user.setBiography(biography.getEditText().getText().toString());
     }
 
+    /**
+     * This function packs the user account information from text inputs into a JSONObject
+     * @return a JSONObject containing the user account information
+     */
     private JSONObject packJson() {
         JSONArray interests = new JSONArray();
         interests.put(interestResult[0]);
@@ -409,6 +458,9 @@ public class ProfileView extends AppCompatActivity {
         return userJson;
     }
 
+    /**
+     * This function signs out the current user
+     */
     private void signOut() {
         mGoogleSignInClient.signOut()
                 .addOnCompleteListener(this, new OnCompleteListener<Void>() {

@@ -39,8 +39,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateAccView extends AppCompatActivity {
+    /*Tag for checking Logcat*/
     private final static String TAG = "CreateAccView";
 
+    /*Text input variables*/
     private TextInputLayout firstName;
     private TextInputLayout lastName;
     private TextInputLayout email;
@@ -51,6 +53,7 @@ public class CreateAccView extends AppCompatActivity {
     private TextInputLayout proximity;
     private TextInputLayout biography;
 
+    /*Drop down box spinner variables*/
     private Spinner genderSpinner1;
     private Spinner genderSpinner2;
     private Spinner interest1Spinner;
@@ -60,10 +63,12 @@ public class CreateAccView extends AppCompatActivity {
     private UserAccount user;
     private String FCM_token;
 
+    /*Volley request variables*/
     private RequestQueue reqQueue;
     private JsonObjectRequest jsonReq;
     private String url = HomeView.HOST_URL + "/users/";
 
+    /*Temp variables to transfer to json*/
     private double[] longLat = {200, 100};
     private String[] genderResult = new String[2];
     private String[] interestResult = new String[3];
@@ -73,6 +78,7 @@ public class CreateAccView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_acc);
 
+        /*Define element id in view for each text input variable*/
         firstName = findViewById(R.id.editTextFirstName);
         lastName = findViewById(R.id.editTextLastName);
         email = findViewById(R.id.editTextEmailAddress);
@@ -83,15 +89,17 @@ public class CreateAccView extends AppCompatActivity {
         proximity = findViewById(R.id.editTextProximity);
         biography = findViewById(R.id.editTextBio);
 
+        /*Edit text variables are defined to add an input listener to each*/
         TextInputEditText firstNameEdit = findViewById(R.id.firstNameInput);
         TextInputEditText lastNameEdit = findViewById(R.id.lastNameInput);
         TextInputEditText ageEdit = findViewById(R.id.ageInput);
         TextInputEditText emailEdit = findViewById(R.id.emailInput);
-        final TextInputEditText locationEdit = findViewById(R.id.locationInput);
+        TextInputEditText locationEdit = findViewById(R.id.locationInput);
         TextInputEditText minAgeEdit = findViewById(R.id.minAgeInput);
         TextInputEditText maxAgeEdit = findViewById(R.id.maxAgeInput);
         TextInputEditText bioEdit = findViewById(R.id.bioInput);
 
+        /*Edit text variables are given an input listener to do error checking*/
         firstNameEdit.addTextChangedListener(new MyTextWatcher(firstNameEdit));
         lastNameEdit.addTextChangedListener(new MyTextWatcher(lastNameEdit));
         ageEdit.addTextChangedListener(new MyTextWatcher(ageEdit));
@@ -101,22 +109,25 @@ public class CreateAccView extends AppCompatActivity {
         maxAgeEdit.addTextChangedListener(new MyTextWatcher(maxAgeEdit));
         bioEdit.addTextChangedListener(new MyTextWatcher(bioEdit));
 
+        /*Define element view id for each drop down box variable*/
         genderSpinner1 = findViewById(R.id.genderSpinner1);
         genderSpinner2 = findViewById(R.id.genderSpinner2);
         interest1Spinner = findViewById(R.id.interest1Spinner);
         interest2Spinner = findViewById(R.id.interest2Spinner);
         interest3Spinner = findViewById(R.id.interest3Spinner);
 
+        /*initialize drop down boxes*/
         spinnerSetup(genderSpinner1, R.array.gender_choices, genderResult, 0);
         spinnerSetup(genderSpinner2, R.array.gender_choices2, genderResult, 1);
         spinnerSetup(interest1Spinner, R.array.sport_choices, interestResult, 0);
         spinnerSetup(interest2Spinner, R.array.food_choices, interestResult, 1);
         spinnerSetup(interest3Spinner, R.array.hobby_choices, interestResult, 2);
 
+        /*Obtain data passed through intents*/
         this.user = (UserAccount) getIntent().getSerializableExtra("profile");
         this.FCM_token = (String) getIntent().getSerializableExtra("FCMToken");
 
-        // auto fill information
+        /*auto-fill information from google account*/
         firstName.getEditText().setText(user.getFirstName());
         lastName.getEditText().setText(user.getLastName());
         email.getEditText().setText(user.getEmail());
@@ -124,20 +135,7 @@ public class CreateAccView extends AppCompatActivity {
         findViewById(R.id.create_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String searchString = locationEdit.getText().toString();
-                Geocoder geocoder = new Geocoder(CreateAccView.this);
-                List<Address> list = new ArrayList<>();
-                try {
-                    list = geocoder.getFromLocationName(searchString, 1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.d(TAG, "something wrong finding location");
-                }
-                if (list.size() > 0) {
-                    Address address = list.get(0);
-                    longLat[0] = address.getLongitude();
-                    longLat[1] = address.getLatitude();
-                }
+                geocode();
                 if (checkTests()) {
                     JSONObject userJson = packJson();
                     reqQueue = Volley.newRequestQueue(CreateAccView.this);
@@ -147,7 +145,7 @@ public class CreateAccView extends AppCompatActivity {
                             Log.d(TAG, response.toString());
                             packUserAccount();
                             Intent home = new Intent(CreateAccView.this, HomeView.class);
-                            home.putExtra("profile", user);
+                            home.putExtra("profile", user); // pass the UserAccount into the home intent
                             Toast.makeText(CreateAccView.this, "Account Creation Successful", Toast.LENGTH_SHORT).show();
                             startActivity(home);
                         }
@@ -155,6 +153,8 @@ public class CreateAccView extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d(TAG, "Error: " + error.getMessage());
+                            error.printStackTrace();
+                            Toast.makeText(CreateAccView.this, "Server Error", Toast.LENGTH_SHORT).show();
                         }
                     });
                     reqQueue.add(jsonReq);
@@ -165,6 +165,32 @@ public class CreateAccView extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function gets the longitude and latitude if the location is real
+     */
+    private void geocode() {
+        Geocoder geocoder = new Geocoder(CreateAccView.this);
+        List<Address> list = new ArrayList<>();
+        try {
+            list = geocoder.getFromLocationName(location.getEditText().getText().toString(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "something wrong finding location");
+        }
+        if (list.size() > 0) {
+            Address address = list.get(0);
+            longLat[0] = address.getLongitude();
+            longLat[1] = address.getLatitude();
+        }
+    }
+
+    /**
+     * This function initializes the adapter and the choices for each drop down box
+     * @param spinner the spinner variable being setup
+     * @param resource the res string array id
+     * @param output the array to set the chosen option to
+     * @param arrayIndex the position in the output array to write to
+     */
     private void spinnerSetup(final Spinner spinner, int resource, final String[] output, final int arrayIndex) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(resource));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -183,6 +209,10 @@ public class CreateAccView extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function packs user account information from text inputs
+     * and stores it in the existing UserAccount model
+     */
     private void packUserAccount() {
         user.setFirstName(firstName.getEditText().getText().toString());
         user.setLastName(lastName.getEditText().getText().toString());
@@ -202,7 +232,7 @@ public class CreateAccView extends AppCompatActivity {
             user.setMaxAge(Integer.parseInt(maxAge.getEditText().getText().toString()));
         }
         if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-            user.setProximity(15);
+            user.setProximity(20);
         } else {
             user.setProximity(Integer.parseInt(proximity.getEditText().getText().toString()));
         }
@@ -210,6 +240,10 @@ public class CreateAccView extends AppCompatActivity {
         user.setBiography(biography.getEditText().getText().toString());
     }
 
+    /**
+     * This function packs the user account information from text inputs into a JSONObject
+     * @return a JSONObject containing the user account information
+     */
     private JSONObject packJson() {
         JSONArray interests = new JSONArray();
         interests.put(interestResult[0]);
@@ -244,7 +278,7 @@ public class CreateAccView extends AppCompatActivity {
             preferenceJson.put("gender", genderResult[1]);
             preferenceJson.put("ageRange", ageRangeJson);
             if (proximity.getEditText().getText().toString().trim().isEmpty()) {
-                preferenceJson.put("proximity", 15);
+                preferenceJson.put("proximity", 20);
             } else {
                 preferenceJson.put("proximity", Integer.parseInt(proximity.getEditText().getText().toString()));
             }
@@ -271,10 +305,13 @@ public class CreateAccView extends AppCompatActivity {
             Log.d(TAG, "failed to create user json");
             e.printStackTrace();
         }
-        Log.d(TAG, userJson.toString());
         return userJson;
     }
 
+    /**
+     * This function checks whether the first name text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkFirstName() {
         String firstNameInput = firstName.getEditText().getText().toString().trim();
 
@@ -290,6 +327,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the last name text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkLastName() {
         String lastNameInput = lastName.getEditText().getText().toString().trim();
 
@@ -305,6 +346,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the age text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkAge() {
         String ageInput = age.getEditText().getText().toString().trim();
 
@@ -320,6 +365,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the minimum age text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkMinAge() {
         String minInput = minAge.getEditText().getText().toString().trim();
 
@@ -335,6 +384,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the maximum age text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkMaxAge() {
         String maxInput = maxAge.getEditText().getText().toString().trim();
 
@@ -350,6 +403,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the maximum age is greater than or equal to the minimum age
+     * @return true if valid, false otherwise
+     */
     private boolean checkAgeDiff() {
         String minInput = minAge.getEditText().getText().toString().trim();
         String maxInput = maxAge.getEditText().getText().toString().trim();
@@ -369,6 +426,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the email text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkEmail() {
         String emailInput = email.getEditText().getText().toString().trim();
 
@@ -384,6 +445,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the location text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkLocation() {
         String locationInput = location.getEditText().getText().toString().trim();
 
@@ -396,6 +461,12 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the location inputted is a real location based on the longitude and latitude
+     * @param longitude longitude of the location inputted
+     * @param latitude latitude of the location inputted
+     * @return true if valid, false otherwise
+     */
     private boolean isLocationValid(double longitude, double latitude) {
         String locationInput = location.getEditText().getText().toString().trim();
 
@@ -411,6 +482,10 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether the biography text input is valid
+     * @return true if valid, false otherwise
+     */
     private boolean checkBio() {
         String bioInput = biography.getEditText().getText().toString().trim();
 
@@ -426,6 +501,11 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks whether a spinner input is chosen
+     * @param spinner the drop down box being checked
+     * @return true if valid, false otherwise
+     */
     private boolean checkSpinner(Spinner spinner) {
         String spinnerInput = spinner.getSelectedItem().toString();
 
@@ -438,14 +518,27 @@ public class CreateAccView extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function checks all the tests
+     * @return  true if valid, false otherwise
+     */
     private boolean checkTests() {
-        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | spinnerChecks() | !checkMinAge() | !checkMaxAge() | !isLocationValid(longLat[0], longLat[1]) | !checkAgeDiff() | !checkBio());
+        return !(!checkEmail() | !checkFirstName() | !checkLastName() | !checkAge() | !checkLocation() | spinnerChecks()
+                | !checkMinAge() | !checkMaxAge() | !isLocationValid(longLat[0], longLat[1]) | !checkAgeDiff() | !checkBio());
     }
 
+    /**
+     * This function checks all the spinner tests
+     * @return  true if valid, false otherwise
+     */
     private boolean spinnerChecks() {
-        return (!checkSpinner(genderSpinner1) | !checkSpinner(genderSpinner2) | !checkSpinner(interest1Spinner) | !checkSpinner(interest2Spinner) | !checkSpinner(interest3Spinner));
+        return (!checkSpinner(genderSpinner1) | !checkSpinner(genderSpinner2) | !checkSpinner(interest1Spinner)
+                | !checkSpinner(interest2Spinner) | !checkSpinner(interest3Spinner));
     }
 
+    /**
+     * This is a class defined to do checks on the input of text (real-time)
+     */
     private class MyTextWatcher implements TextWatcher {
 
         private View view;
@@ -464,6 +557,7 @@ public class CreateAccView extends AppCompatActivity {
 //            this is meant to be empty since not checking when text is changed
         }
 
+        /*After a character is input into a text edit, this does a check for the respective text input*/
         @Override
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {

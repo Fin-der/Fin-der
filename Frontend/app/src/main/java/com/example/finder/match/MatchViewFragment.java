@@ -23,11 +23,22 @@ import com.example.finder.views.HomeView;
 
 import org.json.JSONObject;
 
+/**
+ * Fragment holding the profile picture, biography, and name of the potential match for
+ * the user
+ */
 public class MatchViewFragment extends Fragment {
     private UserAccount match;
     private String userId;
     private final String HOST_URL = HomeView.HOST_URL + "/match/";
 
+    /**
+     * Creates the fragment instance and bundle containing relevant information
+     *
+     * @param match The potential match for the user
+     * @param userId The user's ID
+     * @return MathViewFragment to be loaded onto MatchView
+     */
     public static MatchViewFragment createInstance(UserAccount match, String userId) {
         MatchViewFragment inst = new MatchViewFragment();
         Bundle args = new Bundle();
@@ -37,6 +48,11 @@ public class MatchViewFragment extends Fragment {
         return inst;
     }
 
+    /**
+     * Retrieves relevant information and creates instance
+     *
+     * @param savedInstance Contains information about userId and the potential match
+     */
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
@@ -44,18 +60,33 @@ public class MatchViewFragment extends Fragment {
         userId = getArguments().getString("userId");
     }
 
+    /**
+     * Loads fragment onto screen
+     * Attach approve() and deny() functions for swiping and buttons
+     *
+     * @param inflater Inflator
+     * @param container Container
+     * @param savedInstanceState savedInstanceState
+     * @return the created MathViewFragment
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.activity_match_fragment,
                                                             container, false);
         TextView name = rootView.findViewById(R.id.match_name);
+
         name.setText(match.getFirstName() + " " + match.getLastName());
+
         TextView bio = rootView.findViewById(R.id.match_bio);
+
         bio.setText(match.getBiography());
+
         ImageView profilePic = rootView.findViewById(R.id.match_profilePic);
+
         ImageLoaderHelper.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
                                         profilePic.getWidth(), profilePic.getHeight());
+
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +113,11 @@ public class MatchViewFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Function handling user approval of potential match
+     *
+     * @param view MatchViewFragment to attach function onto
+     */
     private void approve(final View view) {
         RequestQueue que = Volley.newRequestQueue(getActivity());
         JsonObjectRequest req = new JsonObjectRequest(
@@ -101,6 +137,11 @@ public class MatchViewFragment extends Fragment {
         que.add(req);
     }
 
+    /**
+     * Function handling user disapproval/decline of potential match
+     *
+     * @param view MatchViewFragment to attach function onto
+     */
     private void deny(final View view) {
         RequestQueue que = Volley.newRequestQueue(getActivity());
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT,
