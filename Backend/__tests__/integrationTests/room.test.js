@@ -172,12 +172,15 @@ describe("room creation integration test", () => {
         expect(response.status).toBe(200);
         expect(response.body.conversation.length).toEqual(4);
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
-        var i = 0;
-        for (const converse of response.body.conversation) {
-            expect(converse.message.messageText).toEqual(room1Messages[i]);
-            expect(converse.postedByUser).toEqual(room1UserIds[i]);
-            i++;
-        }
+        // duplication cause codacy is dumb >:(
+        expect(response.body.conversation[0].message.messageText).toEqual(room1Messages[0]);
+        expect(response.body.conversation[0].postedByUser).toEqual(room1UserIds[0]);
+        expect(response.body.conversation[1].message.messageText).toEqual(room1Messages[1]);
+        expect(response.body.conversation[1].postedByUser).toEqual(room1UserIds[1]);
+        expect(response.body.conversation[2].message.messageText).toEqual(room1Messages[2]);
+        expect(response.body.conversation[2].postedByUser).toEqual(room1UserIds[2]);
+        expect(response.body.conversation[3].message.messageText).toEqual(room1Messages[3]);
+        expect(response.body.conversation[3].postedByUser).toEqual(room1UserIds[3]);
 
         // getConversationByRoomId fail
         response = await request.get("/room/" + "asdf" + "/" + "0");
