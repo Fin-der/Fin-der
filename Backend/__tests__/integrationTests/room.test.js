@@ -90,6 +90,13 @@ describe("room creation integration test", () => {
     }
 
     const room1UserIds = [user1._id, user2._id, user3._id, user4._id];
+    
+    const user1Message = "Hello, Gamer";
+    const user2Message = "Hello, Fellow Gamer";
+    const user3Message = "Wassup My Homies";
+    const user4Message = "Hello Hello Hello";
+
+    const room1Messages = [user1Message, user2Message, user3Message, user4Message];
 
     const exampleRoom1 = {
         _id: "DEADBEEF",
@@ -97,9 +104,7 @@ describe("room creation integration test", () => {
         chatInitiator: "4"
     };
 
-
     const FCMToken = "234878239487";
-
     
     it("IntegrationTest Matching", async (done) => {
         // populate users
@@ -145,27 +150,27 @@ describe("room creation integration test", () => {
 
         // postMessage success
         response = await request.post("/room/" + roomId + "/" + user1._id + "/message")
-            .send({"messageText": "Hello, Gamer"});
+            .send({"messageText": user1Message});
         expect(response.status).toBe(200);
-        expect(response.body.post.message.messageText).toEqual("Hello, Gamer");
+        expect(response.body.post.message.messageText).toEqual(user1Message);
         expect(response.body.post.postedByUser._id).toEqual(user1._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user2._id + "/message")
-            .send({"messageText": "Hello, Fellow Gamer"});
+            .send({"messageText": user2Message});
         expect(response.status).toBe(200);
-        expect(response.body.post.message.messageText).toEqual("Hello, Fellow Gamer");
+        expect(response.body.post.message.messageText).toEqual(user2Message);
         expect(response.body.post.postedByUser._id).toEqual(user2._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user3._id + "/message")
-            .send({"messageText": "Wassup My Homies"});
+            .send({"messageText": user3Message});
         expect(response.status).toBe(200);
-        expect(response.body.post.message.messageText).toEqual("Wassup My Homies");
+        expect(response.body.post.message.messageText).toEqual(user3Message);
         expect(response.body.post.postedByUser._id).toEqual(user3._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
         response = await request.post("/room/" + roomId + "/" + user4._id + "/message")
-            .send({"messageText": "Hello Hello Hello"});
+            .send({"messageText": user4Message});
         expect(response.status).toBe(200);
-        expect(response.body.post.message.messageText).toEqual("Hello Hello Hello");
+        expect(response.body.post.message.messageText).toEqual(user4Message);
         expect(response.body.post.postedByUser._id).toEqual(user4._id);
         expect(response.body.post.chatRoomId).toEqual(roomId);
 
@@ -177,16 +182,18 @@ describe("room creation integration test", () => {
         response = await request.get("/room").send({"userId": user1._id});
         expect(response.status).toBe(200);
         expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
-        
-
-        console.log(response.body);
-        console.log(response.body.conversation.postedByUser);
-
-        expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
+        expect(response.body.conversation[0].message.messageText).toEqual(user4Message);
+        expect(response.body.conversation[0].postedByUser._id).toEqual(user4._id);
 
         // getConversationByRoomId success
         response = await request.get("/room/" + roomId + "/" + "0");
         expect(response.status).toBe(200);
+        expect(response.body.conversation.length).toEqual(4);
+        expect(response.body.conversation[0].chatRoomId).toEqual(roomId);
+        for (var i = 0; i < 4; i++){
+            expect(response.body.conversation[i].message.messageText).toEqual(room1Messages[i]);
+            expect(response.body.conversation[i].postedByUser._id).toEqual(room1UserIds[i]);
+        }
 
         // getConversationByRoomId fail
         response = await request.get("/room/" + "asdf" + "/" + "0");
@@ -195,48 +202,12 @@ describe("room creation integration test", () => {
         // markConversation Read success
         response = await request.put("/room/" + roomId + "/" + user1._id + "/mark-read");
         expect(response.status).toBe(200);
+        expect(response.body.data).toEqual(expect.anything());
 
         // markConversation room doesnt exist
         response = await request.put("/room/" + "asdf" + "/" + user1._id + "/mark-read");
         expect(response.status).toBe(500);
 
-
-
-/*         // get all users
-        response = await request.get("/users");
-        expect(response.status).toBe(200);
-        expect(response.body.users).toMatchObject([user1, user2, user3, user4]);
-        // get users by id
-        response = await request.get("/users/" + user1._id);
-        expect(response.status).toBe(200);
-        expect(response.body.user).toMatchObject(user1);
-        response = await request.get("/users/" + user2._id);
-        expect(response.status).toBe(200);
-        expect(response.body.user).toMatchObject(user2);
-        response = await request.get("/users/" + user3._id);
-        expect(response.status).toBe(200);
-        expect(response.body.user).toMatchObject(user3);
-        response = await request.get("/users/" + "2394078");
-        expect(response.status).toBe(500);
-        // delete user
-        response = await request.delete("/users/" + user4._id);
-        expect(response.status).toBe(200);
-        response = await request.get("/users/" + user4._id);
-        expect(response.status).toBe(500);
-        // update user
-        // user doesnt exist
-        response = await request.put("/users/" + user5._id);
-        expect(response.status).toBe(500);
-        response = await request.put("/users/" + user2._id)
-                                .send(user1);
-        expect(response.status).toBe(200);
-        let user = JSON.parse(JSON.stringify(user1));
-        user._id = user2._id; //user keeps their _id
-        expect(response.body.user).toMatchObject(user);
-        // register FCM tokens
-        response = await request.put("/users/" + user3._id + "/" + FCMToken);
-        expect(response.status).toBe(200);
-        expect(response.body.message).toBe("Token: " + FCMToken + " successfully registed with User(ID): " + user3._id); */
         done();
     });
 
