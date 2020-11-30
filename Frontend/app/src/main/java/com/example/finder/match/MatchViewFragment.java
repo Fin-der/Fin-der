@@ -1,9 +1,7 @@
 package com.example.finder.match;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,7 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.R;
-import com.example.finder.controller.GProfileImageLoader;
+import com.example.finder.controller.ImageLoaderHelper;
 import com.example.finder.models.UserAccount;
 import com.example.finder.views.HomeView;
 
@@ -56,7 +54,7 @@ public class MatchViewFragment extends Fragment {
         TextView bio = rootView.findViewById(R.id.match_bio);
         bio.setText(match.getBiography());
         ImageView profilePic = rootView.findViewById(R.id.match_profilePic);
-        GProfileImageLoader.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
+        ImageLoaderHelper.loadProfilePic(getActivity(), profilePic, match.getpfpUrl(),
                                         profilePic.getWidth(), profilePic.getHeight());
         rootView.findViewById(R.id.match_accept).setOnClickListener(new View.OnClickListener() {
             @Override

@@ -25,7 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.finder.MainActivity;
-import com.example.finder.controller.GProfileImageLoader;
+import com.example.finder.controller.ImageLoaderHelper;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -97,7 +97,7 @@ public class ProfileView extends AppCompatActivity {
         maxAge.getEditText().setText(user.getMaxAge());
         proximity.getEditText().setText(user.getProximity());
         biography.getEditText().setText(user.getBiography());
-        GProfileImageLoader.loadProfilePic(this, profilePic, user.getpfpUrl(), 100, 100);
+        ImageLoaderHelper.loadProfilePic(this, profilePic, user.getpfpUrl(), 100, 100);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
