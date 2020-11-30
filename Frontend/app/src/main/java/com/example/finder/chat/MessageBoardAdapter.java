@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.finder.controller.GProfileImageLoader;
+import com.example.finder.controller.ImageLoaderHelper;
 import com.example.finder.models.UserAccount;
 import com.example.finder.R;
 import com.example.finder.views.ChatView;
@@ -63,7 +63,7 @@ public class MessageBoardAdapter extends RecyclerView.Adapter {
         private void bind(final UserAccount friend, final UserAccount user) {
             final String fullFriendName = friend.getFirstName() + " " + friend.getLastName();
             this.name.setText(fullFriendName);
-            GProfileImageLoader.loadProfilePic(context, profilePic, friend.getpfpUrl(),
+            ImageLoaderHelper.loadProfilePic(context, profilePic, friend.getpfpUrl(),
                                                 profilePic.getWidth(), profilePic.getHeight());
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

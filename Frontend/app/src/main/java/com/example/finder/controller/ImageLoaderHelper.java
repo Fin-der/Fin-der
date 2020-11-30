@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.finder.R;
 
-public class GProfileImageLoader {
+public class ImageLoaderHelper {
     public static void loadProfilePic(Context context, ImageView view, String pic, int width, int height) {
         if (!pic.equals("null")) {
             Glide.with(context)

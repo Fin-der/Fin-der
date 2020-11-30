@@ -99,7 +99,7 @@ public class UserAccGenerator {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.DELETE, HOST_URL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                System.out.println("Deleted Account");
             }
         }, new Response.ErrorListener() {
             @Override

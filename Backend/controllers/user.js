@@ -3,6 +3,7 @@
  */
 import UserModel from "../models/User.js";
 import { MatchEdgeModel, MatchVertexModel } from "../models/Match.js";
+import ChatRoomModel from "../models/ChatRoom.js";
 import {logger} from "../app.js";
 
 export default {
@@ -102,6 +103,7 @@ export default {
             const user = await UserModel.deleteUserById(id);
             await MatchVertexModel.deleteMatchVertex(id);
             await MatchEdgeModel.deleteEdgesWithId(id);
+            await ChatRoomModel.deleteUserFromChatRooms(id);
             return res.status(200).json({ 
                 success: true, 
                 message: `Deleted a count of ${user.deletedCount} user.` 

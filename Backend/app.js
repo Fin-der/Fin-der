@@ -3,7 +3,6 @@ import pino from "pino";
 // routes
 import userRouter from "./routes/user.js";
 import chatRoomRouter from "./routes/chatRoom.js";
-import deleteRouter from "./routes/delete.js";
 import matchRouter from "./routes/match.js";
 
 // Initialize Pino logger
@@ -23,8 +22,6 @@ app.use(express.json());
 app.use("/users", userRouter);
 // Routes fro chatting
 app.use("/room", chatRoomRouter); 
-// Routes for deleting chatting
-app.use("/delete", deleteRouter);
 // Routes for matching
 app.use("/match", matchRouter);
 

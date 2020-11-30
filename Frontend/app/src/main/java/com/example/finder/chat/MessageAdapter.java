@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finder.R;
-import com.example.finder.controller.GProfileImageLoader;
+import com.example.finder.controller.ImageLoaderHelper;
 import com.example.finder.models.Message;
 import com.example.finder.models.UserAccount;
 
@@ -95,7 +95,7 @@ public class MessageAdapter extends RecyclerView.Adapter {
             messageText.setText(message.getMessage());
             timeText.setText(message.getPostAt());
             nameText.setText(message.getSenderName());
-            GProfileImageLoader.loadProfilePic(context, profileImage, profilePic, 32, 32);
+            ImageLoaderHelper.loadProfilePic(context, profileImage, profilePic, 32, 32);
         }
     }
 
