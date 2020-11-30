@@ -370,8 +370,9 @@ describe("test matchs models", () => {
 
     it("getPotentialMatch", async (done) => {
         const matchesCopy = JSON.parse(JSON.stringify(matches));
-        MatchEdgeModel.find = jest.fn(() => {return matchesCopy;});
-        UserModel.findOne = jest.fn(() => {return;});
+        MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
+                lean: jest.fn().mockResolvedValue(matchesCopy)
+        }));
 
         const matchs = await MatchEdgeModel.getPotentialMatches(user._id);
         expect(matchs).toBe(matchesCopy);
@@ -379,8 +380,11 @@ describe("test matchs models", () => {
     });
 
     it("getPotentialMatch error", async (done) => {
-        MatchEdgeModel.find = jest.fn(() => {throw error;});
-        UserModel.findOne = jest.fn(() => {return;});
+        MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
+            lean: jest.fn().mockImplementation(() => {
+                throw error;
+            })
+        }));
     
         try {
             await MatchEdgeModel.getPotentialMatches(user._id);

@@ -84,6 +84,7 @@ describe("test match controller", () => {
         FirebaseMessaging.sendNotifMsg = jest.fn(() => {return; });
         MatchVertexModel.addPotentialMatches = jest.fn(() => {return; });
         MatchEdgeModel.createBidirectionalEdge = jest.fn(() => {return; });
+        UserModel.findOne()
 
         const resp = {success:true, matches};
         const response = await request.get("/match/" + userId);
