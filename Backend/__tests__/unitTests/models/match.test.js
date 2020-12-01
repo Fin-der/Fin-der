@@ -120,7 +120,12 @@ describe("test matchs models", () => {
     
     beforeAll(async () => {
         // Setup
-        await mongoose.connect("mongodb://localhost:27017/test", { useNewUrlParser: true, useUnifiedTopology: true  });
+        await mongoose.connect("mongodb://localhost:27017/test", { 
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true,
+            useFindAndModify: false  
+        });
         server = http.createServer(app);
         server.listen(port);
     });
@@ -198,6 +203,7 @@ describe("test matchs models", () => {
                 ))
             }
         ));
+        user.toObject = jest.fn(() => {return user;});
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
@@ -207,22 +213,21 @@ describe("test matchs models", () => {
     it("getUsersForMatching using graphlookup", async (done) => {
         const options = {
             skip: 0,
-            limit: 0
+            limit: 25
         };
         const aggregate = {
             mutuals: [user, user, user]
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
-        UserModel.find = jest.fn().mockImplementation(() => (
-            { 
-                skip: jest.fn().mockImplementation(() => (
-                    { 
-                        limit: jest.fn().mockResolvedValue([user, user, user])
-                    }
-                ))
-            }
-        ));
+        UserModel.find = jest.fn().mockImplementation(() => ({
+            where: jest.fn().mockImplementation(() => ({ 
+                skip: jest.fn().mockImplementation(() => ({ 
+                    limit: jest.fn().mockResolvedValue([user, user, user])
+                }))
+            }))
+        }));
+        user.toObject = jest.fn(() => {return user;});
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual(aggregate.mutuals);
@@ -239,15 +244,12 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return user;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
-        UserModel.find = jest.fn().mockImplementation(() => (
-            { 
-                skip: jest.fn().mockImplementation(() => (
-                    { 
-                        limit: jest.fn().mockResolvedValue([])
-                    }
-                ))
-            }
-        ));
+        UserModel.find = jest.fn().mockImplementation(() => ({
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockResolvedValue([])
+            }))
+        }));
+        user.toObject = jest.fn(() => {return user;});
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual(aggregate.mutuals);
@@ -261,15 +263,12 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return simpleUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementation(() => (
-            { 
-                skip: jest.fn().mockImplementation(() => (
-                    { 
-                        limit: jest.fn().mockResolvedValue([user, user, user])
-                    }
-                ))
-            }
-        ));
+        UserModel.find = jest.fn().mockImplementation(() => ({
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockResolvedValue([user, user, user])
+            }))
+        }));
+        simpleUser.toObject = jest.fn(() => {return simpleUser;});
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
@@ -283,15 +282,12 @@ describe("test matchs models", () => {
         };
         UserModel.getUserById = jest.fn(() => {return noPreferenceUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return {};});
-        UserModel.find = jest.fn().mockImplementation(() => (
-            { 
-                skip: jest.fn().mockImplementation(() => (
-                    { 
-                        limit: jest.fn().mockResolvedValue([user, user, user])
-                    }
-                ))
-            }
-        ));
+        UserModel.find = jest.fn().mockImplementation(() => ({
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockResolvedValue([user, user, user])
+            }))
+        }));
+        noPreferenceUser.toObject = jest.fn(() => {return noPreferenceUser;});
 
         const users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual([user, user, user]);
@@ -321,6 +317,7 @@ describe("test matchs models", () => {
                 ))
             }
         ));
+        testUser.toObject = jest.fn(() => {return testUser;});
 
         let users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual(aggregate.mutuals);
@@ -330,15 +327,11 @@ describe("test matchs models", () => {
         testUser.preferences.proximity = 100000; 
         UserModel.getUserById = jest.fn(() => {return testUser;});
         MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
-        UserModel.find = jest.fn().mockImplementation(() => (
-            { 
-                skip: jest.fn().mockImplementation(() => (
-                    { 
-                        limit: jest.fn().mockResolvedValue([])
-                    }
-                ))
-            }
-        ));
+        UserModel.find = jest.fn().mockImplementation(() => ({ 
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockResolvedValue([])
+            }))
+        }));
 
         users = await MatchVertexModel.getUsersForMatching(user._id, options);
         expect(users).toEqual(aggregate.mutuals);
@@ -348,7 +341,7 @@ describe("test matchs models", () => {
 
     it("addPotentialMatch", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
-        MatchVertexModel.updateOne = jest.fn(() => {return vertex;});
+        MatchVertexModel.findOneAndUpdate = jest.fn(() => {return vertex;});
     
         const vert = await MatchVertexModel.addPotentialMatches(user._id, [user]);
         expect(vert).toBe(vertex);
@@ -357,7 +350,7 @@ describe("test matchs models", () => {
 
     it("addPotentialMatch error", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
-        MatchVertexModel.updateOne = jest.fn(() => {throw error;});
+        MatchVertexModel.findOneAndUpdate = jest.fn(() => {throw error;});
         try {
             await MatchVertexModel.addPotentialMatches(user._id, [user]);
             done.fail(new Error("addpotential should have thrown an error"));
@@ -371,7 +364,13 @@ describe("test matchs models", () => {
     it("getPotentialMatch", async (done) => {
         const matchesCopy = JSON.parse(JSON.stringify(matches));
         MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
-                lean: jest.fn().mockResolvedValue(matchesCopy)
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockImplementation(() => ({ 
+                    sort: jest.fn().mockImplementation(() => ({ 
+                        lean: jest.fn().mockResolvedValue(matchesCopy)
+                    }))
+                }))
+            }))
         }));
 
         const matchs = await MatchEdgeModel.getPotentialMatches(user._id);
@@ -381,9 +380,15 @@ describe("test matchs models", () => {
 
     it("getPotentialMatch error", async (done) => {
         MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
-            lean: jest.fn().mockImplementation(() => {
-                throw error;
-            })
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockImplementation(() => ({ 
+                    sort: jest.fn().mockImplementation(() => ({ 
+                        lean: jest.fn().mockImplementation(() => {
+                            throw error;
+                        })
+                    }))
+                }))
+            }))
         }));
     
         try {
@@ -398,7 +403,15 @@ describe("test matchs models", () => {
 
     it("getFriendMatch", async (done) => {
         const matchesCopy = JSON.parse(JSON.stringify(matches));
-        MatchEdgeModel.find = jest.fn(() => {return matchesCopy;});
+        MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockImplementation(() => ({ 
+                    sort: jest.fn().mockImplementation(() => ({ 
+                        lean: jest.fn().mockResolvedValue(matchesCopy)
+                    }))
+                }))
+            }))
+        }));
         UserModel.findOne = jest.fn(() => {return;});
 
         const matchs = await MatchEdgeModel.getFriendMatches(user._id);
@@ -407,7 +420,17 @@ describe("test matchs models", () => {
     });
 
     it("getFriendMatch error", async (done) => {
-        MatchEdgeModel.find = jest.fn(() => {throw error;});
+        MatchEdgeModel.find = jest.fn().mockImplementation(() => ({ 
+            skip: jest.fn().mockImplementation(() => ({ 
+                limit: jest.fn().mockImplementation(() => ({ 
+                    sort: jest.fn().mockImplementation(() => ({ 
+                        lean: jest.fn().mockImplementation(() => {
+                            throw error;
+                        })
+                    }))
+                }))
+            }))
+        }));
         UserModel.findOne = jest.fn(() => {return;});
         
         try {
