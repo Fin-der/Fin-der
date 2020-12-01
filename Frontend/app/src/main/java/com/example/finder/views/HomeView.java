@@ -1,6 +1,7 @@
 package com.example.finder.views;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -147,7 +148,9 @@ public class HomeView extends AppCompatActivity {
                         String id = acc.getString("_id");
                         String firstName = acc.getString("firstName");
                         String lastName = acc.getString("lastName");
+                        Uri profileURI = Uri.parse(acc.getString("profileURL"));
                         UserAccount friend = new UserAccount(id, firstName, lastName);
+                        friend.setpfpUrl(profileURI);
                         user.getFriendMatches().add(friend);
                     }
                     initMessageBoard();

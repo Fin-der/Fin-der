@@ -2,6 +2,7 @@ package com.example.finder.views;
 
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
 import java.util.ArrayList;
 
 public class MatchView extends AppCompatActivity {
@@ -164,11 +166,13 @@ public class MatchView extends AppCompatActivity {
             String id = acc.getString("_id");
             String biography = acc.getString("description");
             String matchId = matches.getJSONObject(i).getString("_id");
+            String profileURI = matches.getJSONObject(i).getString("profileURL");
             int age = acc.getInt("age");
             UserAccount match = new UserAccount(id, firstName, lastName, email);
             match.setBiography(biography);
             match.setAge(age);
             match.setMatchId(matchId);
+            match.setpfpUrl(Uri.parse(profileURI));
             toBeMatched.add(match);
         }
         Log.d("Matches", "Done finding matches");
