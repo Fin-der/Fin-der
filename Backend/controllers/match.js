@@ -5,7 +5,6 @@ import { MatchVertexModel, MatchEdgeModel } from "../models/Match.js";
 import UserModel from "../models/User.js";
 import FirebaseMessaging from "../utils/FirebaseMessaging.js";
 import {logger} from "../app.js";
-import User from "../models/User.js";
 
 export default {
     /**
