@@ -30,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 public class MatchView extends AppCompatActivity {
@@ -91,7 +90,7 @@ public class MatchView extends AppCompatActivity {
                         public void onResponse(JSONObject response) {
                             ArrayList<UserAccount> newMatches = new ArrayList<>();
                             try {
-                                parseMatches(response, newMatches);
+                                parseEdges(response.getJSONArray("matches"), newMatches);
                                 if (newMatches.isEmpty()) {
                                     Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
                                 } else {
@@ -152,12 +151,11 @@ public class MatchView extends AppCompatActivity {
      * Parses a JSONObject response retrieved from the backend and places them in the given
      * ArrayList
      *
-     * @param response JSONObject containg the server response
+     * @param matches JSONObject containg the server response
      * @param toBeMatched Arraylist to store the matches in
      * @throws JSONException if error parsing through server response
      */
-    public static void parseMatches(JSONObject response, ArrayList<UserAccount> toBeMatched) throws JSONException {
-        JSONArray matches = (JSONArray) response.get("matches");
+    public static void parseEdges(JSONArray matches, ArrayList<UserAccount> toBeMatched) throws JSONException {
         for (int i = 0; i < matches.length(); i++) {
             JSONObject acc = matches.getJSONObject(i).getJSONObject("to");
             String firstName = acc.getString("firstName");
@@ -166,7 +164,7 @@ public class MatchView extends AppCompatActivity {
             String id = acc.getString("_id");
             String biography = acc.getString("description");
             String matchId = matches.getJSONObject(i).getString("_id");
-            String profileURI = matches.getJSONObject(i).getString("profileURL");
+            String profileURI = acc.getString("profileURL");
             int age = acc.getInt("age");
             UserAccount match = new UserAccount(id, firstName, lastName, email);
             match.setBiography(biography);

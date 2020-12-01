@@ -143,16 +143,7 @@ public class HomeView extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray friends = (JSONArray) response.get("friends");
-                    for (int i = 0; i < friends.length(); i++) {
-                        JSONObject acc = friends.getJSONObject(i).getJSONObject("to");
-                        String id = acc.getString("_id");
-                        String firstName = acc.getString("firstName");
-                        String lastName = acc.getString("lastName");
-                        Uri profileURI = Uri.parse(acc.getString("profileURL"));
-                        UserAccount friend = new UserAccount(id, firstName, lastName);
-                        friend.setpfpUrl(profileURI);
-                        user.getFriendMatches().add(friend);
-                    }
+                    MatchView.parseEdges(friends, user.getFriendMatches());
                     initMessageBoard();
                 } catch (JSONException e) {
                     Log.d(TAG, "failed to parse friend json");
@@ -200,7 +191,7 @@ public class HomeView extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try { //String id, String firstName, String lastName, String email) {
-                            MatchView.parseMatches(response, toBeMatched);
+                            MatchView.parseEdges(response.getJSONArray("matches"), toBeMatched);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

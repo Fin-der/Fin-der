@@ -180,9 +180,14 @@ public class ChatController {
      * @return Request body for getRecentConversation call to retrieve old messages
      */
     private JsonObjectRequest grabConversation() {
-        final String GET_LIMIT = "?limit=25&page=";
+        JSONObject skip = new JSONObject();
+        try {
+            skip.put("skip", chatPos);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         return new JsonObjectRequest(Request.Method.GET,
-                HOST_URL + "/room/" + roomId + "/" + GET_LIMIT + chatPos, null,
+                HOST_URL + "/room/" + roomId + "/" + chatPos, skip,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -191,8 +196,7 @@ public class ChatController {
                             ArrayList<Message> list = new ArrayList<>();
                             for (int i = 0; i < convo.length(); i++) {
                                 Message msg = parseMessage((JSONObject) convo.get(i));
-                                if (!messages.contains(msg))
-                                    list.add(msg);
+                                list.add(msg);
                             }
                             chatPos += list.size();
                             Log.d("ChatController", "Messages Size: " + messages.size());
@@ -273,7 +277,7 @@ public class ChatController {
      */
     private Message parseMessage(JSONObject message) throws JSONException {
         String messageText = ((JSONObject) message.get("message")).getString("messageText");
-        String userId = ((JSONObject) message.get("postedByUser")).getString("_id");
+        String userId = message.getString("postedByUser");
         String postAt = message.getString("createdAt");
         Message msg;
         if (userId.equals(rId)) {
@@ -316,6 +320,7 @@ public class ChatController {
                 error.printStackTrace();
             }
         });
+        chatPos++;
         this.que.add(req);
     }
 
