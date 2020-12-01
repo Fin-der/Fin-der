@@ -57,7 +57,7 @@ const MatchEdgeSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: false,
+        timestamps: true,
         collection: "matchEdges",
     }
 );
@@ -108,15 +108,17 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     const user = await UserModel.getUserById(userId);
     // Generate query using user preferences
     // generates the query to restrict search results by
+    
     const generateQuery = (user) => {
         let query = {};
+        query._id = {$ne: userId};
+        query.interests = {$in: user.interests};
         if (typeof user.preferences !== "undefined") {
-            calcQuery(user, query);
-            query.interests = {$in: user.interests};
+            calcQuery(user, query);     
         }
         return query;
     };
-    const query = generateQuery(user);
+    const query = generateQuery(user.toObject());
 
     // user graphLookup to find friends of friends
     const aggregate = await this.aggregate( [
@@ -128,21 +130,21 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
         connectToField: "userId",
         maxDepth: 2,
         as: "mutuals",
-        restrictSearchWithMatch: query
       }
     }]);
+
     let mutualCount = 0;
-    if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length >= 0) {
+    if (typeof aggregate.mutuals !== "undefined" && aggregate.mutuals.length > 0) {
         // if they have mutual connection we show them first then random users after that
-        const mutuals = await UserModel.find({_id: {$in: aggregate.mutuals}}).skip(options.page * options.limit).limit(options.limit);
+        const mutuals = await UserModel.find({_id: {$in: aggregate.mutuals}}).where(query).skip(options.page * options.limit).limit(options.limit);
         if (mutuals?.length) {
             mutualCount++;
             return mutuals;
         } else {
-            return await UserModel.find({_id: {$nin: aggregate.mutuals}}).skip(options.page * options.limit - mutualCount).limit(options.limit);
+            return await UserModel.find({_id: {$nin: aggregate.mutuals}}).where(query).skip((options.page - mutualCount)* options.limit).limit(options.limit);
         }
     } else {
-        return await UserModel.find().skip(options.page * options.limit).limit(options.limit);
+        return await UserModel.find({_id: {$ne: userId}}).skip(options.page * options.limit).limit(options.limit);
     }
 };
 
@@ -155,7 +157,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
  * @returns {Object} The updated user Vertex Object
  */
 MatchVertexSchema.statics.addPotentialMatches = async function (userId, userIds) {
-    const userVertex = await this.updateOne({userId}, {$push: {matches: { $each: userIds }}}, {multi: true});
+    const userVertex = await this.findOneAndUpdate({userId}, {$addToSet: {matchesId: { $each: userIds }}}, {multi: true});
     return userVertex;
 };
 
@@ -182,9 +184,13 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
  * @param {String} userId - id of the user to get matches for
  * @returns {Array} An array of MatchEdge Objects representing potentialmatches
  */
-MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
+MatchEdgeSchema.statics.getPotentialMatches = async function (userId, options = {}) {
     // we use fromId and fromStatus so that we don't return duplicate edges
-    const edges = await this.find({"fromId": userId, fromStatus: "potential"}).lean();
+    const edges = await this.find({"fromId": userId, fromStatus: "potential"})
+                            .skip(options.page * options.limit)
+                            .limit(options.limit)
+                            .sort({createdAt: 1})
+                            .lean();
     return edges;
 };
 
@@ -196,8 +202,12 @@ MatchEdgeSchema.statics.getPotentialMatches = async function (userId) {
  * @param {String} userId - id of the user to get matches for
  * @returns {Array} An array of MatchEdge Objects representing potentialmatches
  */
-MatchEdgeSchema.statics.getFriendMatches = async function (userId) {
-    const edges = await this.find({"fromId": userId, status: "approved"});
+MatchEdgeSchema.statics.getFriendMatches = async function (userId, options = {}) {
+    const edges = await this.find({"fromId": userId, status: "approved"})
+                            .skip(options.page * options.limit)
+                            .limit(options.limit)
+                            .sort({createdAt: -1})
+                            .lean();
     return edges;
 };
 

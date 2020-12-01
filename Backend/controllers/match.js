@@ -26,6 +26,7 @@ export default {
                 page: parseInt(req.query.page, 10) || 0,
                 limit: parseInt(req.query.limit, 10) || 25,
             };
+            // prevent rematching
             const matches = await MatchEdgeModel.getPotentialMatches(userId);
             let matchesId = new Set();
             matches.forEach((match) => {
@@ -61,7 +62,7 @@ export default {
                 } 
             }));
             await MatchVertexModel.addPotentialMatches(userId, potentialMatches.map((user) => {return user._id;}));
-            var updatedMatches = await MatchEdgeModel.getPotentialMatches(userId);
+            var updatedMatches = await MatchEdgeModel.getPotentialMatches(userId, options);
             // populate field with user
             await Promise.all(updatedMatches.map(async (match) => {
                 match.to = await UserModel.getUserById(match.toId);
@@ -121,12 +122,22 @@ export default {
      * 
      * @function getFriendMatches
      * @param {String} userId - the id of the user to get friends of
+     * @param {Number} query.page - used for pagination
+     * @param {Number} query.limit - used for pagination
      * @returns {Array} An array of friends of the user
      */
     getFriendMatches: async (req, res) => {
         try {
+            const options = {
+                page: parseInt(req.query.page, 10),
+                limit: parseInt(req.query.limit, 10) || 25
+            };
             const userId = req.params.userId;
-            const friends = await MatchEdgeModel.getFriendMatches(userId);
+            const friends = await MatchEdgeModel.getFriendMatches(userId, options);
+            await Promise.all(friends.map(async (friend) => {
+                friend.to = await UserModel.getUserById(friend.toId);
+                friend.from = await UserModel.getUserById(friend.fromId);
+            }));
             return res.status(200).json({ success: true, friends });
         } catch (error) {
             logger.error(error);

@@ -70,7 +70,9 @@ const userSchema = new mongoose.Schema(
     }
 );
 
-userSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey});
+// age, gender and interests are excluded so that matching works
+// We believe that these combined aren't sufficient sensitive information
+userSchema.plugin(encrypt, {encryptionKey: keys.encKey, signingKey: keys.sigKey, excludeFromEncryption: ["age", "gender", "interests"]});
 
 /**
  * Creates a User
