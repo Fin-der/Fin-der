@@ -83,7 +83,7 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
 chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, options = {}) {
     const room = await this.find({chatRoomId})
                            .sort({createdAt: -1})
-                           .skip(options.page * options.limit)
+                           .skip(options.skip)
                            .limit(options.limit)
                            .sort({createdAt: 1});
     return room;
