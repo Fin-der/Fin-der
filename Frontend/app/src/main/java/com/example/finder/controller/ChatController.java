@@ -316,7 +316,6 @@ public class ChatController {
                 error.printStackTrace();
             }
         });
-        this.chatPos++;
         this.que.add(req);
     }
 
