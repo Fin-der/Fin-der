@@ -30,6 +30,7 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
@@ -186,6 +187,7 @@ public class ChatController {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d("ChatController", "chatPos @getRecentConversation " + chatPos);
         return new JsonObjectRequest(Request.Method.GET,
                 HOST_URL + "/room/" + roomId + "/" + chatPos, skip,
                 new Response.Listener<JSONObject>() {
@@ -198,6 +200,7 @@ public class ChatController {
                                 Message msg = parseMessage((JSONObject) convo.get(i));
                                 list.add(msg);
                             }
+                            Collections.reverse(list);
                             chatPos += list.size();
                             Log.d("ChatController", "Messages Size: " + messages.size());
                             int oldSize = messages.size();
@@ -292,6 +295,7 @@ public class ChatController {
 
     /**
      * Sends user's message to backend
+     * Don't need to add message to messages list here, will be added by socket handler
      *
      * @param message User's message to their friend
      */
@@ -320,7 +324,6 @@ public class ChatController {
                 error.printStackTrace();
             }
         });
-        chatPos++;
         this.que.add(req);
     }
 
