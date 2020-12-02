@@ -183,6 +183,7 @@ public class HomeView extends AppCompatActivity {
      *
      */
     private void findMatches() {
+        this.user.getMatches().clear();
         final String HOST_MATCH = HOST_URL + "/match/" + user.getId() + "/?page=0" + HomeView.MATCH_LIMIT;
         RequestQueue que = Volley.newRequestQueue(this);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, HOST_MATCH, null,

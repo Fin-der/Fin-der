@@ -45,7 +45,7 @@ public class MatchView extends AppCompatActivity {
      */
     private ViewPager2 mPager;
 
-    private final String err = "Huh... Doesn't look like there are any available matches right now... Please Come Back Later";
+    private final String err = "Huh... Doesn't look like there are any more available matches right now... Please Come Back Later";
     private UserAccount user;
     private RequestQueue que;
     private int page;
