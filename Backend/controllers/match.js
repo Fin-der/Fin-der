@@ -29,9 +29,9 @@ export default {
             // prevent rematching
             const matches = await MatchEdgeModel.getPotentialMatches(userId);
             let matchesId = new Set();
-            matches.forEach((match) => {
+            await Promise.all(matches.map(async (match) => {
                 matchesId.add(match.toId);
-            });
+            }));
             
             var potentialMatches = []; 
             const curInterests = new Set(curUser.interests); 
