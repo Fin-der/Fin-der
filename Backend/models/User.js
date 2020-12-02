@@ -207,10 +207,12 @@ userSchema.statics.registerFCMToken = async function (id, token) {
 userSchema.statics.getTokensByIds = async function (ids) {
     const users = await this.find({ _id: { $in: ids } });
     const tokens = await Promise.all(users.map(async (user) => {
-        return user.toObject().FCMToken;
+        if (user && typeof user.FCMToken !== "undefined") {
+            return user.toObject().FCMToken;
+        }
     }));
     // removes empty objects from tokens
-    return tokens;
+    return tokens.filter((elem) => {return (typeof elem !== "undefined")});
 };
 
 export default mongoose.model("User", userSchema);

@@ -255,7 +255,9 @@ describe("test user models", () => {
     });
 
     it("getTokensByIds retrieve a token", async (done) => {
-        UserModel.find = jest.fn(() => {return [exampleFCMToken];});
+        UserModel.find = jest.fn(() => {return [user];});
+        user.toObject = jest.fn(() => {return user;});
+        user.toObject.FCMToken = exampleFCMToken;
         const tokens = await UserModel.getTokensByIds(user._id);
         expect(tokens).toMatchObject([exampleFCMToken]);
         done();
