@@ -62,7 +62,7 @@ public class EditProfileBehaviour {
     }
 
     @Test
-    public void checkMatchNum() {
+    public void checkFriendNum() {
         startActivity();
         try {
             onView(withId(R.id.number_matches)).check(matches(withText("1")));
@@ -90,7 +90,7 @@ public class EditProfileBehaviour {
     }
 
     @Test
-    public void deleteButtonNo() {
+    public void deleteButton() {
         startActivity();
         onView(withId(R.id.delete_button)).perform(click());
         try {
@@ -103,7 +103,7 @@ public class EditProfileBehaviour {
     }
 
     @Test
-    public void updateButtonNo() {
+    public void updateButton() {
         startActivity();
         onView(withId(R.id.update_button)).perform(scrollTo(), click());
         try {
