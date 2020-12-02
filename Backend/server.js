@@ -3,13 +3,9 @@ import socketio from "socket.io";
 import http from "http";
 import WebSockets from "./utils/WebSockets.js";
 import "./config/mongo.js";
-import admin from "./utils/FirebaseMessaging.js";
 
 // Create http server for chatting
 const server = http.createServer(app);
-
-// Initialize Firebase Cloud Messaging service for sending push notifications
-admin.initFCM;
 
 // Initialize Websockets for chatting
 global.io = socketio.listen(server);

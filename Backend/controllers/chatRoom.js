@@ -64,7 +64,7 @@ export default {
             userIds.splice(userIds.indexOf(user._id), 1);
             const FCMTokens = await UserModel.getTokensByIds(userIds);
             const msgBody = "You have a new message from " + user.firstName + " " + messagePayload.messageText;
-            FirebaseMessaging.sendMultiNotifMsg(FCMTokens, msgBody);
+            await FirebaseMessaging.sendMultiNotifMsg(FCMTokens, msgBody);
             return res.status(200).json({ success: true, post });
         } catch (error) {
             logger.error(error);
@@ -111,7 +111,7 @@ export default {
             const { roomId, skip } = req.params;
             const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
             const users = await UserModel.getUsersByIds(room.userIds);
-            const options = await generateOptions(req, skip);   
+            const options = generateOptions(req, skip);   
             const conversation = await ChatMessageModel.getConversationByRoomId(roomId, options);
             return res.status(200).json({
                 success: true,

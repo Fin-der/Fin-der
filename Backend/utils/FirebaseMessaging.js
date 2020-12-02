@@ -1,13 +1,7 @@
 import admin from "../config/firebase-config.js";
-import logger from "../app.js";
+import {logger} from "../app.js";
 
 export default {
-    /**
-     * Starts the Firebase Cloud Messaging Service for sending push notifications
-     */
-    initFCM: async () => {
-        admin.initializeApp();
-    },
     /**
      * Sends a push notification message to a recipient
      * @param {string} FCMToken - The FCMToken of the recipient user
@@ -37,7 +31,7 @@ export default {
      * @param {string} FCMTokens - The FCMTokens of the recipient user
      * @param {string} msgBody - The message to send to the recipient user
      */
-    sendMultiNotifMsg: (FCMTokens, msgBody) => {
+    sendMultiNotifMsg: async (FCMTokens, msgBody) => {
         // Checks if FCMTokens is not null and has positive length
         if (FCMTokens?.length) {
             var notifMessage = {

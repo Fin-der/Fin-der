@@ -52,7 +52,7 @@ export default {
                         // notify other user of potential match
                         const FCMToken = await UserModel.getTokensByIds([user._id]);
                         const msgBody = "You have a new potential match. Someone else on Fin-der seems to be a good match";
-                        FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
+                        await FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
                         
                         potentialMatches.push(user); 
                         await MatchVertexModel.addPotentialMatches(user._id, [curUser._id]);
@@ -89,7 +89,7 @@ export default {
             if (match.status === "approved") {
                 const FCMToken = await UserModel.getTokensByIds([match.toId]);
                 const msgBody = "You have a new friend! Open Fin-der to find out who";
-                FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
+                await FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
             }
             return res.status(200).json({ success: true, match });
         } catch (error) {
