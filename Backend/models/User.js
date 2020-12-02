@@ -212,7 +212,7 @@ userSchema.statics.getTokensByIds = async function (ids) {
         }
     }));
     // removes empty objects from tokens
-    return tokens.filter((elem) => {return (typeof elem !== "undefined")});
+    return tokens.filter((elem) => {return (typeof elem !== "undefined");});
 };
 
 export default mongoose.model("User", userSchema);

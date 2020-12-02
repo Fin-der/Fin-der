@@ -24,10 +24,10 @@ export default {
             };
             admin.messaging().send(notifMessage)
                 .then((response) => {
-                    logger.info('Successfully sent message:', response);
+                    logger.info("Successfully sent message:", response);
                 })
                 .catch((error) => {
-                    logger.info('Error sending message:', error);
+                    logger.info("Error sending message:", error);
                 });
         }
     },
@@ -48,7 +48,7 @@ export default {
             };
             admin.messaging().sendMulticast(notifMessage)
                 .then((response) => {
-                    logger.info(response.successCount + ' messages were sent successfully');
+                    logger.info(response.successCount + " messages were sent successfully");
                 });
         }
     }
