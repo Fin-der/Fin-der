@@ -32,7 +32,6 @@ export default {
             await Promise.all(matches.map(async (match) => {
                 matchesId.add(match.toId);
             }));
-            
             var potentialMatches = []; 
             const curInterests = new Set(curUser.interests); 
             // prioritizes mutual friends
@@ -53,7 +52,7 @@ export default {
                         // notify other user of potential match
                         const FCMToken = await UserModel.getTokensByIds([user._id]);
                         const msgBody = "You have a new potential match. Someone else on Fin-der seems to be a good match";
-                        FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
+                        FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
                         
                         potentialMatches.push(user); 
                         await MatchVertexModel.addPotentialMatches(user._id, [curUser._id]);
@@ -90,7 +89,7 @@ export default {
             if (match.status === "approved") {
                 const FCMToken = await UserModel.getTokensByIds([match.toId]);
                 const msgBody = "You have a new friend! Open Fin-der to find out who";
-                FirebaseMessaging.sendNotifMsg(FCMToken, msgBody);
+                FirebaseMessaging.sendNotifMsg(FCMToken[0], msgBody);
             }
             return res.status(200).json({ success: true, match });
         } catch (error) {

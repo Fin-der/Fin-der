@@ -22,7 +22,7 @@ export default {
                 },
                 "token": FCMToken
             };
-            admin.messaging().sendToDevice(notifMessage);
+            admin.messaging().send(notifMessage);
         }
     },
     /**
