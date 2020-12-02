@@ -60,11 +60,11 @@ export default {
                 global.io.sockets.in(roomId).emit("new message", { message: post });
             }
             // get token of other users
-            const userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
+            var userIds = await ChatRoomModel.getUserIdsFromRoomId(roomId);
+            userIds.splice(userIds.indexOf(user._id), 1);
             const FCMTokens = await UserModel.getTokensByIds(userIds);
             const msgBody = "You have a new message from " + user.firstName + " " + messagePayload.messageText;
             FirebaseMessaging.sendMultiNotifMsg(FCMTokens, msgBody);
-            
             return res.status(200).json({ success: true, post });
         } catch (error) {
             logger.error(error);

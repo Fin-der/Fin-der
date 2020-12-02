@@ -1,10 +1,5 @@
 import admin from "../config/firebase-config.js";
 
-const notificationOptions = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24 // a days worth of seconds
-};
-
 export default {
     /**
      * Starts the Firebase Cloud Messaging Service for sending push notifications
@@ -27,7 +22,7 @@ export default {
                 },
                 "token": FCMToken
             };
-            admin.messaging().sendToDevice(notifMessage, notificationOptions);
+            admin.messaging().sendToDevice(notifMessage);
         }
     },
     /**
@@ -45,7 +40,7 @@ export default {
                 },
                 "tokens": FCMTokens
             };
-            admin.messaging().sendMulticast(notifMessage, notificationOptions);
+            admin.messaging().sendMulticast(notifMessage);
         }
     }
 };
