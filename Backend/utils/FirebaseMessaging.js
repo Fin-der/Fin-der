@@ -1,17 +1,7 @@
 import admin from "../config/firebase-config.js";
-
-const notificationOptions = {
-    priority: "high",
-    timeToLive: 60 * 60 * 24 // a days worth of seconds
-};
+import {logger} from "../app.js";
 
 export default {
-    /**
-     * Starts the Firebase Cloud Messaging Service for sending push notifications
-     */
-    initFCM: async () => {
-        admin.initializeApp();
-    },
     /**
      * Sends a push notification message to a recipient
      * @param {string} FCMToken - The FCMToken of the recipient user
@@ -27,7 +17,13 @@ export default {
                 },
                 "token": FCMToken
             };
-            admin.messaging().sendToDevice(notifMessage, notificationOptions);
+            admin.messaging().send(notifMessage)
+                .then((response) => {
+                    logger.info("Successfully sent message:", response);
+                })
+                .catch((error) => {
+                    logger.info("Error sending message:", error);
+                });
         }
     },
     /**
@@ -35,7 +31,7 @@ export default {
      * @param {string} FCMTokens - The FCMTokens of the recipient user
      * @param {string} msgBody - The message to send to the recipient user
      */
-    sendMultiNotifMsg: (FCMTokens, msgBody) => {
+    sendMultiNotifMsg: async (FCMTokens, msgBody) => {
         // Checks if FCMTokens is not null and has positive length
         if (FCMTokens?.length) {
             var notifMessage = {
@@ -45,7 +41,10 @@ export default {
                 },
                 "tokens": FCMTokens
             };
-            admin.messaging().sendMulticast(notifMessage, notificationOptions);
+            admin.messaging().sendMulticast(notifMessage)
+                .then((response) => {
+                    logger.info(response.successCount + " messages were sent successfully");
+                });
         }
     }
 };

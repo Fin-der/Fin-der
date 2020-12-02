@@ -2,6 +2,7 @@ import { app, port } from "../../app.js"; // Link to your server file
 import http from "http";
 import supertest from "supertest";
 import mongoose from "mongoose";
+import admin from "../../config/firebase-config.js";
 
 const request = supertest(app);
 
@@ -34,25 +35,30 @@ describe("matching integration", () => {
         _id: "eb176894d456475e9f2be1868bab8fd6",
         firstName: "Foo",
         lastName: "Bar",
-        interests: ["music", "coding"]
+        interests: ["music", "coding"],
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const user2 = {
         _id: "42",
         firstName: "Far",
         lastName: "Boo",
-        interests: ["music", "skating"]
+        interests: ["music", "skating"],
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
+        
     };
     const user3 = {
         _id: "42222",
         firstName: "Jason",
         lastName: "Borne",
-        interests: ["numbers", "masonry"]
+        interests: ["numbers", "masonry"],
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const user4 = {
         _id: "4222444",
         firstName: "Jason",
         lastName: "Borne",
-        interests: ["music", "masonry"]
+        interests: ["music", "masonry"],
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const pickyUser = {
         _id: "1093",
@@ -70,10 +76,19 @@ describe("matching integration", () => {
                 max: 99
             },
             proximity: 1000
-        }
+        },
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
 
     it("IntegrationTest Matching ", async (done) => {
+        admin.messaging().send = jest.fn().mockImplementation(() => ({
+            then: jest.fn().mockImplementation(() => ({ 
+                catch: jest.fn().mockResolvedValue()
+            }))
+        }));
+        admin.messaging().sendMulticast = jest.fn().mockImplementation(() => ({
+            then: jest.fn().mockResolvedValue()
+        }));
         // populate users
         let response = await request.post("/users")
                         .send(user1);

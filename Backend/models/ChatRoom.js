@@ -90,8 +90,8 @@ chatRoomSchema.statics.initiateChat = async function (userIds, chatInitiator) {
  * @returns {Array} an array of user ids
  */
 chatRoomSchema.statics.getUserIdsFromRoomId = async function (roomId) {
-    const userIds = await this.findOne({ _id: roomId }, "userIds");
-    return userIds;
+    const room = await this.findOne({ _id: roomId }, "userIds");
+    return room.userIds;
 };
 
 /**
