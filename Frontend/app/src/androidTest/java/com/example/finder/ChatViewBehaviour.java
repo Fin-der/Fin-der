@@ -39,6 +39,7 @@ public class ChatViewBehaviour {
     private UserAccount user2;
     private String chatterName;
     private Context context;
+    private String roomId;
 
     @Rule
     public IntentsTestRule<ChatView> activityRule
@@ -58,6 +59,11 @@ public class ChatViewBehaviour {
         intent.putExtra("friend", user2);
         chatterName = user2.getFirstName() + " " + user2.getLastName();
         intent.putExtra("chatterName", chatterName);
+        try {
+            roomId = UserAccGenerator.initChatRoom("1", "2", Volley.newRequestQueue(context));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         activityRule.launchActivity(intent);
     }
 
@@ -70,7 +76,6 @@ public class ChatViewBehaviour {
             e.printStackTrace();
         }
         final String URI = HomeView.HOST_URL + "/room/";
-        final String roomId = "6b30126e2cc047a3858f547cc1ca1dde";
         System.out.println(URI);
         JSONObject msg = new JSONObject();
         try {

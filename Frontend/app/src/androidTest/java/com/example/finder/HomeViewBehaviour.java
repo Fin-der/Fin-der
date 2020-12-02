@@ -20,6 +20,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.junit.Assert.fail;
@@ -44,7 +45,7 @@ public class HomeViewBehaviour {
         Intent intent = createIntent();
         activityRule.launchActivity(intent);
         try {
-            onView(withId(R.id.msgboard_profilename)).check(matches(withText("Jack")));
+            onView(withId(R.id.home_MsgTitle)).check(matches(isDisplayed()));
         } catch(Exception err) {
             fail(err.toString());
         }

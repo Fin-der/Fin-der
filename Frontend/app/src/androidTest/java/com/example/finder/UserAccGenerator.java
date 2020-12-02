@@ -28,11 +28,11 @@ public class UserAccGenerator {
          String gender = "Male";
          String location = "Vancouver";
          String prefGender = "Female";
-         int minAge = 0;
+         int minAge = 17;
          int maxAge = age + 5;
-         int prox = 5;
-         String[] interest = new String[]{"Hockey", "Cook", "Read"};
-         String bio = "hello";
+         int prox = 20;
+         String[] interest = new String[]{"Hockey", "Burger", "Cook"};
+         String bio = "debug account";
          ArrayList<UserAccount> friend = new ArrayList<>();
          friend.add(new UserAccount("1", "Jack", "Frost"));
          ArrayList<UserAccount> matches = new ArrayList<>();
@@ -91,6 +91,38 @@ public class UserAccGenerator {
             Thread.yield();
         }
 
+    }
+
+    public static String initChatRoom(String id1, String id2, RequestQueue que) throws JSONException {
+         JSONObject body = new JSONObject();
+         JSONArray arr = new JSONArray();
+         arr.put(id1);
+         arr.put(id2);
+         body.put("userIds", arr);
+         final String[] roomId = {null};
+         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST,
+                 HomeView.HOST_URL + "/room/initiate/", body, new Response.Listener<JSONObject>() {
+             @Override
+             public void onResponse(JSONObject response) {
+                 JSONObject room = null;
+                 try {
+                     room = (JSONObject) response.get("chatRoom");
+                     roomId[0] = (String) room.get("chatRoomId");
+                     Log.d("roomId", roomId[0]);
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+             }
+         }, new Response.ErrorListener() {
+             @Override
+             public void onErrorResponse(VolleyError error) {
+
+             }
+         });
+         que.add(req);
+         while (roomId[0] == null)
+             Thread.yield();
+         return roomId[0];
     }
 
     public static void deleteAcc(String id, Context context) {
@@ -175,7 +207,7 @@ public class UserAccGenerator {
             userJson.put("age", user.getAge());
             userJson.put("gender", user.getGender());
             userJson.put("email", user.getEmail());
-            userJson.put("location", locationJson);
+            userJson.put("geoLocation", locationJson);
             userJson.put("preferences", preferenceJson);
             userJson.put("interests", interests);
             userJson.put("description", user.getBiography());
