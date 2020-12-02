@@ -75,12 +75,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                try {
-                    String token = response.getString("token");
-                } catch (JSONException e) {
-                    Log.d(TAG, "failed to parse friend json");
-                    e.printStackTrace();
-                }
+                Log.d("FireBase", response.toString());
             }
         }, new Response.ErrorListener() {
             @Override
