@@ -23,9 +23,9 @@ import static org.junit.Assert.fail;
 public class ResponseTime {
     private long startTime;
     private final int MAX_RTT = 1000;
-    UserAccount user1;
-    UserAccount user2;
-    Context context;
+    private UserAccount user1;
+    private UserAccount user2;
+    private Context context;
 
     private void initUsers() {
         user1 = UserAccGenerator.createFullAcc("1");
@@ -112,9 +112,15 @@ public class ResponseTime {
         final String roomId = UserAccGenerator.initChatRoom(user1.getId(), user2.getId(), que);
         JSONObject body = new JSONObject();
         body.put("userId", user1.getId());
-        for (int i = 0; i < MAX_RTT; i++)
-            Log.d("RTT_RECENTCONVO", String.valueOf(callGetRecentConversation(que, roomId)));
-        UserAccGenerator.deleteAcc(user1.getId(), context);
-        UserAccGenerator.deleteAcc(user2.getId(), context);
+
+        try {
+            for (int i = 0; i < MAX_RTT; i++)
+                Log.d("RTT_RECENTCONVO", String.valueOf(callGetRecentConversation(que, roomId)));
+        } catch (Exception err) {
+            fail(err.toString());
+        } finally {
+            UserAccGenerator.deleteAcc(user2.getId(), context);
+            UserAccGenerator.deleteAcc(user1.getId(), context);
+        }
     }
 }

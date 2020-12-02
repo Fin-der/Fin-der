@@ -116,7 +116,7 @@ public class UserAccGenerator {
          }, new Response.ErrorListener() {
              @Override
              public void onErrorResponse(VolleyError error) {
-
+                Log.d("UserAccGen", error.toString());
              }
          });
          que.add(req);
