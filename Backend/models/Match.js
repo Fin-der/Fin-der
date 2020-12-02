@@ -124,7 +124,7 @@ MatchVertexSchema.statics.getUsersForMatching = async function (userId, options)
     const aggregate = await this.aggregate( [
     { $match: {userId} },
     { $graphLookup: { 
-        from: "MatchVertices",
+        from: "matchVertices",
         startWith: "$matchesId",
         connectFromField: "matchesId",
         connectToField: "userId",

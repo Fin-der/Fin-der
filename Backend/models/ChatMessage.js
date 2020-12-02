@@ -75,17 +75,17 @@ chatMessageSchema.statics.createPostInChatRoom = async function (chatRoomId, mes
 
 /**
  * Retrieves the messages/conversation of a chatRoom
- * sorts by oldest first
+ * sorts by newest first
  * 
  * @param {String} chatRoomId - chat room id
  * @returns the Conversation with RoomId
  */
 chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, options = {}) {
     const room = await this.find({chatRoomId})
-                           .sort({createdAt: -1})
+                           .sort({createdAt: 1})
                            .skip(options.skip)
                            .limit(options.limit)
-                           .sort({createdAt: 1});
+                           .sort({createdAt: -1});
     return room;
 };
 

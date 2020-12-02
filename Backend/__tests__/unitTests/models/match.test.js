@@ -234,9 +234,33 @@ describe("test matchs models", () => {
         done();
     });
 
-    it("getUsersForMatching using graphlookup no mutuals", async (done) => {
+    it("getUsersForMatching using graphlookup run out of mutuals", async (done) => {
         const options = {
             skip: 0,
+            limit: 25
+        };
+        const aggregate = {
+            mutuals: [user, user, user]
+        };
+        UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.aggregate = jest.fn(() => {return aggregate;});
+        UserModel.find = jest.fn().mockImplementation(() => ({
+            where: jest.fn().mockImplementation(() => ({ 
+                skip: jest.fn().mockImplementation(() => ({ 
+                    limit: jest.fn().mockResolvedValue([])
+                }))
+            }))
+        }));
+        user.toObject = jest.fn(() => {return user;});
+
+        const users = await MatchVertexModel.getUsersForMatching(user._id, options);
+        expect(users).toEqual([]);
+        done();
+    });
+
+    it("getUsersForMatching using graphlookup no mutuals", async (done) => {
+        const options = {
+            page: 0,
             limit: 0
         };
         const aggregate = {
