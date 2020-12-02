@@ -84,14 +84,14 @@ describe("room creation integration test", () => {
         }
     };
 
-    const room1UserIds = [user1._id, user2._id, user3._id, user4._id];
+    const room1UserIds = [user4._id, user3._id, user2._id, user1._id];
     
     const user1Message = "Hello, Gamer";
     const user2Message = "Hello, Fellow Gamer";
     const user3Message = "Wassup My Homies";
     const user4Message = "Hello Hello Hello";
 
-    const room1Messages = [user1Message, user2Message, user3Message, user4Message];
+    const room1Messages = [user4Message, user3Message, user2Message, user1Message];
     
     it("IntegrationTest Chatting", async (done) => {
         // populate users
