@@ -85,7 +85,7 @@ chatMessageSchema.statics.getConversationByRoomId = async function (chatRoomId, 
                            .sort({createdAt: 1})
                            .skip(options.skip)
                            .limit(options.limit)
-                           .sort({createdAt: -1});  
+                           .sort({createdAt: -1});   
     return room;
 };
 
