@@ -2,6 +2,7 @@ import { app, port } from "../../app.js"; // Link to your server file
 import http from "http";
 import supertest from "supertest";
 import mongoose from "mongoose";
+import admin from "../../config/firebase-config.js";
 
 const request = supertest(app);
 
@@ -34,7 +35,8 @@ describe("room creation integration test", () => {
         _id: "eb176894d456475e9f2be1868bab8fd6",
         firstName: "Foo",
         lastName: "Bar",
-        interests: ["music", "coding"]
+        interests: ["music", "coding"],
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const user2 = {
         _id: "42",
@@ -46,7 +48,8 @@ describe("room creation integration test", () => {
                 max: 2,
                 min: 0
             }
-        }
+        },
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const user3 = {
         _id: "42222",
@@ -57,7 +60,8 @@ describe("room creation integration test", () => {
             ageRange: {
                 max: 2
             }
-        }
+        },
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
     const user4 = {
         _id: "4222444",
@@ -68,7 +72,8 @@ describe("room creation integration test", () => {
             ageRange: {
                 min: 0
             }
-        }
+        },
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
 
     const badUser = {
@@ -81,7 +86,8 @@ describe("room creation integration test", () => {
                 max: 23,
                 min: 76
             }
-        }
+        },
+        FCMToken:"eKCJ5OGkShKZHpBucPqurJ:APA91bFYBg3-0OVdJFSO1TLmZUqXLQzIIgVoekAdUiz8-SR4i3FNr9bjK0c1Sph2qfcfzUplHHn_EkrfV14scu2XdoLgC1wyVhxtH_sdndClOs6qTvfQxScvtfmUSiSV5clqHpqBa4V0"
     };
 
     const room1UserIds = [user4._id, user3._id, user2._id, user1._id];
@@ -94,6 +100,14 @@ describe("room creation integration test", () => {
     const room1Messages = [user4Message, user3Message, user2Message, user1Message];
     
     it("IntegrationTest Chatting", async (done) => {
+        admin.messaging().send = jest.fn().mockImplementation(() => ({
+            then: jest.fn().mockImplementation(() => ({ 
+                catch: jest.fn().mockResolvedValue()
+            }))
+        }));
+        admin.messaging().sendMulticast = jest.fn().mockImplementation(() => ({
+            then: jest.fn().mockResolvedValue()
+        }));
         // populate users
         let response = await request.post("/users")
                         .send(user1);
