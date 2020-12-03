@@ -27,7 +27,7 @@ export default {
                 limit: parseInt(req.query.limit, 10) || 25,
             };
             // prevent rematching
-            const vertex = await MatchVertexModel.getMatch(userId);
+            const vertex = await MatchVertexModel.getMatchVertex(userId);
             let matchesId = new Set(vertex.matchesId);
             var potentialMatches = []; 
             const curInterests = new Set(curUser.interests); 
@@ -38,8 +38,6 @@ export default {
             // userVertex
             // Note: this is an parallel asynchronous for each loop
             await Promise.all(users.map(async (user) => {
-                console.log(user._id)
-                console.log(!matchesId.has(user._id))
                 if (user._id !== userId && !matchesId.has(user._id)) { 
                     var sameInterests = 0; 
                     user.interests.forEach((interest) => { 
