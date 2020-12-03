@@ -75,6 +75,11 @@ MatchVertexSchema.statics.createMatchVertex = async function (userId, potentialM
     return vertex;
 };
 
+MatchVertexSchema.statics.getMatchVertex = async function (userId) {
+    const vertex = await this.findOne({userId}).lean();
+    return vertex;
+};
+
 /**
  * Deletes a Match Vertex Object
  * 
@@ -184,7 +189,7 @@ MatchEdgeSchema.statics.createBidirectionalEdge = async function (score, userId1
  * @param {String} userId - id of the user to get matches for
  * @returns {Array} An array of MatchEdge Objects representing potentialmatches
  */
-MatchEdgeSchema.statics.getPotentialMatches = async function (userId, options = {}) {
+MatchEdgeSchema.statics.getPotentialMatches = async function (userId, options = { page:0, limit:25}) {
     // we use fromId and fromStatus so that we don't return duplicate edges
     const edges = await this.find({"fromId": userId, fromStatus: "potential"})
                             .skip(options.page * options.limit)
