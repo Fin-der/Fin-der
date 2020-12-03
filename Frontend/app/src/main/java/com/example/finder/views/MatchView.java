@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 public class MatchView extends AppCompatActivity {
 
@@ -49,6 +50,7 @@ public class MatchView extends AppCompatActivity {
     private UserAccount user;
     private RequestQueue que;
     private int page;
+    private Semaphore lock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class MatchView extends AppCompatActivity {
         this.user = (UserAccount) intent.getSerializableExtra("profile");
         final ArrayList<UserAccount> matches = user.getMatches();
         NUM_PAGES = matches.size();
+        lock = new Semaphore(1);
 
         if (NUM_PAGES == 0) {
             Toast.makeText(this, err, Toast.LENGTH_LONG).show();
@@ -83,34 +86,48 @@ public class MatchView extends AppCompatActivity {
             @Override
             public void onPageSelected(final int position) {
                 super.onPageSelected(position);
-                if (position == NUM_PAGES - 1) {
-                    final String URI = HomeView.HOST_URL + "/match/" + user.getId() + "/?page=" + page + HomeView.MATCH_LIMIT;
-                    JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, URI, null, new Response.Listener<JSONObject>() {
+
+                if (NUM_PAGES > 1 && position == NUM_PAGES - 1) {
+                    new Thread(new Runnable() {
                         @Override
-                        public void onResponse(JSONObject response) {
-                            ArrayList<UserAccount> newMatches = new ArrayList<>();
+                        public void run() {
+                            final String URI = HomeView.HOST_URL + "/match/" + user.getId() + "/?page=" + page + HomeView.MATCH_LIMIT;
                             try {
-                                parseEdges(response.getJSONArray("matches"), newMatches);
-                                if (newMatches.isEmpty()) {
-                                    Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
-                                } else {
-                                    page++;
-                                    Log.d("MatchView", "Page: " + page);
-                                    matches.addAll(newMatches);
-                                    NUM_PAGES = matches.size();
-                                    pagerAdapter.notifyItemRangeInserted(position + 1, NUM_PAGES - 1);
-                                }
-                            } catch (JSONException e) {
+                                lock.acquire();
+                            } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
+                            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, URI, null, new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    ArrayList<UserAccount> newMatches = new ArrayList<>();
+                                    try {
+                                        parseEdges(response.getJSONArray("matches"), newMatches);
+                                        if (newMatches.isEmpty()) {
+                                            Toast.makeText(getApplicationContext(), err, Toast.LENGTH_LONG).show();
+                                        } else {
+                                            page++;
+                                            Log.d("MatchView", "Page: " + page);
+                                            matches.addAll(newMatches);
+                                            NUM_PAGES = matches.size();
+                                            pagerAdapter.notifyItemRangeInserted(position + 1, NUM_PAGES - 1);
+                                        }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    } finally {
+                                        lock.release();
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    error.printStackTrace();
+                                    lock.release();
+                                }
+                            });
+                            que.add(req);
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            error.printStackTrace();
-                        }
-                    });
-                    que.add(req);
+                    }).start();
                 }
             }
         });
