@@ -75,8 +75,19 @@ MatchVertexSchema.statics.createMatchVertex = async function (userId, potentialM
     return vertex;
 };
 
+
+/**
+ * Retrieves a Match Vertex Object
+ * 
+ * @function getMatchVertex
+ * @param {String} userId - The userId of the match vertex object
+ * @returns {Object} The Match Vertex Object associated with the given userId
+ */
 MatchVertexSchema.statics.getMatchVertex = async function (userId) {
     const vertex = await this.findOne({userId}).lean();
+    if (!vertex) { 
+        throw ({ error: "No user with this id found" }); 
+    }
     return vertex;
 };
 

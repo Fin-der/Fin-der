@@ -73,11 +73,17 @@ describe("test match controller", () => {
         }
 
     };
+    const vertex = {
+        _id: "23409183674",
+        userId : user._id,
+        matchesId: [user._id, user._id]
+    };
     const exampleFCMToken = "e9f2be1868bab8fd";
     const matches = [match1, match2];
     
     it("getPotentialMatches pass fcm token not registered", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.getMatchVertex = jest.fn(() => {return vertex;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [];});
@@ -95,6 +101,7 @@ describe("test match controller", () => {
 
     it("getPotentialMatches pass fcm token registered", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.getMatchVertex = jest.fn(() => {return vertex;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
@@ -112,6 +119,7 @@ describe("test match controller", () => {
 
     it("getPotentialMatches matches already created", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.getMatchVertex = jest.fn(() => {return vertex;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
@@ -129,6 +137,7 @@ describe("test match controller", () => {
 
     it("getPotentialMatches no shared interest", async (done) => {
         UserModel.getUserById = jest.fn(() => {return noInterestUser;});
+        MatchVertexModel.getMatchVertex = jest.fn(() => {return vertex;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return [];});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user, noInterestUser];});
         UserModel.getTokensByIds = jest.fn(() => {return [exampleFCMToken];});
@@ -146,6 +155,7 @@ describe("test match controller", () => {
 
     it("getPotentialMatches fail", async (done) => {
         UserModel.getUserById = jest.fn(() => {return user;});
+        MatchVertexModel.getMatchVertex = jest.fn(() => {return vertex;});
         MatchEdgeModel.getPotentialMatches = jest.fn(() => {return matches;});
         MatchVertexModel.getUsersForMatching = jest.fn(() => {return [user];});
         UserModel.getTokensByIds = jest.fn(() => {return exampleFCMToken;});

@@ -171,6 +171,39 @@ describe("test matchs models", () => {
         done();
     });
 
+    it("getMatchVertex success", async (done) => {
+        MatchVertexModel.findOne = jest.fn().mockImplementation(() => ({ 
+            lean: jest.fn().mockResolvedValue(vertex)
+        }));
+        const vert = await MatchVertexModel.getMatchVertex(user._id);
+        expect(vert).toBe(vertex);
+        done();
+    });
+
+    it("getMatchVertex no user", async (done) => {
+        MatchVertexModel.findOne = jest.fn().mockImplementation(() => ({ 
+            lean: jest.fn().mockResolvedValue()
+        }));
+        try {
+            await MatchVertexModel.getMatchVertex(user._id);
+            done.fail(new Error("getMatch should have thrown an error"));
+        } catch (err) {
+            expect(err).toMatchObject({error: "No user with this id found"});
+        }
+        done();
+    });
+
+    it("getMatchVertex fail", async (done) => {
+        MatchVertexModel.findOne = jest.fn(() => {throw error;});
+        try {
+            await MatchVertexModel.getMatchVertex(user._id);
+            done.fail(new Error("getMatch should have thrown an error"));
+        } catch (err) {
+            expect(err).toMatchObject(error);
+        }
+        done();
+    });
+
     it("deleteVertex", async (done) => {
         const deleteMsg = {
             "deletedCount": 0, 
